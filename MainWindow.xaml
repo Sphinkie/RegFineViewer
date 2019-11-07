@@ -171,8 +171,8 @@
                         DataType="{x:Type local:RegistryItem}"
                         ItemsSource="{Binding Path=SubItem}">
                         <!-- Affichage des données du Node -->
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Name}" />
+                        <StackPanel Orientation="Horizontal" Margin="2,2,2,2">
+                            <TextBlock Text="{Binding Path=Name}" Width="260"/>
                             <TextBlock Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
                         </StackPanel>
                     </HierarchicalDataTemplate>

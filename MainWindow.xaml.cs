@@ -44,11 +44,17 @@ namespace RegFineViewer
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
         private ObservableCollection<RegistryItem> RegistryTree2 = new ObservableCollection<RegistryItem>();
+        private RegFileParser Parser1;
+        private RegFileParser Parser2;
 
         public MainWindow()
         {
             InitializeComponent();
+            // On initialise les parseurs
+            Parser1 = new RegFileParser(RegistryTree1);
+            Parser2 = new RegFileParser(RegistryTree2);
             // On binde les RegistryTree avec les TreeView de l'affichage
+            // TreeView1.ItemsSource = RegistryTree1;
             TreeView2.ItemsSource = RegistryTree2;
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas 
             // ... ItemsSource="{Binding Source=RegistryTree2}" ...
@@ -129,86 +135,23 @@ namespace RegFineViewer
             if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
 
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
-            string fileName = droppedFiles[0];
-            Tree2_InfoChip.Content = fileName;
-            // On ouvre le fichier dans la treeView
-            OpenFile(fileName);
-
-            // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans la TreeView courante
-            // string fileName1 = droppedFiles[0];
-            // string fileName2 = droppedFiles[1];
-            // Tree1_InfoChip.Content = fileName1;
-            // Tree2_InfoChip.Content = fileName2;
-            // OpenFileInTreeView(fileName1, TreeView1);
-            // OpenFileInTreeView(fileName2, TreeView2);
-        }
-
-        private void OpenFile(string fileName)
-        {
-            // Dictionaire des nodes
-            Dictionary<string, RegistryItem> nodeList = new Dictionary<string, RegistryItem>();
-
-            // On commence par vider la collection
-            RegistryTree2.Clear();
-
-            if (!fileName.EndsWith(".reg"))
+            if (droppedFiles.Length == 1)
             {
-                RegistryItem WrongNode = new RegistryItem("Not a REG file", "node");
-                RegistryTree2.Add(WrongNode);
-                return;
+                string fileName = droppedFiles[0];
+                Tree2_InfoChip.Content = fileName;
+                // On remplit le RegistryTree à partir du fichier
+                Parser2.ParseFile(fileName);
             }
-
-            // On lit le fichier et on met tout dans une string
-            // fileName = "E:\\source\\repos\\RegFineViewer\\_example1.reg";
-            StreamReader str = new StreamReader(File.Open(fileName, FileMode.OpenOrCreate));
-            string fichier = str.ReadToEnd();
-            str.Close();
-            // On decoupe le fichier en un tableau de lignes
-            string[] lignes = fichier.Split('\r', '\n');
-
-            RegistryItem currentNode = new RegistryItem("root", "node");
-            RegistryTree2.Add(currentNode);
-            nodeList["root"] = currentNode;
-            bool firstNode = true;
-
-
-            // On parcourt le tableau
-            for (int i = 0; i < lignes.Length; i++)
+            // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
+            else
             {
-                string ligne = lignes[i];
-                // On ignore la ligne d'entete
-                if (ligne.StartsWith("Windows Registry Editor"))
-                { }
-                // On ignore les lignes vides
-                else if (ligne == "")
-                { }
-                // Lignes de type [path\to\node]
-                else if (ligne.StartsWith("[") && ligne.EndsWith("]"))
-                {
-                    int lastSep = ligne.LastIndexOf("\\");
-                    int endSep = ligne.LastIndexOf("]");
-                    // S'il s'agit du premier node, on met le chemin dans le Name du RootNode
-                    if (firstNode)
-                    {
-                        currentNode.Name = ligne.Substring(1, lastSep- 1);
-                        firstNode = false;
-                    }
-                    string nodeName = ligne.Substring(lastSep + 1, endSep - lastSep - 1);
-                    RegistryItem NewNode = new RegistryItem(nodeName, "node");
-                    currentNode.AddSubItem(NewNode);
-                    currentNode = NewNode;
-                }
-                else if (currentNode != null)
-                {
-                    // Exemple de key: "ErrorLogSizeInKb" = dword:000186A0
-                    char[] separators = new char[] { '=', '"', ':' };
-                    string[] parties = ligne.Split(separators, 5);
-                    RegistryItem newKey = new RegistryItem(parties[1], parties[3]);
-                    newKey.Value = parties[4];
-                    currentNode.AddSubItem(newKey);
-                }
-                else
-                { }
+                string fileName1 = droppedFiles[0];
+                string fileName2 = droppedFiles[1];
+                Tree1_InfoChip.Content = fileName1;
+                Tree2_InfoChip.Content = fileName2;
+                // On remplit le RegistryTree à partir du fichier
+                Parser1.ParseFile(fileName1);
+                Parser2.ParseFile(fileName2);
             }
         }
 
