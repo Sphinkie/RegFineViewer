@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+//using System.Windows.Data;
+//using System.Windows.Documents;
+//using System.Windows.Input;
+//using System.Windows.Media;
+//using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;       // ObservableCollections
@@ -29,7 +29,7 @@ namespace RegFineViewer
             Value = string.Empty;
             SubItem = new ObservableCollection<RegistryItem>();
         }
-        // Ajout d'un sous-item (key ou Node).
+        // Ajout d'un sous-item (key ou Node)
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
         // variables
         public string Name { get; set; }
@@ -54,10 +54,10 @@ namespace RegFineViewer
             Parser1 = new RegFileParser(RegistryTree1);
             Parser2 = new RegFileParser(RegistryTree2);
             // On binde les RegistryTree avec les TreeView de l'affichage
-            // TreeView1.ItemsSource = RegistryTree1;
+            TreeView1.ItemsSource = RegistryTree1;
             TreeView2.ItemsSource = RegistryTree2;
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas 
-            // ... ItemsSource="{Binding Source=RegistryTree2}" ...
+            // ... ItemsSource="{Binding Source=RegistryTree1}" ...
         }
 
         // -------------------------------------------------------------------------
@@ -95,10 +95,6 @@ namespace RegFineViewer
             N2.AddSubItem(N4);
         }
 
-        private void Tree2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-
-        }
 
         // -------------------------------------------------------------------------
         // Drop d'un (ou plusieurs) fichier(s) dans une TreeView
@@ -113,11 +109,27 @@ namespace RegFineViewer
 
             if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
-            string fileName = droppedFiles[0];
-            Tree1_InfoChip.Content = fileName;
+            if (droppedFiles.Length == 1)
+            {
+                string fileName = droppedFiles[0];
+                Tree1_InfoChip.Content = fileName;
+                // On remplit le RegistryTree à partir du fichier
+                Parser1.ParseFile(fileName);
+            }
+            // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
+            else
+            {
+                string fileName1 = droppedFiles[0];
+                string fileName2 = droppedFiles[1];
+                Tree1_InfoChip.Content = fileName1;
+                Tree2_InfoChip.Content = fileName2;
+                // On remplit le RegistryTree à partir du fichier
+                Parser1.ParseFile(fileName1);
+                Parser2.ParseFile(fileName2);
+            }
 
+            // Exemple pour renregister dans une liste
             //listFiles.Items.Clear();
-            //listFiles.Items.Add("Load in Tree 1:");
             //foreach (string s in droppedFiles)
             //{
             //    listFiles.Items.Add(s);
@@ -215,5 +227,13 @@ namespace RegFineViewer
             RegistryTree2.Clear();
         }
 
+        private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+
+        }
+        private void Tree2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+
+        }
     }
 }

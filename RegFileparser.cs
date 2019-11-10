@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System;
 
 namespace RegFineViewer
 {
@@ -181,22 +182,27 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         private RegistryItem CreateRegistryKey(string keyNameTypeValue)
         {
-            string[] keyNameValue = keyNameTypeValue.Split('=');
-            string[] keyTypeValue = keyNameValue[1].Split(':');
-            string keyName = keyNameValue[0].Trim('"');
+            string[] splittedString = keyNameTypeValue.Split('"');
+            string keyName  = splittedString[1];
             string keyDType = string.Empty;
             string keyValue = string.Empty;
-            if (keyTypeValue.Length == 1)
+            // le rest east alors soit ="string", soit  =type:valeur
+            string reste = splittedString[2].Trim('=');
+            if (reste.StartsWith("\"") && reste.EndsWith("\""))
             {
                 // Ex: "valeur"
                 keyDType = "SZ";
-                keyValue = keyTypeValue[0];
+                keyValue = reste.Trim('"'); ;
             }
-            else
+            if (reste.IndexOf(':')>0)
             {
                 // Ex: dword:000186A0
-                keyDType = keyTypeValue[0];
-                keyValue = keyTypeValue[1];
+                string[] Type_Value = reste.Split(':');
+                keyDType = Type_Value[0];
+                string hexValue = "0x"+Type_Value[1];            // hexa 
+                int    intValue = Convert.ToInt32(hexValue, 16); // converti en decimal
+                keyValue = Convert.ToString(intValue);           // converti en string
+
             }
             keyDType = "REG_" + keyDType.ToUpper();
             RegistryItem newKey = new RegistryItem(keyName, keyDType);

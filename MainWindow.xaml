@@ -41,7 +41,9 @@
                 <RowDefinition Height="Auto" Name="SearchbarRow" />
             </Grid.RowDefinitions>
             
-            <!-- Grille de Gauche -->
+            <!-- *************************************************************** -->
+            <!--                     Grille de Gauche                            -->
+            <!-- *************************************************************** -->
             <!--Toolbar-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
@@ -62,8 +64,25 @@
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
             <!--<ListBox x:Name="listFiles" Grid.Column="0" Grid.Row="1" ></ListBox>-->
+            <!-- TREE VIEW 1 avec binding -->
+            <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" 
+                      AllowDrop="True" Drop="Tree1_drop"
+                      SelectedItemChanged="TreeView1_SelectedItemChanged">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate
+                        DataType="{x:Type local:RegistryItem}"
+                        ItemsSource="{Binding Path=SubItem}">
+                        <!-- Affichage des données du Node -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}" Width="260"/>
+                            <TextBlock Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+
             <!-- TREE VIEW simple (affichage seulement) -->
-            <TreeView  Name="TreeView1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop">
+            <!--<TreeView  Name="TreeView1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop">
                 <TreeViewItem Header="VCA">
                     <TreeViewItem>
                         <TreeViewItem.Header>
@@ -109,9 +128,29 @@
                     </TreeViewItem>
                 </TreeViewItem>
                 <TreeViewItem    Header="Empty" />
-            </TreeView>
+            </TreeView>-->
             <!-- Barre de Recherche -->
-            <Grid VerticalAlignment="Top" Margin="16" Grid.Column="0" Grid.Row="4">
+            <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
+                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
+                    <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32"
+                                              CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <StackPanel Orientation="Horizontal" Margin="2" >
+                            <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher1"/>
+                        </StackPanel>
+                    </materialDesign:ColorZone>
+                    <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
+                </Grid>
+            </materialDesign:ColorZone>
+            <!--<Grid VerticalAlignment="Top" Margin="16" Grid.Column="0" Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
@@ -122,11 +161,16 @@
                 <TextBlock Grid.Column="1" Margin="8" VerticalAlignment="Center" Name="field1">Registry key:</TextBlock>
                 <TextBox Grid.Column="2" Margin=" 8">Entrer key name...</TextBox>
                 <Button Grid.Column="3" Margin="8">Find</Button>
-            </Grid>
+            </Grid>-->
 
+            <!-- *************************************************************** -->
+            <!--                     Separateur                                  -->
+            <!-- *************************************************************** -->
             <GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" />
 
-            <!-- Grille de droite -->
+            <!-- *************************************************************** -->
+            <!--                     Grille de droite                            -->
+            <!-- *************************************************************** -->
             <!-- Toolbar -->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
@@ -171,7 +215,7 @@
                         DataType="{x:Type local:RegistryItem}"
                         ItemsSource="{Binding Path=SubItem}">
                         <!-- Affichage des données du Node -->
-                        <StackPanel Orientation="Horizontal" Margin="2,2,2,2">
+                        <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="{Binding Path=Name}" Width="260"/>
                             <TextBlock Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
                         </StackPanel>
@@ -182,12 +226,12 @@
             <!--BOUTON + -->
             <materialDesign:PopupBox Grid.Column="2" Grid.Row="3"
                 Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                IsEnabled="False"
                 PlacementMode="LeftAndAlignMiddles"
                 UnfurlOrientation="Horizontal"
                 ToolTip="Manage Registry key"
                 Margin="0 0 10 10"  Width="42"  Height="42"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center">
+                HorizontalAlignment="Right" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <Button ToolTip="Add a key" Command="{Binding AddCommand}">
                         <Path
@@ -219,10 +263,10 @@
                                               CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <StackPanel Orientation="Horizontal" Margin="2" >
                             <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher"/>
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher2"/>
                         </StackPanel>
                     </materialDesign:ColorZone>
-                    <Button Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
+                    <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
                 </Grid>
             </materialDesign:ColorZone>
         </Grid>
