@@ -36,6 +36,7 @@ namespace RegFineViewer
         public string DType { get; }
         public string Value { get; set; }
         public ObservableCollection<RegistryItem> SubItem { get; }
+        public bool Expanded { get; set; }
     }
 
     //
@@ -127,13 +128,6 @@ namespace RegFineViewer
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
             }
-
-            // Exemple pour renregister dans une liste
-            //listFiles.Items.Clear();
-            //foreach (string s in droppedFiles)
-            //{
-            //    listFiles.Items.Add(s);
-            //}
         }
         private void Tree2_drop(object sender, DragEventArgs e)
         {
@@ -186,13 +180,23 @@ namespace RegFineViewer
         }
         private void Tree2_Expand_bt(object sender, RoutedEventArgs e)
         {
-            object selectedNode = TreeView2.SelectedItem;
-            if (selectedNode != null)
+            RegistryItem selectedItem = TreeView2.SelectedItem as RegistryItem;
+            if (selectedItem != null)
             {
+                int index = 5;
+                string A = TreeView2.SelectedValuePath;
+                object B = TreeView2.SelectedValue;
+                // selectedNode.IsExpanded = true;
                 // string tt = selectedNode.ToString(); // selectedItem / SelectedValue :	renvoient	tt="RegFineViewer.RegistryNode"
-                TreeViewItem tvi = TreeView2.ItemContainerGenerator.ContainerFromItem(selectedNode) as TreeViewItem;
-                tvi.ExpandSubtree();
+                TreeViewItem tvi = TreeView2.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
+                 TreeView2.ItemContainerGenerator.IndexFromContainer(selectedItem);                // ContainerFromItem(selectedItem) as TreeViewItem;
+                // tvi.ExpandSubtree();
+                // ContainerFromItem ne va renvoyer que les items qui appartiiennet à la collection (1er niveau)
                 // tvi.IsExpanded = true;   // fonctionne aussi (1 niveau seulement ?)
+                //                selectedItem.Expanded = true;
+
+
+
             }
         }
 

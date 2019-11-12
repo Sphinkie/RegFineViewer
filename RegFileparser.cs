@@ -10,7 +10,7 @@ namespace RegFineViewer
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree;
         // Dictionaire des nodes
-        private Dictionary<string, RegistryItem> nodeTable = new Dictionary<string, RegistryItem>();
+        private Dictionary<string, RegistryItem> nodepathTable = new Dictionary<string, RegistryItem>();
 
         // ------------------------------------------------------------------
         // Constructeur
@@ -19,8 +19,6 @@ namespace RegFineViewer
         {
             // On mémorise le registrytree
             RegistryTree = registrytree;
-            // On commence par vider la collection
-            RegistryTree.Clear();
         }
 
         // ------------------------------------------------------------------
@@ -30,13 +28,17 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         public void ParseFile(string fileName)
         {
+            // On commence par vider la collection et le dictionnaire
+            RegistryTree.Clear();
+            nodepathTable.Clear();
+            // Vérification
             if (!fileName.EndsWith(".reg"))
             {
                 RegistryItem WrongNode = new RegistryItem("Not a REG file", "node");
                 RegistryTree.Add(WrongNode);
                 return;
             }
-            // On lit le fichier et on met tout dans une très longue string
+            // On lit le fichier et on met tout dans une très longue string.
             // fileName = "E:\\source\\repos\\RegFineViewer\\_example1.reg";
             StreamReader streamFile = new StreamReader(File.Open(fileName, FileMode.OpenOrCreate));
             string fichier = streamFile.ReadToEnd();
@@ -44,6 +46,14 @@ namespace RegFineViewer
 
             // On decoupe le fichier en un tableau de lignes
             string[] lignes = fichier.Split('\r', '\n');
+
+            // Vérification
+            if (lignes.Length > 50000)
+            {
+                RegistryItem WrongNode = new RegistryItem("The file contains too many lines (max 10.000).", "node");
+                RegistryTree.Add(WrongNode);
+                return;
+            }
 
             // On crée un Node Racine
             RegistryItem currentNode = new RegistryItem("root", "node");
@@ -58,7 +68,7 @@ namespace RegFineViewer
                 if (ligne.StartsWith("Windows Registry Editor"))
                 { }
                 // On ignore les lignes vides
-                else if (ligne == "")
+                else if (ligne.Equals(""))
                 { }
                 // Lignes de type [path\to\node]
                 else if (ligne.StartsWith("[") && ligne.EndsWith("]"))
@@ -69,10 +79,14 @@ namespace RegFineViewer
                     // Le node racine du treeView est le parent du premier node du fichier REG
                     if (firstNode)
                     {
-                        // Pour ce node racine, son nom est le chemin complet du parent
-                        currentNode.Name = parentPath;
+                        if (parentPath != "")
+                            // Pour ce node racine, son nom est le chemin complet du parent
+                            currentNode.Name = parentPath;
+                        else
+                            // sauf si le nom du parent est vide...
+                            currentNode.Name = nodePath;
                         // On met le node Racine dans le dictionnaire
-                        AddToNodeTable(currentNode, parentPath);
+                        AddToNodeTable(currentNode, currentNode.Name);
                         firstNode = false;
                     }
                     // on cree un nouveau node
@@ -82,12 +96,16 @@ namespace RegFineViewer
                 }
                 // Lignes du type: "ErrorLogSizeInKb" = dword:000186A0
                 // Lignes du type: "Application" = ""
-                else if (currentNode != null)
+                else if (ligne.StartsWith("\""))
                 {
-                    RegistryItem newKey = CreateRegistryKey(ligne);
-                    currentNode.AddSubItem(newKey);
+                    // Si on n'a pas de node courant, on passe. Ca ne devrait pas arriver.
+                    if (currentNode != null)
+                    {
+                        RegistryItem newKey = CreateRegistryKey(ligne);
+                        currentNode.AddSubItem(newKey);
+                    }
                 }
-                // si CurrentNode est null
+                // Autres cas
                 else
                 { }
             }
@@ -126,8 +144,8 @@ namespace RegFineViewer
         private void AddToNodeTable(RegistryItem node, string nodepath)
         {
             nodepath = nodepath.ToUpper();
-            if (!nodeTable.ContainsKey(nodepath))
-                nodeTable[nodepath] = node;
+            if (!nodepathTable.ContainsKey(nodepath))
+                nodepathTable[nodepath] = node;
         }
 
         // ------------------------------------------------------------------
@@ -136,8 +154,8 @@ namespace RegFineViewer
         private RegistryItem GetFromNodeTable(string nodepath)
         {
             nodepath = nodepath.ToUpper();
-            if (nodeTable.ContainsKey(nodepath))
-                return nodeTable[nodepath];
+            if (nodepathTable.ContainsKey(nodepath))
+                return nodepathTable[nodepath];
             else
                 return null;
         }
@@ -182,28 +200,41 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         private RegistryItem CreateRegistryKey(string keyNameTypeValue)
         {
-            string[] splittedString = keyNameTypeValue.Split('"');
-            string keyName  = splittedString[1];
+            string[] separator = { "\"" }; // tableau des séparateur. on n'a besoin que d'un seul.
+            string[] splittedString = keyNameTypeValue.Split(separator, 2, StringSplitOptions.RemoveEmptyEntries);
+            string keyName = splittedString[0];
             string keyDType = string.Empty;
             string keyValue = string.Empty;
-            // le rest east alors soit ="string", soit  =type:valeur
-            string reste = splittedString[2].Trim('=');
+            // le reste est alors soit ="string", soit  =type:valeur
+            string reste = splittedString[1].Trim('=');
             if (reste.StartsWith("\"") && reste.EndsWith("\""))
             {
                 // Ex: "valeur"
                 keyDType = "SZ";
                 keyValue = reste.Trim('"'); ;
             }
-            if (reste.IndexOf(':')>0)
+            else
             {
-                // Ex: dword:000186A0
-                string[] Type_Value = reste.Split(':');
-                keyDType = Type_Value[0];
-                string hexValue = "0x"+Type_Value[1];            // hexa 
-                int    intValue = Convert.ToInt32(hexValue, 16); // converti en decimal
-                keyValue = Convert.ToString(intValue);           // converti en string
-
+                int typeSeparatorPos = reste.IndexOf(':');
+                if (typeSeparatorPos > 0)
+                {
+                    keyDType = reste.Substring(0, typeSeparatorPos);
+                    string keyRawValue = reste.Substring(typeSeparatorPos + 1);
+                    if (keyDType.Equals("dword"))
+                    {
+                        // Ex: dword:000186A0
+                        string hexValue = "0x" + keyRawValue;            // hexa 
+                        UInt32 intValue = Convert.ToUInt32(hexValue, 16); // converti en decimal
+                        keyValue = Convert.ToString(intValue);           // converti en string
+                    }
+                    else if (keyDType.StartsWith("hex"))
+                        keyValue = "HEXA VALUE";
+                    else
+                        keyValue = "unrecognized type";
+                }
             }
+            // keyNameTypeValue    "\"Passwords\"=hex:0f,be,5a,8d,69,cc,21,0b,67,38,d5,88,27,61,47,9a,24,bc,72,e9,75,\\"   string
+
             keyDType = "REG_" + keyDType.ToUpper();
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
             newKey.Value = keyValue;

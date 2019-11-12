@@ -47,10 +47,10 @@
             <!--Toolbar-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                    <Button ToolTip="Collapse" Click="Tree1_Collapse_bt">
+                    <Button ToolTip="1" Click="">
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
-                    <Button ToolTip="Expand" Click="Tree1_Expand_bt">
+                    <Button ToolTip="2" Click="">
                         <materialDesign:PackIcon Kind="ExpandMore"/>
                     </Button>
                 </ToolBar>
@@ -174,10 +174,10 @@
             <!-- Toolbar -->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                    <Button ToolTip="Collapse" Click="Tree2_Collapse_bt">
+                    <Button ToolTip="1" Click="">
                         <materialDesign:PackIcon Kind="ExpandLess" />
                     </Button>
-                    <Button ToolTip="Expand" Click="Tree2_Expand_bt">
+                    <Button ToolTip="2" Click="">
                         <materialDesign:PackIcon Kind="ExpandMore" />
                     </Button>
                 </ToolBar>
@@ -214,6 +214,7 @@
                     <HierarchicalDataTemplate
                         DataType="{x:Type local:RegistryItem}"
                         ItemsSource="{Binding Path=SubItem}">
+                        
                         <!-- Affichage des données du Node -->
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="{Binding Path=Name}" Width="260"/>
@@ -223,6 +224,7 @@
 
                 </TreeView.Resources>
             </TreeView>
+            
             <!--BOUTON + -->
             <materialDesign:PopupBox Grid.Column="2" Grid.Row="3"
                 Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
