@@ -162,62 +162,6 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Bouton EXPAND (de la toolbar)
-        // -------------------------------------------------------------------------
-        private void Tree1_Expand_bt(object sender, RoutedEventArgs e)
-        {
-            {
-                object selectedNode = TreeView1.SelectedItem;
-                if (selectedNode != null)
-                {
-                    // string tt = selectedNode.ToString(); // selectedItem / SelectedValue :	renvoient	tt="RegFineViewer.RegistryNode"
-                    TreeViewItem tvi = TreeView1.ItemContainerGenerator.ContainerFromItem(selectedNode) as TreeViewItem;
-                    tvi.ExpandSubtree();
-                    // tvi.IsExpanded = true;   // fonctionne aussi (1 niveau ?)
-                }
-            }
-
-        }
-        private void Tree2_Expand_bt(object sender, RoutedEventArgs e)
-        {
-            RegistryItem selectedItem = TreeView2.SelectedItem as RegistryItem;
-            if (selectedItem != null)
-            {
-                int index = 5;
-                string A = TreeView2.SelectedValuePath;
-                object B = TreeView2.SelectedValue;
-                // selectedNode.IsExpanded = true;
-                // string tt = selectedNode.ToString(); // selectedItem / SelectedValue :	renvoient	tt="RegFineViewer.RegistryNode"
-                TreeViewItem tvi = TreeView2.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
-                 TreeView2.ItemContainerGenerator.IndexFromContainer(selectedItem);                // ContainerFromItem(selectedItem) as TreeViewItem;
-                // tvi.ExpandSubtree();
-                // ContainerFromItem ne va renvoyer que les items qui appartiiennet à la collection (1er niveau)
-                // tvi.IsExpanded = true;   // fonctionne aussi (1 niveau seulement ?)
-                //                selectedItem.Expanded = true;
-
-
-
-            }
-        }
-
-        // -------------------------------------------------------------------------
-        // Bouton COLLAPSE (de la toolbar)
-        // -------------------------------------------------------------------------
-        private void Tree1_Collapse_bt(object sender, RoutedEventArgs e)
-        {
-            FillRegistryTree();
-        }
-        private void Tree2_Collapse_bt(object sender, RoutedEventArgs e)
-        {
-            object selectedNode = TreeView2.SelectedItem;
-            if (selectedNode != null)
-            {
-                TreeViewItem tvi = TreeView2.ItemContainerGenerator.ContainerFromItem(selectedNode) as TreeViewItem;
-                tvi.IsExpanded = false;
-            }
-        }
-
-        // -------------------------------------------------------------------------
         // Bouton CLOSE (de la chip)
         // -------------------------------------------------------------------------
         private void Tree1_CloseFile_bt(object sender, RoutedEventArgs e)
