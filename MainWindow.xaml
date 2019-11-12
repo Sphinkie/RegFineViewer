@@ -14,15 +14,11 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:RegFineViewer">
-
+    <!--On définit quelques styles généraux-->
     <Window.Resources>
         <Style TargetType="materialDesign:Chip" >
             <Setter Property="Margin" Value="16,0,0,0"/>
         </Style>
-        <!--<Style TargetType="TreeView" >
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="MaxHeight" Value="320"/>
-        </Style>-->
     </Window.Resources>
     
     <DockPanel>
@@ -47,10 +43,10 @@
             <!--Toolbar-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                    <Button ToolTip="1" Click="">
+                    <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
-                    <Button ToolTip="2" Click="">
+                    <Button ToolTip="2" Click="FillRegistryTree">
                         <materialDesign:PackIcon Kind="ExpandMore"/>
                     </Button>
                 </ToolBar>
@@ -74,7 +70,7 @@
                         ItemsSource="{Binding Path=SubItem}">
                         <!-- Affichage des données du Node -->
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Name}" Width="260"/>
+                            <TextBlock Name="t1"  Text="{Binding Path=Name}" Width="260" ToolTip="{Binding ElementName=t1, Path=FontFamily}"/>
                             <TextBlock Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
                         </StackPanel>
                     </HierarchicalDataTemplate>
@@ -174,10 +170,10 @@
             <!-- Toolbar -->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                    <Button ToolTip="1" Click="">
+                    <Button ToolTip="1" >
                         <materialDesign:PackIcon Kind="ExpandLess" />
                     </Button>
-                    <Button ToolTip="2" Click="">
+                    <Button ToolTip="2" >
                         <materialDesign:PackIcon Kind="ExpandMore" />
                     </Button>
                 </ToolBar>
@@ -193,33 +189,51 @@
             </materialDesign:Chip>
 
             <!-- TREE VIEW avec Binding -->
-
-            <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2" 
-                      AllowDrop="True" Drop="Tree2_drop"
+            <!--<materialDesign:TreeViewAssist.AdditionalTemplate>
+                <HierarchicalDataTemplate>
+                    
+                </HierarchicalDataTemplate>
+            </materialDesign:TreeViewAssist.AdditionalTemplate>-->
+    
+    
+    
+            <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0"
+                      AllowDrop="True" Drop="Tree2_drop" 
                       SelectedItemChanged="Tree2_SelectedItemChanged">
 
                 <TreeView.Resources>
-                    <!-- Dans Resources, on definit le style des enfants -->
-                    <Style x:Key="TreeViewItemStyle1"  TargetType="TreeViewItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=RegistryItem, Path=DType}"  Value="node">
-                                <Setter Property="FontWeight" Value="Bold" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                        <Setter Property="Foreground" Value="Navy"/>
-                        <Setter Property="FontStyle" Value="Italic"/>
-                        <Setter Property="Foreground" Value="Green"/>
+
+
+                    <!-- Dans Resources, on definit le style des enfants  x:Key="myStyle1"  -->
+                    <!-- STYLE DES KEYS (style par défaut) --> 
+                    <!--<Style TargetType="TextBlock" >-->
+                    <Style  TargetType="TreeViewItem" >
+                        <!--<Setter Property="FontStyle" Value="Italic"/>-->
+                        <!--<Setter Property="FontSize" Value="13" />-->
+                        <Setter Property="BorderBrush"  Value="Red"/>
                     </Style>
 
-                    <HierarchicalDataTemplate
+                    <HierarchicalDataTemplate  
                         DataType="{x:Type local:RegistryItem}"
                         ItemsSource="{Binding Path=SubItem}">
-                        
+                            
                         <!-- Affichage des données du Node -->
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock Text="{Binding Path=Name}" Width="260"/>
-                            <TextBlock Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
+                        <StackPanel Orientation="Horizontal" MinHeight="0"   >
+                            <TextBlock x:Name="lbName"  Text="{Binding Path=Name}"  Width="260"  ToolTip="{Binding ElementName=lbName, Path=MinHeight}" />
+                            <TextBlock x:Name="lbValue" Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" />
                         </StackPanel>
+
+                        <!-- On change certaines propriétés selon le type de node -->
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding DType}" Value="node" >
+                                <Setter TargetName="lbName"  Property="Foreground" Value="Black" />
+                                <Setter TargetName="lbName"  Property="FontWeight" Value="Bold" />
+                                <Setter TargetName="lbName"  Property="Width" Value="400" />
+                                <Setter TargetName="lbName"  Property="Margin" Value="2" />
+                                <Setter TargetName="lbValue" Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
+
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>

@@ -24,10 +24,36 @@ namespace RegFineViewer
         // constructeur
         public RegistryItem(string name, string type)
         {
-            Name = name;
+            // Initialisations
+            Name  = name;
             DType = type;
             Value = string.Empty;
+            UserFriendlyUnit  = string.Empty;
+            UserFriendlyValue = string.Empty;
             SubItem = new ObservableCollection<RegistryItem>();
+        }
+        public void SetUnitToHex()
+        {
+            UserFriendlyUnit  = "hex";
+            Int32 intValue = Convert.ToInt32(Value);
+            UserFriendlyValue = intValue.ToString("X");
+        }
+        public void SetUnitToSec()
+        {
+            UserFriendlyUnit = "seconds";
+            double intValue = Convert.ToInt32(Value);
+            TimeSpan time  = TimeSpan.FromSeconds(intValue);
+            // Backslash is just to tell that : is not the part of format, 
+            // but a character that we want in output
+            UserFriendlyValue = time.ToString(@"hh\:mm\:ss");
+        }
+        public void SetUnitToFrames()
+        {
+            UserFriendlyUnit = "frames";
+            double intValue = Convert.ToInt32(Value);
+            intValue = intValue * 0.040;
+            TimeSpan time = TimeSpan.FromSeconds(intValue);
+            UserFriendlyValue = time.ToString(@"hh\:mm\:ss\:ff");
         }
         // Ajout d'un sous-item (key ou Node)
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
@@ -36,7 +62,8 @@ namespace RegFineViewer
         public string DType { get; }
         public string Value { get; set; }
         public ObservableCollection<RegistryItem> SubItem { get; }
-        public bool Expanded { get; set; }
+        public string UserFriendlyUnit { get; set; }
+        public string UserFriendlyValue { get; set; }
     }
 
     //
@@ -62,9 +89,9 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Pour les tests ce bouton remplit RegistryTree
+        // Pour les tests, ce bouton remplit le RegistryTree2
         // -------------------------------------------------------------------------
-        private void FillRegistryTree()
+        private void FillRegistryTree(object sender, RoutedEventArgs e)
         {
             RegistryItem K1 = new RegistryItem("clef 1", "dword");
             RegistryItem K2 = new RegistryItem("clef 2", "dword");
@@ -95,7 +122,6 @@ namespace RegFineViewer
             N4.AddSubItem(K6);
             N2.AddSubItem(N4);
         }
-
 
         // -------------------------------------------------------------------------
         // Drop d'un (ou plusieurs) fichier(s) dans une TreeView
@@ -175,6 +201,9 @@ namespace RegFineViewer
             RegistryTree2.Clear();
         }
 
+        // -------------------------------------------------------------------------
+        // Selection
+        // -------------------------------------------------------------------------
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
 
