@@ -19,6 +19,9 @@ namespace RegFineViewer
         {
             // On mémorise le registrytree
             RegistryTree = registrytree;
+            NbKeys = 0;
+            NbLevels = 0;
+            NbNodes = 0;
         }
 
         // ------------------------------------------------------------------
@@ -31,6 +34,10 @@ namespace RegFineViewer
             // On commence par vider la collection et le dictionnaire
             RegistryTree.Clear();
             nodepathTable.Clear();
+            NbKeys = 0;
+            NbLevels = 0;
+            NbNodes = 0;
+
             // Vérification
             if (!fileName.EndsWith(".reg"))
             {
@@ -59,6 +66,8 @@ namespace RegFineViewer
             RegistryItem currentNode = new RegistryItem("root", "node");
             RegistryTree.Add(currentNode);
             bool firstNode = true;
+            NbLevels = 1;
+            NbNodes = 1;
 
             // On parcourt le tableau des lignes du fichier
             for (int i = 0; i < lignes.Length; i++)
@@ -136,6 +145,7 @@ namespace RegFineViewer
                 string greatParentPath = GetParentPath(parentpath);
                 AttachToParentNode(parentNode, greatParentPath);
             }
+            if (parentNode.SubItem.Count == 1) NbLevels++;
         }
 
         // ------------------------------------------------------------------
@@ -190,6 +200,7 @@ namespace RegFineViewer
             string nodeName = GetNodeNameFromPath(nodepath);
             RegistryItem NewNode = new RegistryItem(nodeName, "node");
             AddToNodeTable(NewNode, nodepath);
+            NbNodes++;
             return NewNode;
         }
 
@@ -238,9 +249,12 @@ namespace RegFineViewer
             keyDType = "REG_" + keyDType.ToUpper();
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
             newKey.Value = keyValue;
+            NbKeys++;
             return newKey;
         }
 
-
+        public int NbKeys   { get; private set; }
+        public int NbNodes  { get; private set; }
+        public int NbLevels { get; private set; }
     }
 }

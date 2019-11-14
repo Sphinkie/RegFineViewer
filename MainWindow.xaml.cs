@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;       // ObservableCollections
 using System.Collections;                   // Hashtables
 
+
 namespace RegFineViewer
 {
 
@@ -20,16 +21,16 @@ namespace RegFineViewer
         public RegistryItem(string name, string type)
         {
             // Initialisations
-            Name  = name;
+            Name = name;
             DType = type;
             Value = string.Empty;
-            UserFriendlyUnit  = string.Empty;
+            UserFriendlyUnit = string.Empty;
             UserFriendlyValue = string.Empty;
             SubItem = new ObservableCollection<RegistryItem>();
         }
         public void SetUnitToHex()
         {
-            UserFriendlyUnit  = "hex";
+            UserFriendlyUnit = "hex";
             Int32 intValue = Convert.ToInt32(Value);
             UserFriendlyValue = intValue.ToString("X");
         }
@@ -37,7 +38,7 @@ namespace RegFineViewer
         {
             UserFriendlyUnit = "seconds";
             double intValue = Convert.ToInt32(Value);
-            TimeSpan time  = TimeSpan.FromSeconds(intValue);
+            TimeSpan time = TimeSpan.FromSeconds(intValue);
             // Backslash is just to tell that : is not the part of format, 
             // but a character that we want in output
             UserFriendlyValue = time.ToString(@"hh\:mm\:ss");
@@ -73,6 +74,8 @@ namespace RegFineViewer
         public MainWindow()
         {
             InitializeComponent();
+            // Cette instruction permet de rendre les classes visibles depuis le XAML
+            DataContext = this;
             // On initialise les parseurs
             Parser1 = new RegFileParser(RegistryTree1);
             Parser2 = new RegFileParser(RegistryTree2);
@@ -206,6 +209,52 @@ namespace RegFineViewer
         private void Tree2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
 
+        }
+
+        private void bTray2Button1_Click(object sender, RoutedEventArgs e)
+        {
+            tbStatLevels.Text = Parser2.NbLevels.ToString();
+            tbStatNodes.Text = Parser2.NbNodes.ToString();
+            tbStatKeys.Text = Parser2.NbKeys.ToString();
+            CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
+        }
+
+        private void bTray1Button1_Click(object sender, RoutedEventArgs e)
+        {
+            tbStatLevels.Text = Parser1.NbLevels.ToString();
+            tbStatNodes.Text = Parser1.NbNodes.ToString();
+            tbStatKeys.Text = Parser1.NbKeys.ToString();
+            CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
+        }
+
+        private void CardTreeInfo_Close(object sender, RoutedEventArgs e)
+        {
+            CardTreeInfo.IsOpen = false;
+        }
+
+        private void bTray2Button2_Click(object sender, RoutedEventArgs e)
+        {
+            CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
+        }
+
+        private void bTray1Button2_Click(object sender, RoutedEventArgs e)
+        {
+            tbAvLength.Text   = "100";
+            nbAvLength.Text   = "(100)";
+            tbModelength.Text = "200";
+            nbModelength.Text = "(200)";
+            tbSD.Text   = "300";
+            nbSD.Text   = "(300)";
+            tbSD84.Text = "400";
+            nbSD84.Text = "(400)";
+            tbSD98.Text = "400";
+            nbSD98.Text = "(400)";
+            CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
+        }
+
+        private void CardlengthStats_Close(object sender, RoutedEventArgs e)
+        {
+            CardlengthStats.IsOpen = false;
         }
     }
 }
