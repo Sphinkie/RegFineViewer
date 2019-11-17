@@ -211,6 +211,9 @@ namespace RegFineViewer
 
         }
 
+        // -------------------------------------------------------------------------
+        // Bouton du Tray
+        // -------------------------------------------------------------------------
         private void bTray2Button1_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser2.NbLevels.ToString();
@@ -218,7 +221,6 @@ namespace RegFineViewer
             tbStatKeys.Text = Parser2.NbKeys.ToString();
             CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
         }
-
         private void bTray1Button1_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();
@@ -227,34 +229,49 @@ namespace RegFineViewer
             CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
         }
 
-        private void CardTreeInfo_Close(object sender, RoutedEventArgs e)
-        {
-            CardTreeInfo.IsOpen = false;
-        }
-
         private void bTray2Button2_Click(object sender, RoutedEventArgs e)
         {
+            RefreshLengthStats(Parser2);
+            // Affiche ou masque le popup
+            CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
+        }
+        private void bTray1Button2_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshLengthStats(Parser1);
+            // Affiche ou masque le popup
             CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
         }
 
-        private void bTray1Button2_Click(object sender, RoutedEventArgs e)
+        private void RefreshLengthStats(RegFileParser Parser)
         {
-            tbAvLength.Text   = "100";
-            nbAvLength.Text   = "(100)";
-            tbModelength.Text = "200";
-            nbModelength.Text = "(200)";
-            tbSD.Text   = "300";
-            nbSD.Text   = "(300)";
-            tbSD84.Text = "400";
-            nbSD84.Text = "(400)";
-            tbSD98.Text = "400";
-            nbSD98.Text = "(400)";
-            CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
+            Int32 Moyenne = Parser.GetAverageLength();  // A calculer en premier
+            Int32 ModalLength = Parser.ModalLabelLength;
+            Int32 EcartType = Parser.GetStandardDeviation();
+            Int32 Nombre = Parser.NbNodes + Parser.NbKeys;
+            // Les stats disent que 84% de la population se trouve entre 0 et Moy + EcType
+            Int32 SD84 = Moyenne + EcartType;
+            // Les stats disent que 98% de la population se trouve entre 0 et Moy + 2 x EcType
+            Int32 SD98 = Moyenne + 2 * EcartType;
+            nbItems.Text = Nombre.ToString();
+            tbAvLength.Text = Moyenne.ToString() + " chars";
+            nbAvLength.Text = Parser.GetNbOfItemsLengthEqualsTo(Moyenne).ToString();
+            tbModelength.Text = ModalLength.ToString() + " chars";
+            nbModelength.Text = Parser.GetNbOfItemsLengthEqualsTo(ModalLength).ToString();
+            tbSD.Text = EcartType.ToString() + " chars";
+            tbSD84.Text = SD84.ToString() + " chars";
+            nbSD84.Text = Parser.GetNbOfItemsLengthLowerThan(SD84).ToString();
+            tbSD98.Text = SD98.ToString() + " chars";
+            nbSD98.Text = Parser.GetNbOfItemsLengthLowerThan(SD98).ToString();
         }
 
         private void CardlengthStats_Close(object sender, RoutedEventArgs e)
         {
             CardlengthStats.IsOpen = false;
         }
+        private void CardTreeInfo_Close(object sender, RoutedEventArgs e)
+        {
+            CardTreeInfo.IsOpen = false;
+        }
+
     }
 }

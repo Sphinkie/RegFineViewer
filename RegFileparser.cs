@@ -11,6 +11,8 @@ namespace RegFineViewer
         private ObservableCollection<RegistryItem> RegistryTree;
         // Dictionaire des nodes
         private Dictionary<string, RegistryItem> nodepathTable = new Dictionary<string, RegistryItem>();
+        // Tableau de statistiques
+        private int[] TableStats = new int[100];
 
         // ------------------------------------------------------------------
         // Constructeur
@@ -19,9 +21,13 @@ namespace RegFineViewer
         {
             // On mémorise le registrytree
             RegistryTree = registrytree;
-            NbKeys = 0;
+            // On initialise les variables
+            Array.Clear(TableStats, 0, TableStats.Length);
+            AverageLabelLengh = 0;
+            ModalLabelLength = 0;
             NbLevels = 0;
             NbNodes = 0;
+            NbKeys = 0;
         }
 
         // ------------------------------------------------------------------
@@ -34,9 +40,12 @@ namespace RegFineViewer
             // On commence par vider la collection et le dictionnaire
             RegistryTree.Clear();
             nodepathTable.Clear();
-            NbKeys = 0;
+            AverageLabelLengh = 0;
+            ModalLabelLength = 0;
             NbLevels = 0;
             NbNodes = 0;
+            NbKeys = 0;
+            Array.Clear(TableStats, 0, TableStats.Length);
 
             // Vérification
             if (!fileName.EndsWith(".reg"))
@@ -201,6 +210,7 @@ namespace RegFineViewer
             RegistryItem NewNode = new RegistryItem(nodeName, "node");
             AddToNodeTable(NewNode, nodepath);
             NbNodes++;
+            TableStats[nodeName.Length] += 1;
             return NewNode;
         }
 
@@ -250,11 +260,99 @@ namespace RegFineViewer
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
             newKey.Value = keyValue;
             NbKeys++;
+            TableStats[keyName.Length] += 1;
             return newKey;
         }
 
-        public int NbKeys   { get; private set; }
-        public int NbNodes  { get; private set; }
+        // ------------------------------------------------------------------
+        // Calcule la moyenne de toutes les longueurs enregistrées dans la tableau
+        // ------------------------------------------------------------------
+        public Int32 GetAverageLength()
+        {
+            int mode = 0;
+            int cumul = 0;    // cumul de toutes les longueurs
+            int nombre = 0;
+            AverageLabelLengh = 0;
+            ModalLabelLength = 0;
+
+            for (int lg = 0; lg < TableStats.Length; lg++)
+            {
+                int nbLg = TableStats[lg];
+                // Cumul des tailles (pour calcul de moyenne)
+                cumul += lg * nbLg;
+                // Décompte des éléments
+                nombre += nbLg;
+                // Détermination du max (=mode)
+                if ((nbLg > mode) && (lg>1))
+                {
+                    // On a trouvé un nouveau Mode
+                    mode = nbLg;
+                    ModalLabelLength = lg;
+                }
+            }
+            if (nombre != 0) AverageLabelLengh = (cumul / nombre);
+            return AverageLabelLengh;
+        }
+
+        // ------------------------------------------------------------------
+        // Calcule l'ecart type: sqr(ariance)
+        // variance = 1/n * (somme (x²) - moy²)
+        // ------------------------------------------------------------------
+        public Int32 GetStandardDeviation()
+        {
+            double Variance = 0;
+            double EcartType = 0;
+            int nombre = 0;
+            // somme des carrés 
+            double SommeDesCarres = 0;
+            for (int lg = 0; lg < TableStats.Length; lg++)
+            {
+                SommeDesCarres += Math.Pow(lg, 2) * TableStats[lg];
+                nombre += TableStats[lg];
+            }
+            if (nombre != 0)
+            {
+                Variance = SommeDesCarres - Math.Pow(AverageLabelLengh, 2);
+                Variance = Variance / nombre;
+                EcartType = Math.Sqrt(Variance);
+            }
+            return Convert.ToInt32(EcartType);
+        }
+
+        // ------------------------------------------------------------------
+        // Retourne le nombre de keys dont le label a cette longueur
+        // ------------------------------------------------------------------
+        public Int32 GetNbOfItemsLengthEqualsTo(int length)
+        {
+            if (length < TableStats.Length)
+                return TableStats[length];
+            else
+                return 0;
+        }
+
+        // ------------------------------------------------------------------
+        // Retourne le nombre de keys dont le label a un longueur plus petite
+        // ------------------------------------------------------------------
+        public Int32 GetNbOfItemsLengthLowerThan(int length)
+        {
+            Int32 Nombre = 0;
+            if (length < TableStats.Length)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    Nombre += TableStats[i];
+                }
+            }
+            return Nombre;
+        }
+
+        // ------------------------------------------------------------------
+        // Propriétés
+        // ------------------------------------------------------------------
+        public int AverageLabelLengh { get; private set; }
+        public int ModalLabelLength { get; private set; }
+        public int NbKeys { get; private set; }
+        public int NbNodes { get; private set; }
         public int NbLevels { get; private set; }
     }
 }

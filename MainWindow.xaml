@@ -15,7 +15,6 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:RegFineViewer"
         >
-    <!--xmlns:uc="clr-namespace:RegFineViewer.UserControl1"-->
 
     <!--On définit quelques styles généraux-->
     <Window.Resources>
@@ -77,18 +76,22 @@
 
                         <!-- Affichage des données du Node -->
                         <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-                            <TextBlock Name="lbName"  Text="{Binding Path=Name}"  Width="260" ToolTip="{Binding ElementName=t1, Path=FontFamily}"/>
-                            <TextBlock Name="lbValue" Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
+                            <TextBlock x:Name="lbName"  Text="{Binding Path=Name}"  Width="260" ToolTip="{Binding ElementName=t1, Path=FontFamily}"/>
+                            <TextBlock x:Name="lbValue" Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
+                            <TextBlock x:Name="lbUfUnit"  Text="{Binding Path=UserFriendlyUnit}"  />
+                            <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" />
                         </StackPanel>
 
                         <!-- On change certaines propriétés des nodes -->
                         <HierarchicalDataTemplate.Triggers>
                             <DataTrigger Binding="{Binding DType}" Value="node" >
-                                <Setter TargetName="lbName"  Property="Foreground" Value="Black" />
-                                <Setter TargetName="lbName"  Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="lbName"  Property="Width"      Value="400" />
-                                <Setter TargetName="lbName"  Property="Margin"     Value="2" />
-                                <Setter TargetName="lbValue" Property="Visibility" Value="Hidden" />
+                                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
+                                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
+                                <Setter TargetName="lbName"    Property="Width"      Value="400" />
+                                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
+                                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
+                                <Setter TargetName="lbUfUnit"  Property="Visibility" Value="Hidden" />
+                                <Setter TargetName="lbUfValue" Property="Visibility" Value="Hidden" />
                             </DataTrigger>
                         </HierarchicalDataTemplate.Triggers>
 
@@ -232,18 +235,22 @@
 
                         <!-- Affichage des données du Node -->
                         <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-                            <TextBlock x:Name="lbName"  Text="{Binding Path=Name}"  Width="260"  />
-                            <TextBlock x:Name="lbValue" Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" />
+                            <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name, Delay=3}" />
+                            <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" />
+                            <!--<Button x:Name="lbUfUnit"   Content="{Binding Path=UserFriendlyUnit}" Command="btUnit_Click" />-->
+                            <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" />
                         </StackPanel>
 
                         <!-- On change certaines propriétés des nodes -->
                         <HierarchicalDataTemplate.Triggers>
                             <DataTrigger Binding="{Binding DType}" Value="node" >
-                                <Setter TargetName="lbName"  Property="Foreground" Value="Black" />
-                                <Setter TargetName="lbName"  Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="lbName"  Property="Width"      Value="400" />
-                                <Setter TargetName="lbName"  Property="Margin"     Value="2" />
-                                <Setter TargetName="lbValue" Property="Visibility" Value="Hidden" />
+                                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
+                                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
+                                <Setter TargetName="lbName"    Property="Width"      Value="400" />
+                                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
+                                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
+                                <!--<Setter TargetName="lbUfUnit"  Property="Visibility" Value="Hidden" />-->
+                                <Setter TargetName="lbUfValue" Property="Visibility" Value="Hidden" />
                             </DataTrigger>
                         </HierarchicalDataTemplate.Triggers>
 
@@ -395,6 +402,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -416,22 +424,24 @@
                         Length stats
                         </TextBlock>
                         <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Average length" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Name="tbAvLength" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="3" Grid.Column="2" Name="nbAvLength" Margin="12,0,12,0" />
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Mode length"  Margin="12,2,0,0"/>
-                        <TextBlock Grid.Row="4" Grid.Column="1" Name="tbModelength" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="4" Grid.Column="2" Name="nbModelength" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Standard Deviation" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="5" Grid.Column="1" Name="tbSD" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="5" Grid.Column="2" Name="nbSD" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Inf Av+SD (84%)" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="6" Grid.Column="1" Name="tbSD84" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="6" Grid.Column="2" Name="nbSD84" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Inf Av+2*SD (98%)" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="7" Grid.Column="1" Name="tbSD98" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="7" Grid.Column="2" Name="nbSD98" Margin="12,0,0,0"/>
-                        <Button Grid.Row="8"  Grid.Column="2" 
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Number of labels" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="(total)" />
+                        <TextBlock Grid.Row="3" Grid.Column="2" Name="nbItems" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Average length" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Name="tbAvLength" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="2" Name="nbAvLength" Margin="12,0,12,0" />
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Modal length"  Margin="12,2,0,0"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Name="tbModelength" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="5" Grid.Column="2" Name="nbModelength" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Standard Deviation" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" Name="tbSD" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Inf Av+SD (84%)" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="7" Grid.Column="1" Name="tbSD84" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="7" Grid.Column="2" Name="nbSD84" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Inf Av+2*SD (98%)" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="8" Grid.Column="1" Name="tbSD98" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="8" Grid.Column="2" Name="nbSD98" Margin="12,0,0,0"/>
+                        <Button Grid.Row="9"  Grid.Column="2" 
                                 HorizontalAlignment="Right" Width="30"
                                 Style="{StaticResource MaterialDesignToolForegroundButton}"
                                 Click="CardlengthStats_Close"

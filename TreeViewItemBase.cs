@@ -11,7 +11,7 @@ namespace RegFineViewer
     // Cette classe de base provient du tutoriel WPF-TUTORIAL;COM
     // Les objets qui heritent de cette classe de base bénéficie de deux propriétés:
     // isSelected et isExpanded
-    // qui permettent de d'accéder à ces attributs de la TreeView depsui le code-bihind
+    // qui permettent de d'accéder à ces attributs de la TreeView depuis le code-bihind
     // (Ce que le WPF ne permet pas de façon native)
     // ----------------------------------------------------------
     public class TreeViewItemBase : INotifyPropertyChanged
