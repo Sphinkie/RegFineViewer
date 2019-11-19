@@ -32,16 +32,14 @@ namespace RegFineViewer
         {
             UserFriendlyUnit = "hex";
             Int32 intValue = Convert.ToInt32(Value);
-            UserFriendlyValue = intValue.ToString("X");
+            UserFriendlyValue = "0x" + intValue.ToString("X");
         }
         public void SetUnitToSec()
         {
             UserFriendlyUnit = "seconds";
             double intValue = Convert.ToInt32(Value);
             TimeSpan time = TimeSpan.FromSeconds(intValue);
-            // Backslash is just to tell that : is not the part of format, 
-            // but a character that we want in output
-            UserFriendlyValue = time.ToString(@"hh\:mm\:ss");
+            UserFriendlyValue = time.ToString(); //  default format is: [-][d.]hh:mm:ss[.fffffff]
         }
         public void SetUnitToFrames()
         {
@@ -49,7 +47,16 @@ namespace RegFineViewer
             double intValue = Convert.ToInt32(Value);
             intValue = intValue * 0.040;
             TimeSpan time = TimeSpan.FromSeconds(intValue);
-            UserFriendlyValue = time.ToString(@"hh\:mm\:ss\:ff");
+            // Backslash is just to tell that : is not the part of format, but a character that we want in output.
+            string hh_mm_ss = time.ToString(@"hh\:mm\:ss");
+            string millisec = time.ToString("fff");
+            int frames = Convert.ToInt32(millisec) / 40;
+            UserFriendlyValue = hh_mm_ss + ":" + frames.ToString("D2");
+        }
+        public void SetUnitToNone()
+        {
+            UserFriendlyUnit = string.Empty;
+            UserFriendlyValue = string.Empty;
         }
         // Ajout d'un sous-item (key ou Node)
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
@@ -76,13 +83,15 @@ namespace RegFineViewer
             InitializeComponent();
             // Cette instruction permet de rendre les classes visibles depuis le XAML
             DataContext = this;
+            // On charge le dictionnaire des unités préférées
+            KeyUnitDictionnary UnitDictionnary = new KeyUnitDictionnary("Config.xml");
             // On initialise les parseurs
-            Parser1 = new RegFileParser(RegistryTree1);
-            Parser2 = new RegFileParser(RegistryTree2);
+            Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
+            Parser2 = new RegFileParser(RegistryTree2, UnitDictionnary);
             // On binde les RegistryTree avec les TreeView de l'affichage
             TreeView1.ItemsSource = RegistryTree1;
             TreeView2.ItemsSource = RegistryTree2;
-            // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas 
+            // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
         }
 

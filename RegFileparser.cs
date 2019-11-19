@@ -11,16 +11,19 @@ namespace RegFineViewer
         private ObservableCollection<RegistryItem> RegistryTree;
         // Dictionaire des nodes
         private Dictionary<string, RegistryItem> nodepathTable = new Dictionary<string, RegistryItem>();
+        // Dictionnaire des Prefered units
+        private KeyUnitDictionnary UnitDictionnary;
         // Tableau de statistiques
         private int[] TableStats = new int[100];
 
         // ------------------------------------------------------------------
         // Constructeur
         // ------------------------------------------------------------------
-        public RegFileParser(ObservableCollection<RegistryItem> registrytree)
+        public RegFileParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
         {
-            // On mémorise le registrytree
-            RegistryTree = registrytree;
+            // On mémorise le registrytree et le dictionnaire
+            RegistryTree    = registrytree;
+            UnitDictionnary = dictionnary;
             // On initialise les variables
             Array.Clear(TableStats, 0, TableStats.Length);
             AverageLabelLengh = 0;
@@ -119,7 +122,9 @@ namespace RegFineViewer
                     // Si on n'a pas de node courant, on passe. Ca ne devrait pas arriver.
                     if (currentNode != null)
                     {
+                        // On cree une Key
                         RegistryItem newKey = CreateRegistryKey(ligne);
+                        // On la rattache au Node courant
                         currentNode.AddSubItem(newKey);
                     }
                 }
@@ -230,7 +235,7 @@ namespace RegFineViewer
             string reste = splittedString[1].Trim('=');
             if (reste.StartsWith("\"") && reste.EndsWith("\""))
             {
-                // Ex: "valeur"
+                // Type String. Ex: "valeur"
                 keyDType = "SZ";
                 keyValue = reste.Trim('"'); ;
             }
@@ -244,21 +249,39 @@ namespace RegFineViewer
                     if (keyDType.Equals("dword"))
                     {
                         // Ex: dword:000186A0
-                        string hexValue = "0x" + keyRawValue;            // hexa 
-                        UInt32 intValue = Convert.ToUInt32(hexValue, 16); // converti en decimal
-                        keyValue = Convert.ToString(intValue);           // converti en string
+                        string hexValue = "0x" + keyRawValue;             // hexa 
+                        UInt32 intValue = Convert.ToUInt32(hexValue, 16); // on convertit en decimal
+                        keyValue = Convert.ToString(intValue);            // on convertit en string
                     }
                     else if (keyDType.StartsWith("hex"))
-                        keyValue = "HEXA VALUE";
+                        // Ex: hex:0f,be,5a,8d,69,cc,21,0b,67,38,d5,88,27,61,47,9a,24,bc,72,e9,75
+                        keyValue = "HEX VALUE";
                     else
                         keyValue = "unrecognized type";
                 }
             }
-            // keyNameTypeValue    "\"Passwords\"=hex:0f,be,5a,8d,69,cc,21,0b,67,38,d5,88,27,61,47,9a,24,bc,72,e9,75,\\"   string
 
             keyDType = "REG_" + keyDType.ToUpper();
+            // On cree la Key
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
             newKey.Value = keyValue;
+            // Si cette Key possède une unité préférée, on la prend en compte
+            switch (UnitDictionnary.GetValue(keyName))
+            {
+                case "seconds":
+                    newKey.SetUnitToSec();
+                    break;
+                case "hex":
+                    newKey.SetUnitToHex();
+                    break;
+                case "frames":
+                    newKey.SetUnitToFrames();
+                    break;
+                default:
+                    newKey.SetUnitToNone();
+                    break;
+            }
+            // On incrémente nos compteurs internes
             NbKeys++;
             TableStats[keyName.Length] += 1;
             return newKey;
