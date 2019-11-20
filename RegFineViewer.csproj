@@ -88,6 +88,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="KeyUnitDictionnary.cs" />
+    <Compile Include="RegistryItem.cs" />
     <Compile Include="TreeViewItemBase.cs" />
     <Compile Include="RegFileparser.cs" />
     <Compile Include="MainWindow.xaml.cs">

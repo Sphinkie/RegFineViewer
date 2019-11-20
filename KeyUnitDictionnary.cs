@@ -9,7 +9,7 @@ namespace RegFineViewer
 {
     class KeyUnitDictionnary
     {
-        private List<string> UnitList = new List<string> {"hex", "seconds", "frames" };
+        private List<string> UnitList = new List<string> { "hex", "seconds", "frames", "bool" };
         private Dictionary<string, string> UnitDictionnary = new Dictionary<string, string>();
 
         // ------------------------------------------------------------------
@@ -17,11 +17,10 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         public KeyUnitDictionnary(string filename)
         {
-            
-            try
+            try             // On essaye d'ouvrir le fichier de configuration
             {
                 XmlReader xmlReader = XmlReader.Create(filename);
-                try
+                try        // On essaye de lire le fichier de configuration
                 {
                     while (xmlReader.Read())
                     {
@@ -38,13 +37,13 @@ namespace RegFineViewer
                     }
                     xmlReader.Close();
                 }
-                catch (XmlException e)
+                catch (XmlException)
                 { // XML incorrect
-                    xmlReader.Close(); 
+                    xmlReader.Close();
                 }
             }
-            catch (FileNotFoundException e)
-            { 
+            catch (FileNotFoundException)
+            {
                 // Pas de fichier config: c'est pas grave
             }
         }

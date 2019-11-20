@@ -12,7 +12,7 @@ namespace RegFineViewer
         // Dictionaire des nodes
         private Dictionary<string, RegistryItem> nodepathTable = new Dictionary<string, RegistryItem>();
         // Dictionnaire des Prefered units
-        private KeyUnitDictionnary UnitDictionnary;
+        private KeyUnitDictionnary PreferedUnits;
         // Tableau de statistiques
         private int[] TableStats = new int[100];
 
@@ -22,8 +22,8 @@ namespace RegFineViewer
         public RegFileParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
         {
             // On mémorise le registrytree et le dictionnaire
-            RegistryTree    = registrytree;
-            UnitDictionnary = dictionnary;
+            RegistryTree  = registrytree;
+            PreferedUnits = dictionnary;
             // On initialise les variables
             Array.Clear(TableStats, 0, TableStats.Length);
             AverageLabelLengh = 0;
@@ -266,7 +266,7 @@ namespace RegFineViewer
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
             newKey.Value = keyValue;
             // Si cette Key possède une unité préférée, on la prend en compte
-            switch (UnitDictionnary.GetValue(keyName))
+            switch (PreferedUnits.GetValue(keyName))
             {
                 case "seconds":
                     newKey.SetUnitToSec();
@@ -276,6 +276,9 @@ namespace RegFineViewer
                     break;
                 case "frames":
                     newKey.SetUnitToFrames();
+                    break;
+                case "bool":
+                    newKey.SetUnitToBoolean();
                     break;
                 default:
                     newKey.SetUnitToNone();
