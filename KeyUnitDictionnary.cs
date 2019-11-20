@@ -78,7 +78,13 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         ~KeyUnitDictionnary()
         {
-            XmlWriter xmlWriter = XmlWriter.Create("Config_sample.xml");
+            // On definit le style du fichier de sortie
+            var settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            settings.Indent = true;
+
+            // On ecrit dans le fichier de sortie
+            XmlWriter xmlWriter = XmlWriter.Create("Config_sample.xml", settings);
 
             xmlWriter.WriteStartDocument();
 

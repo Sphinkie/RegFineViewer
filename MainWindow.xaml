@@ -246,7 +246,7 @@
                             <DataTrigger Binding="{Binding DType}" Value="node" >
                                 <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
                                 <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="lbName"    Property="Width"      Value="480" />
+                                <Setter TargetName="lbName"    Property="Width"      Value="640" />
                                 <Setter TargetName="lbName"    Property="Margin"     Value="2" />
                                 <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
                                 <!--<Setter TargetName="lbUfUnit"  Property="Visibility" Value="Hidden" />-->
