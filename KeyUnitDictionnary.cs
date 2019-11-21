@@ -65,13 +65,36 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
-        // Modifie ou Ajoute une nouvelle entrée au dictionnaire
+        // Modifie ou ajoute une nouvelle entrée au dictionnaire
         // ------------------------------------------------------------------
-        public void SetValue(string key, string value)
+        public void SetValue(string key, string unit)
         {
-            UnitDictionnary[key] = value;
+            // on vérifie que l'unité demandée fait partie de la liste autorisée
+
+            if (UnitList.Contains(unit))
+            {
+                if (UnitDictionnary.ContainsKey(key))
+                    UnitDictionnary[key] = unit;
+                else
+                    UnitDictionnary.Add(key, unit);
+            }
+            else    // l'unité demandé ne fait pas partie de la liste autorisée
+            {
+                if (UnitDictionnary.ContainsKey(key))
+                    UnitDictionnary.Remove(key);
+            }
         }
 
+        // ------------------------------------------------------------------
+        // Retourne l'unité suivante de la liste
+        // ------------------------------------------------------------------
+        public string GetNextUnit(string unit)
+        {
+            int Index = UnitList.IndexOf(unit);
+            int NewIndex = Index + 1;
+            if (NewIndex >= UnitList.Count()) NewIndex = 0;
+            return UnitList[NewIndex];
+        }
         // ------------------------------------------------------------------
         // Destructeur
         // ------------------------------------------------------------------
@@ -86,22 +109,21 @@ namespace RegFineViewer
             XmlWriter xmlWriter = XmlWriter.Create("Config_sample.xml", settings);
 
             xmlWriter.WriteStartDocument();
-
             xmlWriter.WriteStartElement("Root");
+
+            // On enregistre toutes les preferred units du dictionnaire
             xmlWriter.WriteStartElement("Units");
-
-            xmlWriter.WriteStartElement("Prefered");
-            xmlWriter.WriteAttributeString("unit", "seconds");
-            xmlWriter.WriteString("Verification");
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteStartElement("Prefered");
-            xmlWriter.WriteAttributeString("unit", "frames");
-            xmlWriter.WriteString("Preroll stop");
-            xmlWriter.WriteEndElement();
-
+            foreach (KeyValuePair<string, string> entry in UnitDictionnary)
+            {
+                // do something with entry.Value or entry.Key
+                xmlWriter.WriteStartElement("Prefered");
+                xmlWriter.WriteAttributeString("unit", entry.Value);
+                xmlWriter.WriteString(entry.Key);
+                xmlWriter.WriteEndElement();
+            }
             xmlWriter.WriteEndElement();    // Units
 
+            // On enregistre les elements ouverts les plus recents
             xmlWriter.WriteStartElement("Recents");
 
             xmlWriter.WriteStartElement("Recent");

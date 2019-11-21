@@ -268,11 +268,11 @@ namespace RegFineViewer
             // Si cette Key possède une unité préférée, on la prend en compte
             switch (PreferedUnits.GetValue(keyName))
             {
-                case "seconds":
-                    newKey.SetUnitToSec();
-                    break;
                 case "hex":
                     newKey.SetUnitToHex();
+                    break;
+                case "seconds":
+                    newKey.SetUnitToSec();
                     break;
                 case "frames":
                     newKey.SetUnitToFrames();

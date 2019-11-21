@@ -14,17 +14,16 @@ using System.Collections;                   // Hashtables
 
 namespace RegFineViewer
 {
-
-    //public class RegistryItem
-    //{
-    //}
-
-    //
+    
+    // -------------------------------------------------------------------------
+    // Programme principal
+    // -------------------------------------------------------------------------
     public partial class MainWindow : Window
     {
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
         private ObservableCollection<RegistryItem> RegistryTree2 = new ObservableCollection<RegistryItem>();
+        private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
         private RegFileParser Parser2;
 
@@ -34,7 +33,7 @@ namespace RegFineViewer
             // Cette instruction permet de rendre les classes visibles depuis le XAML
             DataContext = this;
             // On charge le dictionnaire des unités préférées
-            KeyUnitDictionnary UnitDictionnary = new KeyUnitDictionnary("Config.xml");
+            UnitDictionnary = new KeyUnitDictionnary("Config.xml");
             // On initialise les parseurs
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
             Parser2 = new RegFileParser(RegistryTree2, UnitDictionnary);
@@ -145,7 +144,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Bouton CLOSE (de la chip)
+        // Bouton CLOSE (de la Chip)
         // -------------------------------------------------------------------------
         private void Tree1_CloseFile_bt(object sender, RoutedEventArgs e)
         {
@@ -171,7 +170,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Bouton du Tray
+        // Boutons du Tray
         // -------------------------------------------------------------------------
         private void bTray2Button1_Click(object sender, RoutedEventArgs e)
         {
@@ -201,6 +200,9 @@ namespace RegFineViewer
             CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
         }
 
+        // -------------------------------------------------------------------------
+        // Calculs des valeurs statistiques, et refresh de l'UI
+        // -------------------------------------------------------------------------
         private void RefreshLengthStats(RegFileParser Parser)
         {
             Int32 Moyenne = Parser.GetAverageLength();  // A calculer en premier
@@ -211,6 +213,7 @@ namespace RegFineViewer
             Int32 SD84 = Moyenne + EcartType;
             // Les stats disent que 98% de la population se trouve entre 0 et Moy + 2 x EcType
             Int32 SD98 = Moyenne + 2 * EcartType;
+            // On met à jour les textes affichés dans l'UI
             nbItems.Text = Nombre.ToString();
             tbAvLength.Text = Moyenne.ToString() + " chars";
             nbAvLength.Text = Parser.GetNbOfItemsLengthEqualsTo(Moyenne).ToString();
@@ -223,6 +226,9 @@ namespace RegFineViewer
             nbSD98.Text = Parser.GetNbOfItemsLengthLowerThan(SD98).ToString();
         }
 
+        // -------------------------------------------------------------------------
+        // Ferme le Popup
+        // -------------------------------------------------------------------------
         private void CardlengthStats_Close(object sender, RoutedEventArgs e)
         {
             CardlengthStats.IsOpen = false;
@@ -232,15 +238,27 @@ namespace RegFineViewer
             CardTreeInfo.IsOpen = false;
         }
 
+        // -------------------------------------------------------------------------
+        // Click sur le bouton ChangeUnit d'un Registry Key du Registry Tree
+        // -------------------------------------------------------------------------
         private void ChangeUnit_Click(object sender, RoutedEventArgs e)
         {
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
-            RegistryItem Item = UnitButton.DataContext as RegistryItem;
+            RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
             // On modifie son unité préféré
-            string S2 = Item.UserFriendlyUnit;
+            Item.ChangeToNextUnit(UnitDictionnary);
+            // On raffraichit le texte du bouton "btUfUnit"
+            UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
+            // On raffraichit le texte de son frere TextBlock "lbUfValue"
+            var StackP = UnitButton.Parent as StackPanel;
+            var TextB = StackP.Children[3] as TextBlock;
+            TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+
+            // 3 méthodes possibles pour faire un refresh du binding
+            // ((TextBox)sender).GetBindingExpression(ComboBox.TextProperty).UpdateSource();         // Update le DataSource en fonction du Control
+            // ((ComboBox)sender).GetBindingExpression(ComboBox.ItemsSourceProperty).UpdateTarget(); // Update le Control en fonction du DataSource
+            // OnPropertyChanged("Property");
         }
-
-
     }
 }

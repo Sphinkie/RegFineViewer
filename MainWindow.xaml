@@ -235,10 +235,10 @@
 
                         <!-- Affichage par défaut des données -->
                         <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-                            <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name, Delay=3}" />
+                            <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
                             <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
                             <Button  x:Name="btUfUnit" Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit_Click"
-                                     Visibility="Hidden" VerticalAlignment="Top" FontSize="11" 
+                                     Visibility="Hidden" VerticalAlignment="Top" FontSize="11" Padding="0"
                                      FontWeight="Light" Foreground="Beige" Height="20" Width="60"/>
                             <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
                         </StackPanel>
@@ -257,7 +257,7 @@
                                 <Setter TargetName="lbValue"   Property="Width"      Value="480" />
                                 <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
                             </DataTrigger>
-                            <!-- On change certaines propriétés dans le cas d'un STRING -->
+                            <!-- On change certaines propriétés dans le cas d'un DWORD -->
                             <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
                                 <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
                                 <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
