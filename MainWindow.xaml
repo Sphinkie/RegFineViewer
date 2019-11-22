@@ -9,481 +9,432 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
-        TextOptions.TextFormattingMode="Ideal" 
-        TextOptions.TextRenderingMode="Auto"        
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:RegFineViewer"
         >
 
-    <!--On définit quelques styles généraux-->
-    <Window.Resources>
-        <Style TargetType="materialDesign:Chip" >
-            <Setter Property="Margin" Value="16,0,0,0"/>
-        </Style>
-        <Style TargetType="Button" x:Key="PlainStyle" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="FontWeight" Value="Light" />
-            <Setter Property="Foreground" Value="Beige" />
-            <Setter Property="Height" Value="20" />
-            <Setter Property="Width" Value="60"/>
-        </Style>
-        <Style TargetType="Button" x:Key="OutlinedStyle">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="FontWeight" Value="Light" />
-            <Setter Property="Background" Value="Beige" />
-            <Setter Property="Foreground" Value="Green" />
-            <Setter Property="BorderBrush" Value="Green"/>
-            <Setter Property="BorderThickness" Value="3" />
-            <Setter Property="Height" Value="20" />
-            <Setter Property="Width" Value="60"/>
-        </Style>
-    </Window.Resources>
+  <!--On définit quelques styles généraux-->
+  <Window.Resources>
+    <Style TargetType="materialDesign:Chip" >
+      <Setter Property="Margin" Value="16,0,0,0"/>
+    </Style>
+    <Style TargetType="Button" x:Key="PlainStyle" >
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Foreground" Value="Beige" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="BorderBrush" Value="white"/>
+      <Setter Property="Height" Value="20" />
+      <Setter Property="Width" Value="60"/>
+    </Style>
+    <Style TargetType="Button" x:Key="OutlinedStyle"   >
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Background" Value="white" />
+      <Setter Property="Foreground" Value="Green" />
+      <Setter Property="BorderBrush" Value="Green"/>
+      <Setter Property="BorderThickness" Value="2" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="Width" Value="60"/>
+    </Style>
 
-    <DockPanel>
-        <!-- On definit une grille de 2 colonnes: Left et Right -->
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" Name="leftColumn" MinWidth="420"/>
-                <ColumnDefinition Width="5" Name="separatorColumn"/>
-                <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" Name="ToolbarRow"/>
-                <RowDefinition Height="Auto" Name="TitleRow" />
-                <RowDefinition Height="*"    Name="TreeViewRow" />
-                <RowDefinition Height="Auto" Name="EditionRow" />
-                <RowDefinition Height="Auto" Name="SearchbarRow" />
-            </Grid.RowDefinitions>
+    <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />-->
 
-            <!-- *************************************************************** -->
-            <!--                     Grille de Gauche                            -->
-            <!-- *************************************************************** -->
-            <!--Toolbar-->
-            <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
-                <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                    <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
-                        <materialDesign:PackIcon Kind="ExpandLess"/>
-                    </Button>
-                    <Button ToolTip="Tree stats" Name="bTray1Button1" Click="bTray1Button1_Click">
-                        <materialDesign:PackIcon Kind="ChartBarStacked" />
-                    </Button>
-                    <Button ToolTip="Length stats" Name="bTray1Button2" Click="bTray1Button2_Click">
-                        <materialDesign:PackIcon Kind="ChartGantt" />
-                    </Button>
-                </ToolBar>
-            </ToolBarTray>
-            <!-- Test de Binding -->
-            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip"
-                Content="no file loaded"  
-                IsDeletable="True" DeleteClick="Tree1_CloseFile_bt"  DeleteToolTip="Close the file">
-                <materialDesign:Chip.Icon>
-                    <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
-                </materialDesign:Chip.Icon>
-            </materialDesign:Chip>
-            <!--<ListBox x:Name="listFiles" Grid.Column="0" Grid.Row="1" ></ListBox>-->
-            <!-- TREE VIEW 1 avec binding -->
-            <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0"
-                      AllowDrop="True" Drop="Tree1_drop" 
-                      SelectedItemChanged="TreeView1_SelectedItemChanged">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate
-                        DataType="{x:Type local:RegistryItem}"  
-                        ItemsSource="{Binding Path=SubItem}">
+  </Window.Resources>
 
-                        <!-- Affichage des données du Node -->
-                        <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-                            <TextBlock x:Name="lbName"  Text="{Binding Path=Name}"  Width="260" ToolTip="{Binding ElementName=t1, Path=FontFamily}"/>
-                            <TextBlock x:Name="lbValue" Text="{Binding Path=Value}" Margin="16,0,0,0" ToolTip="{Binding Path=DType}" />
-                            <TextBlock x:Name="lbUfUnit"  Text="{Binding Path=UserFriendlyUnit}"  />
-                            <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" />
-                        </StackPanel>
+  <DockPanel>
+    <!-- On definit une grille de 2 colonnes: Left et Right -->
+    <Grid >
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" Name="leftColumn" MinWidth="420"/>
+        <ColumnDefinition Width="5" Name="separatorColumn"/>
+        <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" Name="ToolbarRow"/>
+        <RowDefinition Height="Auto" Name="TitleRow" />
+        <RowDefinition Height="*"    Name="TreeViewRow" />
+        <RowDefinition Height="Auto" Name="EditionRow" />
+        <RowDefinition Height="Auto" Name="SearchbarRow" />
+      </Grid.RowDefinitions>
 
-                        <!-- On change certaines propriétés des nodes -->
-                        <HierarchicalDataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding DType}" Value="node" >
-                                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
-                                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="lbName"    Property="Width"      Value="400" />
-                                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
-                                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
-                                <Setter TargetName="lbUfUnit"  Property="Visibility" Value="Hidden" />
-                                <Setter TargetName="lbUfValue" Property="Visibility" Value="Hidden" />
-                            </DataTrigger>
-                        </HierarchicalDataTemplate.Triggers>
+      <!-- *************************************************************** -->
+      <!--                     Grille de Gauche                            -->
+      <!-- *************************************************************** -->
+      <!--Toolbar-->
+      <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
+        <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
+          <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
+            <materialDesign:PackIcon Kind="ExpandLess"/>
+          </Button>
+          <Button ToolTip="Tree stats" Name="bTray1Button1" Click="bTray1Button1_Click">
+            <materialDesign:PackIcon Kind="ChartBarStacked" />
+          </Button>
+          <Button ToolTip="Length stats" Name="bTray1Button2" Click="bTray1Button2_Click">
+            <materialDesign:PackIcon Kind="ChartGantt" />
+          </Button>
+        </ToolBar>
+      </ToolBarTray>
 
-                    </HierarchicalDataTemplate>
-                </TreeView.Resources>
-            </TreeView>
+      <!-- CHIP -->
+      <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip"
+          Content="no file loaded"
+          IsDeletable="True" DeleteClick="Tree1_CloseFile_bt"  DeleteToolTip="Close the file">
+        <materialDesign:Chip.Icon>
+          <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
+        </materialDesign:Chip.Icon>
+      </materialDesign:Chip>
 
-            <!-- TREE VIEW simple (affichage seulement) -->
-            <!--<TreeView  Name="TreeView1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop">
-                <TreeViewItem Header="VCA">
-                    <TreeViewItem>
-                        <TreeViewItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock>Verification</TextBlock>
-                                <TextBlock Background="LightBlue">True</TextBlock>
-                            </StackPanel>
-                        </TreeViewItem.Header>
-                    </TreeViewItem>
-                    <TreeViewItem  Header="BDD" />
-                    <TreeViewItem  Header="Depart">
-                        <TextBlock>
-                        <Run Text="notepad.exe" />
-                        </TextBlock>
-                    </TreeViewItem>
-                    <TreeViewItem  Header="Canal 1" />
-                    <TreeViewItem  Header="Melangeur" />
-                    <TreeViewItem  Header="Grille" />
-                </TreeViewItem>
-                <TreeViewItem    Header="Canal 2"    IsExpanded="True">
-                    <TreeViewItem      Header="EVS" />
-                    <TreeViewItem>
-                        <TreeViewItem.Header>
-                            <StackPanel          Orientation="Horizontal">
-                                <TextBlock>Check</TextBlock>
-                            </StackPanel>
-                        </TreeViewItem.Header>
-                    </TreeViewItem>
-                    <TreeViewItem      Header="iOS" />
-                    <TreeViewItem>
-                        <TreeViewItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="8 0 0 0">Linux</TextBlock>
-                            </StackPanel>
-                        </TreeViewItem.Header>
-                    </TreeViewItem>
-                    <TreeViewItem>
-                        <TreeViewItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="8 0 0 0">Windows</TextBlock>
-                            </StackPanel>
-                        </TreeViewItem.Header>
-                    </TreeViewItem>
-                </TreeViewItem>
-                <TreeViewItem    Header="Empty" />
-            </TreeView>-->
-            <!-- Barre de Recherche -->
-            <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
-                <Grid Margin="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
-                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
-                    <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32"
-                                              CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                        <StackPanel Orientation="Horizontal" Margin="2" >
-                            <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher1"/>
-                        </StackPanel>
-                    </materialDesign:ColorZone>
-                    <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
-                </Grid>
-            </materialDesign:ColorZone>
-            <!--<Grid VerticalAlignment="Top" Margin="16" Grid.Column="0" Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <materialDesign:PackIcon Kind="Search"  Grid.Column="0" Height="32" Width="32" VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="1" Margin="8" VerticalAlignment="Center" Name="field1">Registry key:</TextBlock>
-                <TextBox Grid.Column="2" Margin=" 8">Entrer key name...</TextBox>
-                <Button Grid.Column="3" Margin="8">Find</Button>
-            </Grid>-->
+      <!-- TREE VIEW 1  -->
+      <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0"
+                AllowDrop="True" Drop="Tree1_drop"
+                SelectedItemChanged="TreeView1_SelectedItemChanged">
+        <TreeView.Resources>
+          <HierarchicalDataTemplate
+              DataType="{x:Type local:RegistryItem}"
+              ItemsSource="{Binding Path=SubItem}">
 
-            <!-- *************************************************************** -->
-            <!--                     Separateur                                  -->
-            <!-- *************************************************************** -->
-            <GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" />
+            <!-- Affichage par défaut des données -->
+            <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
+              <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
+              <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
+              <Button  x:Name="btUfUnit" Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit2_Click"  Style="{StaticResource OutlinedStyle}" Visibility="Hidden" />
+              <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
+            </StackPanel>
 
-            <!-- *************************************************************** -->
-            <!--                     Grille de droite                            -->
-            <!-- *************************************************************** -->
-            <!-- Toolbar -->
-            <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
-                <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
-                    <Button ToolTip="Tree stats" Name="bTray2Button1" Click="bTray2Button1_Click">
-                        <materialDesign:PackIcon Kind="ChartBarStacked" />
-                    </Button>
-                    <Button ToolTip="Length stats" Name="bTray2Button2" Click="bTray2Button2_Click">
-                        <materialDesign:PackIcon Kind="ChartGantt" />
-                    </Button>
-                </ToolBar>
-            </ToolBarTray>
+            <HierarchicalDataTemplate.Triggers>
+              <!-- On change certaines propriétés dans le cas d'un NODE -->
+              <DataTrigger Binding="{Binding DType}" Value="node" >
+                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
+                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
+                <Setter TargetName="lbName"    Property="Width"      Value="480" />
+                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
+                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
+              </DataTrigger>
+              <!-- On change certaines propriétés dans le cas d'un STRING -->
+              <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
+                <Setter TargetName="lbValue"   Property="Width"      Value="480" />
+                <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
+              </DataTrigger>
+              <!-- On change certaines propriétés dans le cas d'un DWORD -->
+              <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
+                <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
+                <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
 
-            <!-- CHIP: Display Info -->
-            <materialDesign:Chip Grid.Column="2" Grid.Row="1" x:Name="Tree2_InfoChip"
-                Content="no file loaded"  
-                IsDeletable="True" DeleteClick="Tree2_CloseFile_bt"  DeleteToolTip="Close the file">
-                <materialDesign:Chip.Icon>
-                    <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
-                </materialDesign:Chip.Icon>
-            </materialDesign:Chip>
+          </HierarchicalDataTemplate>
+        </TreeView.Resources>
+      </TreeView>
 
-            <!-- TREE VIEW avec Binding -->
-            <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0"
-                      AllowDrop="True" Drop="Tree2_drop" 
-                      SelectedItemChanged="Tree2_SelectedItemChanged">
-
-                <TreeView.Resources>
-                    <!-- Si on re-defini ce style, on écrase le style hérité de materialdesign... -->
-                    <!--<Style  TargetType="TreeViewItem" >
-                        <Setter Property="Foreground"  Value="Black"/>
-                        <Setter Property="FontSize"    Value="13" />
-                        <Setter Property="Margin"      Value="1" />
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter Property="Foreground" Value="LightGray" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>-->
-                    <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />-->
-
-                    <HierarchicalDataTemplate  
-                        DataType="{x:Type local:RegistryItem}" 
-                        ItemsSource="{Binding Path=SubItem}">
-
-                        <!-- Affichage par défaut des données -->
-                        <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-                            <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
-                            <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
-                            <Button  x:Name="btUfUnit" Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit_Click"  Style="{StaticResource PlainStyle}"
-                                     Visibility="Hidden" />
-                            <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
-                        </StackPanel>
-
-                        <HierarchicalDataTemplate.Triggers>
-                            <!-- On change certaines propriétés dans le cas d'un NODE -->
-                            <DataTrigger Binding="{Binding DType}" Value="node" >
-                                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
-                                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="lbName"    Property="Width"      Value="480" />
-                                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
-                                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
-                            </DataTrigger>
-                            <!-- On change certaines propriétés dans le cas d'un STRING -->
-                            <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
-                                <Setter TargetName="lbValue"   Property="Width"      Value="480" />
-                                <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
-                            </DataTrigger>
-                            <!-- On change certaines propriétés dans le cas d'un DWORD -->
-                            <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
-                                <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
-                                <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </HierarchicalDataTemplate.Triggers>
-
-                    </HierarchicalDataTemplate>
-                </TreeView.Resources>
-            </TreeView>
-
-            <!--BOUTON + -->
-            <materialDesign:PopupBox Grid.Column="2" Grid.Row="3"
-                Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
-                IsEnabled="False"
-                PlacementMode="LeftAndAlignMiddles"
-                UnfurlOrientation="Horizontal"
-                ToolTip="Manage Registry key"
-                Margin="0 0 10 10"  Width="42"  Height="42"
-                HorizontalAlignment="Right" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal">
-                    <Button ToolTip="Add a key" Command="{Binding AddCommand}">
-                        <Path
-                            Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                            Stretch="Uniform"
-                            Width="14"  Height="14"
-                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                    </Button>
-                    <Button ToolTip="Remove selected key" Command="{Binding RemoveSelectedItemCommand}">
-                        <Path
-                            Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                            Stretch="Uniform" Width="14" Height="14"
-                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                    </Button>
-                </StackPanel>
-            </materialDesign:PopupBox>
-            <!--Barre de recherche -->
-            <materialDesign:ColorZone  Grid.Column="2" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
-                <Grid Margin="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
-                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
-                    <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32"
-                                              CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                        <StackPanel Orientation="Horizontal" Margin="2" >
-                            <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher2"/>
-                        </StackPanel>
-                    </materialDesign:ColorZone>
-                    <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
-                </Grid>
-            </materialDesign:ColorZone>
+      <!-- Barre de Recherche -->
+      <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+        <Grid Margin="8">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+          </Grid.ColumnDefinitions>
+          <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
+          <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
+          <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32"
+                                    CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+            <StackPanel Orientation="Horizontal" Margin="2" >
+              <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
+              <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher1"/>
+            </StackPanel>
+          </materialDesign:ColorZone>
+          <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
         </Grid>
+      </materialDesign:ColorZone>
 
-        <Popup 
-            Name="CardTreeInfo"
-            Margin="10,10,0,13"
-            IsOpen="False"
-            Placement="Mouse" 
-            AllowsTransparency="True" >
-            <!--
+
+      <!-- *************************************************************** -->
+      <!--                     Separateur                                  -->
+      <!-- *************************************************************** -->
+      <GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" />
+
+      <!-- *************************************************************** -->
+      <!--                     Grille de droite                            -->
+      <!-- *************************************************************** -->
+      <!-- Toolbar -->
+      <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
+        <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
+          <Button ToolTip="Tree stats" Name="bTray2Button1" Click="bTray2Button1_Click">
+            <materialDesign:PackIcon Kind="ChartBarStacked" />
+          </Button>
+          <Button ToolTip="Length stats" Name="bTray2Button2" Click="bTray2Button2_Click">
+            <materialDesign:PackIcon Kind="ChartGantt" />
+          </Button>
+        </ToolBar>
+      </ToolBarTray>
+
+      <!-- CHIP: Display Info -->
+      <materialDesign:Chip Grid.Column="2" Grid.Row="1" x:Name="Tree2_InfoChip"
+          Content="no file loaded"
+          IsDeletable="True" DeleteClick="Tree2_CloseFile_bt"  DeleteToolTip="Close the file">
+        <materialDesign:Chip.Icon>
+          <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
+        </materialDesign:Chip.Icon>
+      </materialDesign:Chip>
+
+      <!-- TREE VIEW avec Binding -->
+      <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0"
+                AllowDrop="True" Drop="Tree2_drop"
+                SelectedItemChanged="Tree2_SelectedItemChanged">
+
+        <TreeView.Resources>
+          <HierarchicalDataTemplate
+              DataType="{x:Type local:RegistryItem}"
+              ItemsSource="{Binding Path=SubItem}">
+
+            <!-- Affichage par défaut des données -->
+            <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
+              <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
+              <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
+              <Button  x:Name="btUfUnit" Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit_Click"  Style="{StaticResource OutlinedStyle}" Visibility="Hidden" />
+              <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
+            </StackPanel>
+
+            <HierarchicalDataTemplate.Triggers>
+              <!-- On change certaines propriétés dans le cas d'un NODE -->
+              <DataTrigger Binding="{Binding DType}" Value="node" >
+                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
+                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
+                <Setter TargetName="lbName"    Property="Width"      Value="480" />
+                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
+                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
+              </DataTrigger>
+              <!-- On change certaines propriétés dans le cas d'un STRING -->
+              <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
+                <Setter TargetName="lbValue"   Property="Width"      Value="480" />
+                <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
+              </DataTrigger>
+              <!-- On change certaines propriétés dans le cas d'un DWORD -->
+              <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
+                <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
+                <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+
+          </HierarchicalDataTemplate>
+        </TreeView.Resources>
+      </TreeView>
+
+      <!--BOUTON + -->
+      <materialDesign:PopupBox Grid.Column="2" Grid.Row="3"
+          Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+          IsEnabled="False"
+          PlacementMode="LeftAndAlignMiddles"
+          UnfurlOrientation="Horizontal"
+          ToolTip="Manage Registry key"
+          Margin="0 0 10 10"  Width="42"  Height="42"
+          HorizontalAlignment="Right" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+          <Button ToolTip="Add a key" Command="{Binding AddCommand}">
+            <Path
+                Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                Stretch="Uniform"
+                Width="14"  Height="14"
+                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+          </Button>
+          <Button ToolTip="Remove selected key" Command="{Binding RemoveSelectedItemCommand}">
+            <Path
+                Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                Stretch="Uniform" Width="14" Height="14"
+                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+          </Button>
+        </StackPanel>
+      </materialDesign:PopupBox>
+      
+      <!--Barre de recherche -->
+      <materialDesign:ColorZone  Grid.Column="2" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+        <Grid Margin="8">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+          </Grid.ColumnDefinitions>
+          <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
+          <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
+          <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32"
+                                    CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+            <StackPanel Orientation="Horizontal" Margin="2" >
+              <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
+              <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher2"/>
+            </StackPanel>
+          </materialDesign:ColorZone>
+          <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
+        </Grid>
+      </materialDesign:ColorZone>
+    </Grid>
+
+    <!--==========================================================-->
+    <!--                  POPUP D'INFOS SUR LE TREEVIEW           -->
+    <!--==========================================================-->
+    <!--  NOTES:
             PlacementTarget="{Binding ElementName=bTray2Button1}"   Placement="Bottom" 
             IsOpen="{Binding ElementName=bTray2Button1,Path=IsMouseOver}" 
             // Popup peut etre animé uniquement si le bouton ne l'est pas
             AllowsTransparency="True" PopupAnimation="Slide"  
             HorizontalAlignment="Center"    VerticalAlignment="Top" 
             -->
-            <Grid>
-                <materialDesign:Card 
-                    Margin="12"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                    UniformCornerRadius="8"
-                    Background="{DynamicResource PrimaryHueLightBrush}"
-                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                    <!--Padding="0" Width="200"-->
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <materialDesign:ColorZone Grid.Row="0" 
-                            Mode="PrimaryDark" VerticalAlignment="Stretch">
-                            <materialDesign:PackIcon Kind="ChartBarStacked" 
-                                Height="48" Width="48"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center" />
-                        </materialDesign:ColorZone>
-                        <TextBlock Grid.Row="1" 
-                                   Margin="18 6 18 0" 
-                                   HorizontalAlignment="Center" 
-                                   Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                                   Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}">
-                        Statistics
-                        </TextBlock>
-                        <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
-                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="12,2,0,0">
-                            <TextBlock Text="Nb of nodes" />
-                            <TextBlock Name="tbStatNodes" Margin="12,0,0,0" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="12,2,0,0">
-                            <TextBlock Text="Nb of levels"/>
-                            <TextBlock Name="tbStatLevels" Margin="12,0,0,0" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="12,2,0,0">
-                            <TextBlock Text="Nb of keys"/>
-                            <TextBlock Name="tbStatKeys" Margin="12,0,0,0"/>
-                        </StackPanel>
-                        <Button Grid.Row="6" 
-                                HorizontalAlignment="Right" Width="30"
-                                Style="{StaticResource MaterialDesignToolForegroundButton}"
-                                Click="CardTreeInfo_Close"
-                                materialDesign:RippleAssist.IsCentered="True">
-                            <materialDesign:PackIcon  Kind="CloseCircleOutline" />
-                        </Button>
-                    </Grid>
-                </materialDesign:Card>
-            </Grid>
-        </Popup>
+    <Popup
+        Name="CardTreeInfo"
+        Margin="10,10,0,13"
+        IsOpen="False"
+        Placement="Mouse"
+        AllowsTransparency="True" >
+      <Grid>
+        <materialDesign:Card
+            Margin="12"
+            materialDesign:ShadowAssist.ShadowDepth="Depth3"
+            UniformCornerRadius="8"
+            Background="{DynamicResource PrimaryHueLightBrush}"
+            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+          <!--Padding="0" Width="200"-->
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <materialDesign:ColorZone Grid.Row="0"
+                Mode="PrimaryDark" VerticalAlignment="Stretch">
+              <materialDesign:PackIcon Kind="ChartBarStacked"
+                  Height="48" Width="48"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center" />
+            </materialDesign:ColorZone>
+            <TextBlock Grid.Row="1"
+                       Margin="18 6 18 0"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                       Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}"
+                       Text="Statistics" >
+            </TextBlock>
+            <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="12,2,0,0">
+              <TextBlock Text="Nb of nodes" />
+              <TextBlock Name="tbStatNodes" Margin="12,0,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="12,2,0,0">
+              <TextBlock Text="Nb of levels"/>
+              <TextBlock Name="tbStatLevels" Margin="12,0,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="12,2,0,0">
+              <TextBlock Text="Nb of keys"/>
+              <TextBlock Name="tbStatKeys" Margin="12,0,0,0"/>
+            </StackPanel>
+            <Button Grid.Row="6"
+                    HorizontalAlignment="Right" Width="30"
+                    Style="{StaticResource MaterialDesignToolForegroundButton}"
+                    Click="CardTreeInfo_Close"
+                    materialDesign:RippleAssist.IsCentered="True">
+              <materialDesign:PackIcon  Kind="CloseCircleOutline" />
+            </Button>
+          </Grid>
+        </materialDesign:Card>
+      </Grid>
+    </Popup>
 
 
-        <Popup 
-            Name="CardlengthStats"
-            Margin="10,10,0,13"
-            IsOpen="False"
-            Placement="Mouse" 
-            AllowsTransparency="True" >
-            <Grid>
-                <materialDesign:Card 
-                    Margin="12"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                    UniformCornerRadius="8"
-                    Background="{DynamicResource PrimaryHueLightBrush}"
-                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                    <!--Padding="0" Width="200"-->
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="3"
-                            Mode="PrimaryDark" VerticalAlignment="Stretch">
-                            <materialDesign:PackIcon Kind="ChartGantt" 
-                                Height="48" Width="48"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center" />
-                        </materialDesign:ColorZone>
-                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3"
-                                   Margin="18 6 18 0" 
-                                   HorizontalAlignment="Center" 
-                                   Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                                   Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}">
-                        Length stats
-                        </TextBlock>
-                        <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Number of labels" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="(total)" />
-                        <TextBlock Grid.Row="3" Grid.Column="2" Name="nbItems" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Average length" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="4" Grid.Column="1" Name="tbAvLength" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="4" Grid.Column="2" Name="nbAvLength" Margin="12,0,12,0" />
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Modal length"  Margin="12,2,0,0"/>
-                        <TextBlock Grid.Row="5" Grid.Column="1" Name="tbModelength" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="5" Grid.Column="2" Name="nbModelength" Margin="12,0,0,0" />
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Standard Deviation" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="6" Grid.Column="1" Name="tbSD" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Inf Av+SD (84%)" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="7" Grid.Column="1" Name="tbSD84" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="7" Grid.Column="2" Name="nbSD84" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Inf Av+2*SD (98%)" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="8" Grid.Column="1" Name="tbSD98" Margin="12,0,0,0"/>
-                        <TextBlock Grid.Row="8" Grid.Column="2" Name="nbSD98" Margin="12,0,0,0"/>
-                        <Button Grid.Row="9"  Grid.Column="2" 
-                                HorizontalAlignment="Right" Width="30"
-                                Style="{StaticResource MaterialDesignToolForegroundButton}"
-                                Click="CardlengthStats_Close"
-                                materialDesign:RippleAssist.IsCentered="True">
-                            <materialDesign:PackIcon  Kind="CloseCircleOutline" />
-                        </Button>
-                    </Grid>
-                </materialDesign:Card>
-            </Grid>
-        </Popup>
+    <!--==========================================================-->
+    <!--          POPUP DE STATISTIQUES SUR LE TREEVIEW           -->
+    <!--==========================================================-->
+    <Popup
+        Name="CardlengthStats"
+        Margin="10,10,0,13"
+        IsOpen="False"
+        Placement="Mouse"
+        AllowsTransparency="True" >
+      <Grid>
+        <materialDesign:Card
+            Margin="12"
+            materialDesign:ShadowAssist.ShadowDepth="Depth3"
+            UniformCornerRadius="8"
+            Background="{DynamicResource PrimaryHueLightBrush}"
+            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+          <!--Padding="0" Width="200"-->
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="3"
+                Mode="PrimaryDark" VerticalAlignment="Stretch">
+              <materialDesign:PackIcon Kind="ChartGantt"
+                  Height="48" Width="48"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center" />
+            </materialDesign:ColorZone>
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="3"
+                       Margin="18 6 18 0"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                       Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}">
+              Length stats
+            </TextBlock>
+            <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Number of labels" Margin="12,0,0,0" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="(total)" />
+            <TextBlock Grid.Row="3" Grid.Column="2" Name="nbItems" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Average length" Margin="12,0,0,0" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Name="tbAvLength" Margin="12,0,0,0" />
+            <TextBlock Grid.Row="4" Grid.Column="2" Name="nbAvLength" Margin="12,0,12,0" />
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Modal length"  Margin="12,2,0,0"/>
+            <TextBlock Grid.Row="5" Grid.Column="1" Name="tbModelength" Margin="12,0,0,0" />
+            <TextBlock Grid.Row="5" Grid.Column="2" Name="nbModelength" Margin="12,0,0,0" />
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Standard Deviation" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="6" Grid.Column="1" Name="tbSD" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="Inf Av+SD (84%)" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="7" Grid.Column="1" Name="tbSD84" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="7" Grid.Column="2" Name="nbSD84" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Inf Av+2*SD (98%)" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="8" Grid.Column="1" Name="tbSD98" Margin="12,0,0,0"/>
+            <TextBlock Grid.Row="8" Grid.Column="2" Name="nbSD98" Margin="12,0,0,0"/>
+            <Button Grid.Row="9"  Grid.Column="2"
+                    HorizontalAlignment="Right" Width="30"
+                    Style="{StaticResource MaterialDesignToolForegroundButton}"
+                    Click="CardlengthStats_Close"
+                    materialDesign:RippleAssist.IsCentered="True">
+              <materialDesign:PackIcon  Kind="CloseCircleOutline" />
+            </Button>
+          </Grid>
+        </materialDesign:Card>
+      </Grid>
+    </Popup>
 
-        <!--<materialDesign:PopupBox 
+    <!--==========================================================-->
+    <!--           ESSAIS DIVERS                                  -->
+    <!--==========================================================-->
+    <!--<materialDesign:PopupBox 
     Name="PopTreeInfo"
     PlacementMode="BottomAndAlignLeftEdges"
     Margin="10,10,0,13" Width="200" Height="400"
@@ -491,7 +442,8 @@
     VerticalAlignment="Top" 
     materialDesign:ShadowAssist.ShadowDepth="Depth5"
     >
-            --><!--
+            -->
+    <!--
     IsOpen="False"
     PlacementTarget="{Binding ElementName=bTray2Button1}"   Placement="Bottom" 
         IsOpen="{Binding ElementName=bTray2Button1,Path=IsMouseOver}" 
@@ -500,7 +452,8 @@
         Placement="Mouse" 
         PlacementTarget="{Binding ElementName=bTray2button1}"   Placement="Bottom" 
     -->
-            <!--mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200"--><!--
+    <!--mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200"-->
+    <!--
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -531,22 +484,26 @@
                     <TextBlock Text="Nb of levels" Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
                 </StackPanel>
 
-                --><!--<Button Grid.Row="4" HorizontalAlignment="Right"
+                -->
+    <!--<Button Grid.Row="4" HorizontalAlignment="Right"
         Style="{StaticResource MaterialDesignToolForegroundButton}"
         Width="30"
         Padding="2 0 2 0"
         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon
           Kind="Phone" />
-                </Button>--><!--
+                </Button>-->
+    <!--
                 <materialDesign:PopupBox Grid.Row=" 4"
                         Style="{StaticResource MaterialDesignToolForegroundPopupBox}"
         HorizontalAlignment="Right"
         Padding="2 0 2 0">
-                    --><!--<StackPanel Orientation="Horizontal">
+                    -->
+    <!--<StackPanel Orientation="Horizontal">
                         <Button Content="More" />
                         <Button Content="Options" />
-                    </StackPanel>--><!--
+                    </StackPanel>-->
+    <!--
                 </materialDesign:PopupBox>
             </Grid>
         </materialDesign:PopupBox>-->
@@ -554,6 +511,6 @@
 
 
 
-    </DockPanel>
+  </DockPanel>
 
 </Window>

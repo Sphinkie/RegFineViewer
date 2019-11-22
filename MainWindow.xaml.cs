@@ -14,7 +14,7 @@ using System.Collections;                   // Hashtables
 
 namespace RegFineViewer
 {
-    
+
     // -------------------------------------------------------------------------
     // Programme principal
     // -------------------------------------------------------------------------
@@ -246,7 +246,7 @@ namespace RegFineViewer
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
             RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
-            // On modifie son unité préféré
+            // On modifie son unité préférée
             Item.ChangeToNextUnit(UnitDictionnary);
             // On raffraichit le texte du bouton "btUfUnit"
             UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
@@ -254,11 +254,34 @@ namespace RegFineViewer
             var StackP = UnitButton.Parent as StackPanel;
             var TextB = StackP.Children[3] as TextBlock;
             TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-
+            
+            Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
+            Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
+            /*
+            // UnitButton.Style = PlainStyle;
+            var Col = UnitButton.Foreground;
+            UnitButton.Foreground = UnitButton.Background;
+            UnitButton.Background = Col;
+            */
             // 3 méthodes possibles pour faire un refresh du binding
             // ((TextBox)sender).GetBindingExpression(ComboBox.TextProperty).UpdateSource();         // Update le DataSource en fonction du Control
             // ((ComboBox)sender).GetBindingExpression(ComboBox.ItemsSourceProperty).UpdateTarget(); // Update le Control en fonction du DataSource
             // OnPropertyChanged("Property");
+        }
+
+        private void ChangeUnit2_Click(object sender, RoutedEventArgs e)
+        {
+            // On retrouve l'item en cours du TreeView
+            var UnitButton = sender as Button;
+            RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
+            // On modifie son unité préférée
+            Item.ChangeToNextUnit(UnitDictionnary);
+            // On raffraichit le texte du bouton "btUfUnit"
+            UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
+            // On raffraichit le texte de son frere TextBlock "lbUfValue"
+            var StackP = UnitButton.Parent as StackPanel;
+            var TextB = StackP.Children[3] as TextBlock;
+            TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
         }
     }
 }
