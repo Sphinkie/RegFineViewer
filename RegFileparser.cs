@@ -266,24 +266,8 @@ namespace RegFineViewer
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
             newKey.Value = keyValue;
             // Si cette Key possède une unité préférée, on la prend en compte
-            switch (PreferedUnits.GetValue(keyName))
-            {
-                case "hex":
-                    newKey.SetUnitToHex();
-                    break;
-                case "seconds":
-                    newKey.SetUnitToSec();
-                    break;
-                case "frames":
-                    newKey.SetUnitToFrames();
-                    break;
-                case "bool":
-                    newKey.SetUnitToBoolean();
-                    break;
-                default:
-                    newKey.SetUnitToNone();
-                    break;
-            }
+            newKey.UserFriendlyUnit = PreferedUnits.GetValue(keyName);
+            newKey.UpdateUserFriendyValue();
             // On incrémente nos compteurs internes
             NbKeys++;
             TableStats[keyName.Length] += 1;

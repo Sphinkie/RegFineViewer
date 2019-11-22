@@ -9,7 +9,7 @@ namespace RegFineViewer
 {
     class KeyUnitDictionnary
     {
-        private List<string> UnitList = new List<string> { "hex", "seconds", "frames", "bool" };
+        private List<string> UnitList = new List<string> { "seconds", "frames", "msecs","bool", "hex" };
         private Dictionary<string, string> UnitDictionnary = new Dictionary<string, string>();
 
         // ------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace RegFineViewer
         public string GetValue(string key)
         {
             UnitDictionnary.TryGetValue(key, out string unit);
-            // S'il n'y a pas d'unité préférée pour cette key, on sort
+            // S'il n'y a pas d'unité préférée pour cette key, on retourne une chaine vide
             if (string.IsNullOrEmpty(unit))
                 return string.Empty;
             // on vérifie que l'unité lue fait partie de la liste autorisée
@@ -90,9 +90,9 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         public string GetNextUnit(string unit)
         {
-            int Index = UnitList.IndexOf(unit);
+            int Index = UnitList.IndexOf(unit); // retourne -1 si pas dans la liste
             int NewIndex = Index + 1;
-            if (NewIndex >= UnitList.Count()) NewIndex = 0;
+            if (NewIndex >= UnitList.Count()) return string.Empty;
             return UnitList[NewIndex];
         }
         // ------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace RegFineViewer
             settings.Indent = true;
 
             // On ecrit dans le fichier de sortie
-            XmlWriter xmlWriter = XmlWriter.Create("Config_sample.xml", settings);
+            XmlWriter xmlWriter = XmlWriter.Create("Config.xml", settings);
 
             xmlWriter.WriteStartDocument();
             xmlWriter.WriteStartElement("Root");

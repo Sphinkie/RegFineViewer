@@ -21,37 +21,37 @@ namespace RegFineViewer
             SubItem = new ObservableCollection<RegistryItem>();
         }
         // --------------------------------------------
+        // Recalcul de la UF Value en fonction de l'unité préférée active
         // --------------------------------------------
-        public void SetUnitToHex()
+        private void UpdateUserFriendlyValueToHex()
         {
-            UserFriendlyUnit = "hex";
             Int32 intValue = Convert.ToInt32(Value);
             UserFriendlyValue = "0x" + intValue.ToString("X4");
         }
-        // --------------------------------------------
-        // --------------------------------------------
-        public void SetUnitToBoolean()
+        private void UpdateUserFriendlyValueToBoolean()
         {
-            UserFriendlyUnit = "bool";
             if (Value == "0")
                 UserFriendlyValue = "false";
             else
                 UserFriendlyValue = "true";
         }
-        // --------------------------------------------
-        // --------------------------------------------
-        public void SetUnitToSec()
+        private void UpdateUserFriendlyValueToSec()
         {
-            UserFriendlyUnit = "seconds";
             double intValue = Convert.ToInt32(Value);
             TimeSpan time = TimeSpan.FromSeconds(intValue);
             UserFriendlyValue = time.ToString(); //  default format is: [-][d.]hh:mm:ss[.fffffff]
         }
-        // --------------------------------------------
-        // --------------------------------------------
-        public void SetUnitToFrames()
+        private void UpdateUserFriendlyValueToMilliSec()
         {
-            UserFriendlyUnit = "frames";
+            double intValue = Convert.ToInt32(Value);
+            TimeSpan time = TimeSpan.FromMilliseconds(intValue);
+            string hh_mm_ss = time.ToString(@"hh\:mm\:ss");
+            string millisec = time.ToString("fff");
+            int frames = Convert.ToInt32(millisec) / 40;
+            UserFriendlyValue = hh_mm_ss + ":" + frames.ToString("D2");
+        }
+        private void UpdateUserFriendlyValueToFrames()
+        {
             double intValue = Convert.ToInt32(Value);
             intValue = intValue * 0.040;
             TimeSpan time = TimeSpan.FromSeconds(intValue);
@@ -61,37 +61,49 @@ namespace RegFineViewer
             int frames = Convert.ToInt32(millisec) / 40;
             UserFriendlyValue = hh_mm_ss + ":" + frames.ToString("D2");
         }
-        // --------------------------------------------
-        // --------------------------------------------
-        public void SetUnitToNone()
+        private void UpdateUserFriendlyValueToNone()
         {
-            UserFriendlyUnit = "no unit";
             UserFriendlyValue = string.Empty;
         }
         // --------------------------------------------
-        // Passe à la unité suivante dans la liste
+        // Recalcule la valeur de UserFriendyValue
+        // --------------------------------------------
+        public void UpdateUserFriendyValue()
+        {
+            switch (this.UserFriendlyUnit)
+            {
+                case "seconds":
+                    this.UpdateUserFriendlyValueToSec();
+                    break;
+                case "frames":
+                    this.UpdateUserFriendlyValueToFrames();
+                    break;
+                case "msecs":
+                    this.UpdateUserFriendlyValueToMilliSec();
+                    break;
+                case "bool":
+                    this.UpdateUserFriendlyValueToBoolean();
+                    break;
+                case "hex":
+                    this.UpdateUserFriendlyValueToHex();
+                    break;
+                default:
+                    UserFriendlyUnit = "no unit";
+                    this.UpdateUserFriendlyValueToNone();
+                    break;
+            }
+        }
+        // --------------------------------------------
+        // Passe à l'unité suivante dans la liste
         // --------------------------------------------
         public void ChangeToNextUnit(KeyUnitDictionnary unitDictionnary)
         {
-            switch (UserFriendlyUnit)
-            {
-                case "hex":
-                    this.SetUnitToSec();
-                    break;
-                case "seconds":
-                    this.SetUnitToFrames();
-                    break;
-                case "frames":
-                    this.SetUnitToBoolean();
-                    break;
-                case "bool":
-                    this.SetUnitToNone();
-                    break;
-                default:
-                    this.SetUnitToHex();
-                    break;
-            }
-            unitDictionnary.SetValue(Name, UserFriendlyUnit);
+            // On récupère l'unité suivante
+            this.UserFriendlyUnit = unitDictionnary.GetNextUnit(this.UserFriendlyUnit);
+            // On recalcule la UserFriendyValue
+            this.UpdateUserFriendyValue();
+            // On ajoute la nouvelle correspondance dans le dictionnaire
+            unitDictionnary.SetValue(Name, this.UserFriendlyUnit);
         }
         // --------------------------------------------
         // Ajout d'un sous-item (key ou Node)
