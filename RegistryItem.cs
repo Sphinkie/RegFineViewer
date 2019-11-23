@@ -88,7 +88,7 @@ namespace RegFineViewer
                     this.UpdateUserFriendlyValueToHex();
                     break;
                 default:
-                    UserFriendlyUnit = "no unit";
+                    UserFriendlyUnit = "  ";
                     this.UpdateUserFriendlyValueToNone();
                     break;
             }

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Registry Fine Viewer" Width="1080" Height="640" MinWidth="860" MaxHeight="920"
+        Title="Registry Fine Viewer" Height="640"  MaxHeight="920"  Width="860"   MinWidth="860"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -14,42 +14,33 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:RegFineViewer"
+        Name="Fenetre"
         >
+
+  <!--
+
+  -->
+
 
   <!--On définit quelques styles généraux-->
   <Window.Resources>
     <Style TargetType="materialDesign:Chip" >
       <Setter Property="Margin" Value="16,0,0,0"/>
     </Style>
-    <Style TargetType="Button" x:Key="PlainStyle" >
-      <Setter Property="Padding" Value="0"/>
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="FontSize" Value="11" />
+
+    <Style TargetType="Button" x:Key="OutlinedSmallButton"  BasedOn="{StaticResource MaterialDesignOutlinedButton}" >
+      <Setter Property="Width"      Value="60"/>
+      <Setter Property="Height"     Value="20" />
+      <Setter Property="Padding"    Value="0"/>
+      <Setter Property="FontSize"   Value="12" />
       <Setter Property="FontWeight" Value="Light" />
-      <Setter Property="Foreground" Value="Beige" />
-      <Setter Property="BorderThickness" Value="0" />
-      <Setter Property="BorderBrush" Value="white"/>
-      <Setter Property="Height" Value="20" />
-      <Setter Property="Width" Value="60"/>
-    </Style>
-    <Style TargetType="Button" x:Key="OutlinedStyle"   >
-      <Setter Property="Padding" Value="0"/>
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="FontSize" Value="11" />
-      <Setter Property="FontWeight" Value="Light" />
-      <Setter Property="Background" Value="white" />
-      <Setter Property="Foreground" Value="Green" />
-      <Setter Property="BorderBrush" Value="Green"/>
-      <Setter Property="BorderThickness" Value="2" />
-      <Setter Property="Height" Value="20" />
-      <Setter Property="Width" Value="60"/>
     </Style>
 
     <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />-->
 
   </Window.Resources>
 
-  <DockPanel>
+  <DockPanel Name="dockpanel">
     <!-- On definit une grille de 2 colonnes: Left et Right -->
     <Grid >
       <Grid.ColumnDefinitions>
@@ -58,8 +49,8 @@
         <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" Name="ToolbarRow"/>
-        <RowDefinition Height="Auto" Name="TitleRow" />
+        <RowDefinition Height="Auto" Name="ToolbarRow" />
+        <RowDefinition Height="Auto" Name="TitleRow"  />
         <RowDefinition Height="*"    Name="TreeViewRow" />
         <RowDefinition Height="Auto" Name="EditionRow" />
         <RowDefinition Height="Auto" Name="SearchbarRow" />
@@ -68,7 +59,9 @@
       <!-- *************************************************************** -->
       <!--                     Grille de Gauche                            -->
       <!-- *************************************************************** -->
+      <!--==========================-->
       <!--Toolbar-->
+      <!--==========================-->
       <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
         <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
           <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
@@ -83,7 +76,9 @@
         </ToolBar>
       </ToolBarTray>
 
+      <!--==========================-->
       <!-- CHIP -->
+      <!--==========================-->
       <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip"
           Content="no file loaded"
           IsDeletable="True" DeleteClick="Tree1_CloseFile_bt"  DeleteToolTip="Close the file">
@@ -92,7 +87,9 @@
         </materialDesign:Chip.Icon>
       </materialDesign:Chip>
 
+      <!--==========================-->
       <!-- TREE VIEW 1  -->
+      <!--==========================-->
       <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0"
                 AllowDrop="True" Drop="Tree1_drop"
                 SelectedItemChanged="TreeView1_SelectedItemChanged">
@@ -105,7 +102,7 @@
             <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
               <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
               <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
-              <Button  x:Name="btUfUnit" Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit2_Click"  Style="{StaticResource OutlinedStyle}" Visibility="Hidden" />
+              <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit2_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
               <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
             </StackPanel>
 
@@ -134,7 +131,9 @@
         </TreeView.Resources>
       </TreeView>
 
-      <!-- Barre de Recherche -->
+      <!--==========================-->
+      <!-- Barre de Recherche 1     -->
+      <!--==========================-->
       <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
         <Grid Margin="8">
           <Grid.ColumnDefinitions>
@@ -165,7 +164,9 @@
       <!-- *************************************************************** -->
       <!--                     Grille de droite                            -->
       <!-- *************************************************************** -->
+      <!--==========================-->
       <!-- Toolbar -->
+      <!--==========================-->
       <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
         <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
           <Button ToolTip="Tree stats" Name="bTray2Button1" Click="bTray2Button1_Click">
@@ -177,7 +178,9 @@
         </ToolBar>
       </ToolBarTray>
 
+      <!--==========================-->
       <!-- CHIP: Display Info -->
+      <!--==========================-->
       <materialDesign:Chip Grid.Column="2" Grid.Row="1" x:Name="Tree2_InfoChip"
           Content="no file loaded"
           IsDeletable="True" DeleteClick="Tree2_CloseFile_bt"  DeleteToolTip="Close the file">
@@ -186,7 +189,9 @@
         </materialDesign:Chip.Icon>
       </materialDesign:Chip>
 
-      <!-- TREE VIEW avec Binding -->
+      <!--==========================-->
+      <!-- TREE VIEW avec Binding   -->
+      <!--==========================-->
       <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0"
                 AllowDrop="True" Drop="Tree2_drop"
                 SelectedItemChanged="Tree2_SelectedItemChanged">
@@ -198,10 +203,10 @@
 
             <!-- Affichage par défaut des données -->
             <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-              <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
-              <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
-              <Button  x:Name="btUfUnit" Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit_Click"  Style="{StaticResource OutlinedStyle}" Visibility="Hidden" />
-              <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
+              <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" VerticalAlignment="Center"/>
+              <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center" />
+              <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit_Click" Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
+              <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 
             <HierarchicalDataTemplate.Triggers>
@@ -254,8 +259,10 @@
           </Button>
         </StackPanel>
       </materialDesign:PopupBox>
-      
-      <!--Barre de recherche -->
+
+      <!--==================================================-->
+      <!--           Barre de recherche 2                   -->
+      <!--==================================================-->
       <materialDesign:ColorZone  Grid.Column="2" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
         <Grid Margin="8">
           <Grid.ColumnDefinitions>
@@ -304,13 +311,13 @@
           <!--Padding="0" Width="200"-->
           <Grid>
             <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" Name="logo_0"/>
+              <RowDefinition Height="Auto" Name="titre_1" />
+              <RowDefinition Height="Auto" Name="sepline_2" />
+              <RowDefinition Height="Auto" Name="nb_nodes_3" />
+              <RowDefinition Height="Auto" Name="nb_levels_4"/>
+              <RowDefinition Height="Auto" Name="nb_keys_5"/>
+              <RowDefinition Height="Auto" Name="sepline_and_close_6" />
             </Grid.RowDefinitions>
             <materialDesign:ColorZone Grid.Row="0"
                 Mode="PrimaryDark" VerticalAlignment="Stretch">
@@ -339,6 +346,7 @@
               <TextBlock Text="Nb of keys"/>
               <TextBlock Name="tbStatKeys" Margin="12,0,0,0"/>
             </StackPanel>
+            <Separator Grid.Row="6" Style="{StaticResource MaterialDesignLightSeparator}" />
             <Button Grid.Row="6"
                     HorizontalAlignment="Right" Width="30"
                     Style="{StaticResource MaterialDesignToolForegroundButton}"
@@ -398,8 +406,8 @@
                        Margin="18 6 18 0"
                        HorizontalAlignment="Center"
                        Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                       Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}">
-              Length stats
+                       Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}"
+                       Text="Length stats">              
             </TextBlock>
             <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
             <TextBlock Grid.Row="3" Grid.Column="0" Text="Number of labels" Margin="12,0,0,0" />
@@ -508,6 +516,14 @@
             </Grid>
         </materialDesign:PopupBox>-->
 
+    <!--<StackPanel Grid.Row="7" Orientation="Horizontal" Margin="12,2,0,0" Visibility="Hidden">
+      <TextBlock Text="Col width" />
+      <TextBlock Text="{Binding ElementName=TreeView2, Path=ActualWidth}" Margin="12,0,0,0" />
+    </StackPanel>
+    <StackPanel Grid.Row="8" Orientation="Horizontal" Margin="12,2,0,0" Visibility="Hidden">
+      <TextBlock Text="parent width" />
+      <TextBlock Text="{Binding ElementName=dockpanel, Path=ActualWidth}" Margin="12,0,0,0" />
+    </StackPanel>-->
 
 
 

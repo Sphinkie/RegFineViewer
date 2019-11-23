@@ -257,6 +257,7 @@ namespace RegFineViewer
             
             Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
             Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
+            var Z = UnitButton.Style.BasedOn;
             /*
             // UnitButton.Style = PlainStyle;
             var Col = UnitButton.Foreground;
