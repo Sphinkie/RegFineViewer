@@ -26,6 +26,9 @@ namespace RegFineViewer
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
         private RegFileParser Parser2;
+        // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
+        private List<RegistryItem> NodeList1 = new List<RegistryItem>();
+        private List<RegistryItem> NodeList2 = new List<RegistryItem>();
 
         public MainWindow()
         {
@@ -49,6 +52,11 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void FillRegistryTree(object sender, RoutedEventArgs e)
         {
+            NodeList1.Clear();
+            NodeList1.Add(RegistryTree1[0]);
+             BuildList(RegistryTree1[0]);
+
+            /*
             RegistryItem K1 = new RegistryItem("clef 1", "dword");
             RegistryItem K2 = new RegistryItem("clef 2", "dword");
             RegistryItem N1 = new RegistryItem("Node 1", "node");
@@ -77,7 +85,10 @@ namespace RegFineViewer
             N4.AddSubItem(K5);
             N4.AddSubItem(K6);
             N2.AddSubItem(N4);
+            */
         }
+
+
 
         // -------------------------------------------------------------------------
         // Drop d'un (ou plusieurs) fichier(s) dans une TreeView
@@ -254,7 +265,7 @@ namespace RegFineViewer
             var StackP = UnitButton.Parent as StackPanel;
             var TextB = StackP.Children[3] as TextBlock;
             TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-            
+
             Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
             Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
             var Z = UnitButton.Style.BasedOn;
@@ -283,6 +294,16 @@ namespace RegFineViewer
             var StackP = UnitButton.Parent as StackPanel;
             var TextB = StackP.Children[3] as TextBlock;
             TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+        }
+
+        private void BuildList(RegistryItem item)
+        {
+            foreach (RegistryItem child in item.SubItem)
+            {
+                // NodeList1.Add(child);
+                NodeList1.AddRange(child.SubItem);
+                this.BuildList(child);
+            }
         }
     }
 }
