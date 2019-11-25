@@ -102,7 +102,7 @@
             <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
               <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000"/>
               <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
-              <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit2_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
+              <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="Tree1_ChangeUnit_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
               <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
             </StackPanel>
 
@@ -205,7 +205,7 @@
             <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
               <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" VerticalAlignment="Center"/>
               <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center" />
-              <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="ChangeUnit_Click" Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
+              <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="Tree2_ChangeUnit_Click" Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
               <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
 

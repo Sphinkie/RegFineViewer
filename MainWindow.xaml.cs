@@ -52,11 +52,6 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void FillRegistryTree(object sender, RoutedEventArgs e)
         {
-            NodeList1.Clear();
-            NodeList1.Add(RegistryTree1[0]);
-             BuildList(RegistryTree1[0]);
-
-            /*
             RegistryItem K1 = new RegistryItem("clef 1", "dword");
             RegistryItem K2 = new RegistryItem("clef 2", "dword");
             RegistryItem N1 = new RegistryItem("Node 1", "node");
@@ -85,10 +80,7 @@ namespace RegFineViewer
             N4.AddSubItem(K5);
             N4.AddSubItem(K6);
             N2.AddSubItem(N4);
-            */
         }
-
-
 
         // -------------------------------------------------------------------------
         // Drop d'un (ou plusieurs) fichier(s) dans une TreeView
@@ -102,6 +94,7 @@ namespace RegFineViewer
             }
 
             if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
+
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
             if (droppedFiles.Length == 1)
             {
@@ -110,6 +103,7 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName);
             }
+            
             // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
             else
             {
@@ -121,6 +115,8 @@ namespace RegFineViewer
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
             }
+            NodeList1.Clear();
+            NodeList1 = this.BuildList(RegistryTree1[0]);
         }
         private void Tree2_drop(object sender, DragEventArgs e)
         {
@@ -252,58 +248,59 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Click sur le bouton ChangeUnit d'un Registry Key du Registry Tree
         // -------------------------------------------------------------------------
-        private void ChangeUnit_Click(object sender, RoutedEventArgs e)
+        private void Tree1_ChangeUnit_Click(object sender, RoutedEventArgs e)
         {
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
-            RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
-            // On modifie son unité préférée
-            Item.ChangeToNextUnit(UnitDictionnary);
-            // On raffraichit le texte du bouton "btUfUnit"
-            UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
-            // On raffraichit le texte de son frere TextBlock "lbUfValue"
-            var StackP = UnitButton.Parent as StackPanel;
-            var TextB = StackP.Children[3] as TextBlock;
-            TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+            // DataContext renvoie le DataSource du Control
+            RegistryItem Item = UnitButton.DataContext as RegistryItem;
+            this.ChangeUnit(UnitButton, Item);
 
-            Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
-            Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
-            var Z = UnitButton.Style.BasedOn;
-            /*
-            // UnitButton.Style = PlainStyle;
-            var Col = UnitButton.Foreground;
-            UnitButton.Foreground = UnitButton.Background;
-            UnitButton.Background = Col;
-            */
             // 3 méthodes possibles pour faire un refresh du binding
             // ((TextBox)sender).GetBindingExpression(ComboBox.TextProperty).UpdateSource();         // Update le DataSource en fonction du Control
             // ((ComboBox)sender).GetBindingExpression(ComboBox.ItemsSourceProperty).UpdateTarget(); // Update le Control en fonction du DataSource
             // OnPropertyChanged("Property");
+            // Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
+            // Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
         }
-
-        private void ChangeUnit2_Click(object sender, RoutedEventArgs e)
+        private void Tree2_ChangeUnit_Click(object sender, RoutedEventArgs e)
         {
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
-            RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
+            // DataContext renvoie le DataSource du Control
+            RegistryItem Item = UnitButton.DataContext as RegistryItem;         
+            this.ChangeUnit(UnitButton, Item);
+        }
+
+        private void ChangeUnit(Button UnitButton, RegistryItem Item)
+        {
             // On modifie son unité préférée
             Item.ChangeToNextUnit(UnitDictionnary);
             // On raffraichit le texte du bouton "btUfUnit"
             UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
-            // On raffraichit le texte de son frere TextBlock "lbUfValue"
+            // On raffraichit le texte de son frère TextBlock "lbUfValue"
             var StackP = UnitButton.Parent as StackPanel;
             var TextB = StackP.Children[3] as TextBlock;
             TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
         }
 
-        private void BuildList(RegistryItem item)
+        // -------------------------------------------------------------------------
+        // Contruit la liste (à plat) de tous les nodes du registryTree
+        // C'est pratique pour y faire des recherches
+        // -------------------------------------------------------------------------
+        private List<RegistryItem> BuildList(RegistryItem item)
         {
+            List<RegistryItem> liste = new List<RegistryItem>();
             foreach (RegistryItem child in item.SubItem)
             {
-                // NodeList1.Add(child);
-                NodeList1.AddRange(child.SubItem);
-                this.BuildList(child);
+                // ajoute les enfants du node courant à liste
+                liste.AddRange(child.SubItem);
+                // Ajoute à la liste les enfants de chaque Child
+                liste.AddRange(this.BuildList(child));
             }
+            return liste;
+            // La liste est détruite chaque fois que l'on sort de la méthode,
+            // mais après qu'elle ait été retournée à la methode appelante (ré-entrance)
         }
     }
 }
