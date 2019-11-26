@@ -10,9 +10,11 @@ namespace RegFineViewer
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree;
         // Dictionaire des nodes
-        private Dictionary<string, RegistryItem> nodepathTable = new Dictionary<string, RegistryItem>();
+        private Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();
         // Dictionnaire des Prefered units
         private KeyUnitDictionnary PreferedUnits;
+        // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
+        private List<RegistryItem> NodeList = new List<RegistryItem>();
         // Tableau de statistiques
         private int[] TableStats = new int[100];
 
@@ -42,7 +44,7 @@ namespace RegFineViewer
         {
             // On commence par vider la collection et le dictionnaire
             RegistryTree.Clear();
-            nodepathTable.Clear();
+            NodepathTable.Clear();
             AverageLabelLengh = 0;
             ModalLabelLength = 0;
             NbLevels = 0;
@@ -168,8 +170,8 @@ namespace RegFineViewer
         private void AddToNodeTable(RegistryItem node, string nodepath)
         {
             nodepath = nodepath.ToUpper();
-            if (!nodepathTable.ContainsKey(nodepath))
-                nodepathTable[nodepath] = node;
+            if (!NodepathTable.ContainsKey(nodepath))
+                NodepathTable[nodepath] = node;
         }
 
         // ------------------------------------------------------------------
@@ -178,8 +180,8 @@ namespace RegFineViewer
         private RegistryItem GetFromNodeTable(string nodepath)
         {
             nodepath = nodepath.ToUpper();
-            if (nodepathTable.ContainsKey(nodepath))
-                return nodepathTable[nodepath];
+            if (NodepathTable.ContainsKey(nodepath))
+                return NodepathTable[nodepath];
             else
                 return null;
         }
@@ -275,6 +277,37 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
+        // Contruit la liste (à plat) de tous les nodes du registryTree
+        // C'est pratique pour y faire des recherches
+        // ------------------------------------------------------------------
+        public void BuildList()
+        {
+            NodeList.Clear();
+            if (RegistryTree.Count>0)
+                NodeList = BuildNodeList(RegistryTree[0]);
+        }
+
+        // ------------------------------------------------------------------
+        // Fonction recursive: on lui donne un Node, elle retourne la Liste de ses nodes children
+        // ------------------------------------------------------------------
+        private List<RegistryItem> BuildNodeList(RegistryItem item)
+        {
+            List<RegistryItem> liste = new List<RegistryItem>();
+            foreach (RegistryItem child in item.SubItem)
+            {
+                // ajoute les enfants du node courant à liste
+                liste.AddRange(child.SubItem);
+                // Ajoute à la liste les enfants de chaque Child
+                liste.AddRange(this.BuildNodeList(child));
+            }
+            return liste;
+            // La liste est détruite chaque fois que l'on sort de la méthode,
+            // mais après qu'elle ait été retournée à la methode appelante (ré-entrance)
+        }
+
+        // ------------------------------------------------------------------
+        // STATISTIQUES
+        // ------------------------------------------------------------------
         // Calcule la moyenne de toutes les longueurs enregistrées dans la tableau
         // ------------------------------------------------------------------
         public Int32 GetAverageLength()
@@ -305,6 +338,8 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
+        // STATISTIQUES
+        // ------------------------------------------------------------------
         // Calcule l'ecart type: sqr(ariance)
         // variance = 1/n * (somme (x²) - moy²)
         // ------------------------------------------------------------------
@@ -330,6 +365,8 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
+        // STATISTIQUES
+        // ------------------------------------------------------------------
         // Retourne le nombre de keys dont le label a cette longueur
         // ------------------------------------------------------------------
         public Int32 GetNbOfItemsLengthEqualsTo(int length)
@@ -340,6 +377,8 @@ namespace RegFineViewer
                 return 0;
         }
 
+        // ------------------------------------------------------------------
+        // STATISTIQUES
         // ------------------------------------------------------------------
         // Retourne le nombre de keys dont le label a un longueur plus petite
         // ------------------------------------------------------------------

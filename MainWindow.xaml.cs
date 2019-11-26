@@ -93,7 +93,10 @@ namespace RegFineViewer
                 droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
             }
 
-            if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
+            if ((droppedFiles==null) || (!droppedFiles.Any())) { return; }
+
+            DropZone1.Visibility = Visibility.Hidden;
+            TreeView1.Visibility = Visibility.Visible;
 
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
             if (droppedFiles.Length == 1)
@@ -102,8 +105,9 @@ namespace RegFineViewer
                 Tree1_InfoChip.Content = fileName;
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName);
+                Parser1.BuildList();
             }
-            
+
             // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
             else
             {
@@ -114,9 +118,9 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
+                Parser1.BuildList();
+                Parser2.BuildList();
             }
-            NodeList1.Clear();
-            NodeList1 = this.BuildList(RegistryTree1[0]);
         }
         private void Tree2_drop(object sender, DragEventArgs e)
         {
@@ -127,7 +131,10 @@ namespace RegFineViewer
                 droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
             }
             // En cas de liste vide, on sort.
-            if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
+            if ((droppedFiles==null) || (!droppedFiles.Any())) { return; }
+
+            DropZone2.Visibility = Visibility.Hidden;
+            TreeView2.Visibility = Visibility.Visible;
 
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
             if (droppedFiles.Length == 1)
@@ -136,6 +143,7 @@ namespace RegFineViewer
                 Tree2_InfoChip.Content = fileName;
                 // On remplit le RegistryTree à partir du fichier
                 Parser2.ParseFile(fileName);
+                Parser2.BuildList();
             }
             // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
             else
@@ -147,6 +155,8 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
+                Parser1.BuildList();
+                Parser2.BuildList();
             }
         }
 
@@ -157,11 +167,17 @@ namespace RegFineViewer
         {
             Tree1_InfoChip.Content = "no file loaded";
             RegistryTree1.Clear();
+            DropZone1.Visibility = Visibility.Visible;
+            TreeView1.Visibility = Visibility.Hidden;
+
         }
         private void Tree2_CloseFile_bt(object sender, RoutedEventArgs e)
         {
             Tree2_InfoChip.Content = "no file loaded";
             RegistryTree2.Clear();
+            DropZone2.Visibility = Visibility.Visible;
+            TreeView2.Visibility = Visibility.Hidden;
+
         }
 
         // -------------------------------------------------------------------------
@@ -248,13 +264,12 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Click sur le bouton ChangeUnit d'un Registry Key du Registry Tree
         // -------------------------------------------------------------------------
-        private void Tree1_ChangeUnit_Click(object sender, RoutedEventArgs e)
+        private void TreeView_ChangeUnit_Click(object sender, RoutedEventArgs e)
         {
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
             // DataContext renvoie le DataSource du Control
             RegistryItem Item = UnitButton.DataContext as RegistryItem;
-            this.ChangeUnit(UnitButton, Item);
 
             // 3 méthodes possibles pour faire un refresh du binding
             // ((TextBox)sender).GetBindingExpression(ComboBox.TextProperty).UpdateSource();         // Update le DataSource en fonction du Control
@@ -262,18 +277,7 @@ namespace RegFineViewer
             // OnPropertyChanged("Property");
             // Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
             // Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
-        }
-        private void Tree2_ChangeUnit_Click(object sender, RoutedEventArgs e)
-        {
-            // On retrouve l'item en cours du TreeView
-            var UnitButton = sender as Button;
-            // DataContext renvoie le DataSource du Control
-            RegistryItem Item = UnitButton.DataContext as RegistryItem;         
-            this.ChangeUnit(UnitButton, Item);
-        }
 
-        private void ChangeUnit(Button UnitButton, RegistryItem Item)
-        {
             // On modifie son unité préférée
             Item.ChangeToNextUnit(UnitDictionnary);
             // On raffraichit le texte du bouton "btUfUnit"
@@ -288,7 +292,7 @@ namespace RegFineViewer
         // Contruit la liste (à plat) de tous les nodes du registryTree
         // C'est pratique pour y faire des recherches
         // -------------------------------------------------------------------------
-        private List<RegistryItem> BuildList(RegistryItem item)
+        private List<RegistryItem> BuildNodeList(RegistryItem item)
         {
             List<RegistryItem> liste = new List<RegistryItem>();
             foreach (RegistryItem child in item.SubItem)
@@ -296,7 +300,7 @@ namespace RegFineViewer
                 // ajoute les enfants du node courant à liste
                 liste.AddRange(child.SubItem);
                 // Ajoute à la liste les enfants de chaque Child
-                liste.AddRange(this.BuildList(child));
+                liste.AddRange(this.BuildNodeList(child));
             }
             return liste;
             // La liste est détruite chaque fois que l'on sort de la méthode,
