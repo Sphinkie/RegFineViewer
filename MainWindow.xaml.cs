@@ -26,9 +26,8 @@ namespace RegFineViewer
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
         private RegFileParser Parser2;
-        // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
-        private List<RegistryItem> NodeList1 = new List<RegistryItem>();
-        private List<RegistryItem> NodeList2 = new List<RegistryItem>();
+        // Pour les recherches
+        string SearchedWord;
 
         public MainWindow()
         {
@@ -183,7 +182,28 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Bouton FIND (barre de recherche)
         // -------------------------------------------------------------------------
+        private void Tree1_Search_bt(object sender, RoutedEventArgs e)
+        {
+            this.SearchedWord = SearchedWord1.Text;
+            RegistryItem Result = Parser1.NodeList.Find(Predicat);
+        }
 
+        private void Tree2_Search_bt(object sender, RoutedEventArgs e)
+        {
+            this.SearchedWord = SearchedWord2.Text;
+            RegistryItem Result = Parser1.NodeList.Find(Predicat);
+        }
+
+        // --------------------------------------------
+        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché
+        // --------------------------------------------
+        private bool Predicat(RegistryItem item)
+        {
+            if (item.Name.Contains(this.SearchedWord) || item.Value.Contains(this.SearchedWord))
+                return true;
+            else
+                return false;
+        }
 
         // -------------------------------------------------------------------------
         // Selection
@@ -312,14 +332,5 @@ namespace RegFineViewer
             // mais après qu'elle ait été retournée à la methode appelante (ré-entrance)
         }
 
-        private void Tree1_Search_bt(object sender, RoutedEventArgs e)
-        {
-            string SearchedWord = SearchedWord1.Text;
-        }
-
-        private void Tree2_Search_bt(object sender, RoutedEventArgs e)
-        {
-            string SearchedWord = SearchedWord2.Text;
-        }
     }
 }

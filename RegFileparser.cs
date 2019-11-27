@@ -7,14 +7,15 @@ namespace RegFineViewer
 {
     class RegFileParser
     {
+        // --------------------------------------------
+        // Objets privés
+        // --------------------------------------------
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree;
         // Dictionaire des nodes
         private Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();
         // Dictionnaire des Prefered units
         private KeyUnitDictionnary PreferedUnits;
-        // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
-        private List<RegistryItem> NodeList = new List<RegistryItem>();
         // Tableau de statistiques
         private int[] TableStats = new int[100];
 
@@ -23,8 +24,10 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         public RegFileParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
         {
+            // On crée un objet NodeList
+            NodeList = new List<RegistryItem>();
             // On mémorise le registrytree et le dictionnaire
-            RegistryTree  = registrytree;
+            RegistryTree = registrytree;
             PreferedUnits = dictionnary;
             // On initialise les variables
             Array.Clear(TableStats, 0, TableStats.Length);
@@ -283,7 +286,7 @@ namespace RegFineViewer
         public void BuildList()
         {
             NodeList.Clear();
-            if (RegistryTree.Count>0)
+            if (RegistryTree.Count > 0)
                 NodeList = BuildNodeList(RegistryTree[0]);
         }
 
@@ -326,7 +329,7 @@ namespace RegFineViewer
                 // Décompte des éléments
                 nombre += nbLg;
                 // Détermination du max (=mode)
-                if ((nbLg > mode) && (lg>1))
+                if ((nbLg > mode) && (lg > 1))
                 {
                     // On a trouvé un nouveau Mode
                     mode = nbLg;
@@ -403,5 +406,7 @@ namespace RegFineViewer
         public int NbKeys { get; private set; }
         public int NbNodes { get; private set; }
         public int NbLevels { get; private set; }
+        // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
+        public List<RegistryItem> NodeList { get; private set; }
     }
 }

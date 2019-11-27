@@ -113,46 +113,6 @@ namespace RegFineViewer
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
 
         // --------------------------------------------
-        // Parcours du TreeView. Methode 1.
-        // --------------------------------------------
-        //public static List<TreeNode> GetAllTreeViewNodes(this TreeView _self)
-        //{
-        //    List<TreeNode> result = new List<TreeNode>();
-        //    foreach (TreeNode child in _self.Nodes)
-        //    {
-        //        result.AddRange(GetAllTreeViewNodes(child));
-        //    }
-        //    return result;
-        //}
-
-        // --------------------------------------------
-        // Parcours du Tree. Methode 2.
-        // --------------------------------------------
-        /*
-        public List<RegistryItem> GetAllTreeNodes(this RegistryItem _self)
-        {
-            List<RegistryItem> result = new List<RegistryItem>();
-            result.Add(_self);
-            foreach (RegistryItem child in _self.SubItem)
-            {
-                result.AddRange(GetAllTreeNodes(child));
-            }
-            return result;
-        }
-        */
-
-        // --------------------------------------------
-        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché
-        // --------------------------------------------
-        public bool Predicat (string searched)
-        {
-            if (Name.Contains(searched) || Value.Contains(searched))
-                return true;
-            else
-                return false;
-        }
-
-        // --------------------------------------------
         // Variables
         // --------------------------------------------
         public string Name { get; set; }
