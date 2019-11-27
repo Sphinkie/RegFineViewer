@@ -181,6 +181,11 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
+        // Bouton FIND (barre de recherche)
+        // -------------------------------------------------------------------------
+
+
+        // -------------------------------------------------------------------------
         // Selection
         // -------------------------------------------------------------------------
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -305,6 +310,16 @@ namespace RegFineViewer
             return liste;
             // La liste est détruite chaque fois que l'on sort de la méthode,
             // mais après qu'elle ait été retournée à la methode appelante (ré-entrance)
+        }
+
+        private void Tree1_Search_bt(object sender, RoutedEventArgs e)
+        {
+            string SearchedWord = SearchedWord1.Text;
+        }
+
+        private void Tree2_Search_bt(object sender, RoutedEventArgs e)
+        {
+            string SearchedWord = SearchedWord2.Text;
         }
     }
 }

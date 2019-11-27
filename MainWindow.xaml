@@ -17,11 +17,6 @@
         Name="Fenetre"
         >
 
-    <!--
-
-  -->
-
-
     <!--On définit quelques styles généraux-->
     <Window.Resources>
         <Style TargetType="materialDesign:Chip" >
@@ -59,9 +54,9 @@
             <!-- *************************************************************** -->
             <!--                     Grille de Gauche                            -->
             <!-- *************************************************************** -->
-            <!--==========================-->
-            <!--Toolbar 1 -->
-            <!--==========================-->
+            <!-- ==========================-->
+            <!-- Toolbar 1 -->
+            <!-- ==========================-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
                     <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
@@ -76,9 +71,9 @@
                 </ToolBar>
             </ToolBarTray>
 
-            <!--==========================-->
+            <!-- ==========================-->
             <!-- CHIP 1 -->
-            <!--==========================-->
+            <!-- ==========================-->
             <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip"
           Content="no file loaded"
           IsDeletable="True" DeleteClick="Tree1_CloseFile_bt"  DeleteToolTip="Close the file">
@@ -87,16 +82,15 @@
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
 
-            <!--==========================-->
+            <!-- ==========================-->
             <!-- DROP ZONE 1  -->
-            <!--==========================-->
+            <!-- ==========================-->
             <TextBlock x:Name="DropZone1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop" 
                        Text="drop your registry file here" 
                        FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40" Focusable="False" />
-            <!--==========================-->
+            <!-- ==========================-->
             <!-- TREE VIEW 1  -->
-            <!--==========================-->
-
+            <!-- ==========================-->
             <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0" Visibility="Hidden"
                 AllowDrop="True" Drop="Tree1_drop"
                 SelectedItemChanged="TreeView1_SelectedItemChanged">
@@ -138,10 +132,12 @@
                 </TreeView.Resources>
             </TreeView>
 
-            <!--==========================-->
-            <!-- Barre de Recherche 1     -->
-            <!--==========================-->
-            <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+            <!-- ========================== -->
+            <!-- Barre de Recherche 1       -->
+            <!-- ========================== -->
+            <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" 
+                                       IsEnabled="{Binding ElementName=TreeView1, Path=IsVisible}"
+                                       materialDesign:ShadowAssist.ShadowDepth="Depth3">
                 <Grid Margin="8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -154,10 +150,10 @@
                     <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32" CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <StackPanel Orientation="Horizontal" Margin="2" >
                             <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher1"/>
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="SearchedWord1"/>
                         </StackPanel>
                     </materialDesign:ColorZone>
-                    <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
+                    <Button Grid.Column="3"  Margin="8 0 0 0 " Click="Tree1_Search_bt">Find</Button>
                 </Grid>
             </materialDesign:ColorZone>
 
@@ -170,9 +166,9 @@
             <!-- *************************************************************** -->
             <!--                     Grille de droite                            -->
             <!-- *************************************************************** -->
-            <!--==========================-->
+            <!-- ==========================-->
             <!-- Toolbar 2 -->
-            <!--==========================-->
+            <!-- ==========================-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="2" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}">
                     <Button ToolTip="Tree stats" Name="bTray2Button1" Click="bTray2Button1_Click">
@@ -184,9 +180,9 @@
                 </ToolBar>
             </ToolBarTray>
 
-            <!--==========================-->
+            <!-- ==========================-->
             <!-- CHIP 2: Display Info -->
-            <!--==========================-->
+            <!-- ==========================-->
             <materialDesign:Chip Grid.Column="2" Grid.Row="1" x:Name="Tree2_InfoChip"
           Content="no file loaded"
           IsDeletable="True" DeleteClick="Tree2_CloseFile_bt"  DeleteToolTip="Close the file">
@@ -195,15 +191,15 @@
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
 
-            <!--==========================-->
+            <!-- ==========================-->
             <!-- DROP ZONE 2  -->
-            <!--==========================-->
+            <!-- ==========================-->
             <TextBlock x:Name="DropZone2" Grid.Column="2" Grid.Row="2" AllowDrop="True" Drop="Tree2_drop" 
                        Text="drop your registry file here" 
                        FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40" Focusable="False" />
-            <!--==========================-->
-            <!-- TREE VIEW 2 avec Binding -->
-            <!--==========================-->
+            <!-- ==========================-->
+            <!-- TREE VIEW 2 avec Binding  -->
+            <!-- ==========================-->
             <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0" Visibility="Hidden"
                 AllowDrop="True" Drop="Tree2_drop"
                 SelectedItemChanged="Tree2_SelectedItemChanged">
@@ -246,7 +242,9 @@
                 </TreeView.Resources>
             </TreeView>
 
-            <!--BOUTON + -->
+            <!-- ========================== -->
+            <!-- BOUTON AJOUTER             -->
+            <!-- ========================== -->
             <materialDesign:PopupBox Grid.Column="2" Grid.Row="3"
           Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
           IsEnabled="False"
@@ -272,11 +270,13 @@
                 </StackPanel>
             </materialDesign:PopupBox>
 
-            <!--==================================================-->
+            <!-- ==================================================-->
             <!--           Barre de recherche 2                   -->
-            <!--==================================================-->
-            <materialDesign:ColorZone  Grid.Column="2" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" materialDesign:ShadowAssist.ShadowDepth="Depth3">
-                <Grid Margin="8">
+            <!-- ==================================================-->
+            <materialDesign:ColorZone  Grid.Column="2" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" 
+                                       IsEnabled="{Binding ElementName=TreeView2, Path=IsVisible}"
+                                       materialDesign:ShadowAssist.ShadowDepth="Depth3" >
+                <Grid Margin="8" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
@@ -284,15 +284,15 @@
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
-                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
+                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:"  />
                     <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32"
                                     CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <StackPanel Orientation="Horizontal" Margin="2" >
                             <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="Achercher2"/>
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="SearchedWord2"/>
                         </StackPanel>
                     </materialDesign:ColorZone>
-                    <Button IsEnabled="False" Grid.Column="3"  Margin="8 0 0 0 ">Find</Button>
+                    <Button Grid.Column="3"  Margin="8 0 0 0" Click="Tree2_Search_bt" >Find</Button>
                 </Grid>
             </materialDesign:ColorZone>
         </Grid>
