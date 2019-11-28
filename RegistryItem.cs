@@ -7,14 +7,14 @@ using System.Windows.Controls;
 
 namespace RegFineViewer
 {
-    class RegistryItem
+    class RegistryItem : TreeViewItemBase 
     {
         // --------------------------------------------
         // constructeur
         // --------------------------------------------
         public RegistryItem(string name, string type)
         {
-            // Initialisations
+            // InitialisationsB
             Name = name;
             DType = type;
             Value = string.Empty;
@@ -113,7 +113,7 @@ namespace RegFineViewer
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
 
         // --------------------------------------------
-        // Variables
+        // Propriétés publiques
         // --------------------------------------------
         public string Name { get; set; }
         public string DType { get; }

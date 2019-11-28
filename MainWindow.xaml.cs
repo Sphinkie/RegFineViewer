@@ -92,7 +92,7 @@ namespace RegFineViewer
                 droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
             }
 
-            if ((droppedFiles==null) || (!droppedFiles.Any())) { return; }
+            if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
 
             DropZone1.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
@@ -130,7 +130,7 @@ namespace RegFineViewer
                 droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
             }
             // En cas de liste vide, on sort.
-            if ((droppedFiles==null) || (!droppedFiles.Any())) { return; }
+            if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
 
             DropZone2.Visibility = Visibility.Hidden;
             TreeView2.Visibility = Visibility.Visible;
@@ -186,6 +186,11 @@ namespace RegFineViewer
         {
             this.SearchedWord = SearchedWord1.Text;
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
+            // On se positionne sur cet item
+            Result.IsSelected = true;
+            // On expand le node parent
+            // TreeView1.BringIntoView();
+            var item = TreeView1.SelectedItem;
         }
 
         private void Tree2_Search_bt(object sender, RoutedEventArgs e)
@@ -206,11 +211,11 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Selection
+        // Selection du TreeView: (inutile)
         // -------------------------------------------------------------------------
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-
+            var X = sender;     // Treeview1
         }
         private void Tree2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -314,23 +319,18 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Contruit la liste (à plat) de tous les nodes du registryTree
-        // C'est pratique pour y faire des recherches
+        // Selection du TreeViewItem
         // -------------------------------------------------------------------------
-        private List<RegistryItem> BuildNodeList(RegistryItem item)
+        private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
         {
-            List<RegistryItem> liste = new List<RegistryItem>();
-            foreach (RegistryItem child in item.SubItem)
-            {
-                // ajoute les enfants du node courant à liste
-                liste.AddRange(child.SubItem);
-                // Ajoute à la liste les enfants de chaque Child
-                liste.AddRange(this.BuildNodeList(child));
-            }
-            return liste;
-            // La liste est détruite chaque fois que l'on sort de la méthode,
-            // mais après qu'elle ait été retournée à la methode appelante (ré-entrance)
-        }
+            var X = sender as TreeViewItem;
+            var E = e;
+                        var S = e.Source;
 
+            //le pb est qu'il y a (au bout d'un moment) plusieurs items sélectionnées et on passe ici N fois
+            X.BringIntoView();
+            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
+
+        }
     }
 }
