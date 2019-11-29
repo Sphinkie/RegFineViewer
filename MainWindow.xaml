@@ -221,6 +221,14 @@
                 AllowDrop="True" Drop="Tree2_drop"
                 SelectedItemChanged="Tree2_SelectedItemChanged">
 
+                <!-- On peut definir ausi le style des TreeViewItems de cette façon: -->
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                   </Style>
+                </TreeView.ItemContainerStyle>
+
                 <TreeView.Resources>
                     <HierarchicalDataTemplate
               DataType="{x:Type local:RegistryItem}"
