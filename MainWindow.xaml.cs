@@ -58,13 +58,13 @@ namespace RegFineViewer
             K2.Value = "0002";
             N1.AddSubItem(K1);
             N1.AddSubItem(K2);
-            RegistryTree2.Add(N1);
+            RegistryTree1.Add(N1);
 
             RegistryItem K3 = new RegistryItem("clef 3", "dword");
             RegistryItem N2 = new RegistryItem("Node 2", "node");
             K3.Value = "0003";
             N2.AddSubItem(K3);
-            RegistryTree2.Add(N2);
+            RegistryTree1.Add(N2);
 
             RegistryItem K4 = new RegistryItem("clef 4", "dword");
             RegistryItem N3 = new RegistryItem("SubNode 3", "node");
@@ -184,27 +184,37 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Tree1_Search_bt(object sender, RoutedEventArgs e)
         {
-            this.SearchedWord = SearchedWord1.Text;
+            // On deselectionne les TreeItems pouvant être deja selectionnés
+            RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
+            while (SI is RegistryItem)
+            {
+                SI.IsSelected = false; 
+            }
+            // On lance la recherche
+            this.SearchedWord = SearchedWord1.Text.ToUpper();
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
             // On se positionne sur cet item
             Result.IsSelected = true;
             // On expand le node parent
-            // TreeView1.BringIntoView();
-            var item = TreeView1.SelectedItem;
+            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
+            if (item is TreeViewItem)
+                item.BringIntoView();
         }
 
         private void Tree2_Search_bt(object sender, RoutedEventArgs e)
         {
-            this.SearchedWord = SearchedWord2.Text;
+            this.SearchedWord = SearchedWord2.Text.ToUpper();
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
         }
 
         // --------------------------------------------
-        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché
+        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (ne tient pas compte de la casse)
         // --------------------------------------------
         private bool Predicat(RegistryItem item)
         {
-            if (item.Name.Contains(this.SearchedWord) || item.Value.Contains(this.SearchedWord))
+            string UpperName = item.Name.ToUpper();
+            string UpperValue = item.Value.ToUpper();
+            if (UpperName.Contains(this.SearchedWord) || UpperValue.Contains(this.SearchedWord))
                 return true;
             else
                 return false;
@@ -325,7 +335,7 @@ namespace RegFineViewer
         {
             var X = sender as TreeViewItem;
             var E = e;
-                        var S = e.Source;
+            var S = e.Source;
 
             //le pb est qu'il y a (au bout d'un moment) plusieurs items sélectionnées et on passe ici N fois
             X.BringIntoView();

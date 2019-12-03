@@ -46,13 +46,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" Name="leftColumn" MinWidth="420"/>
                 <ColumnDefinition Width="5" Name="separatorColumn"/>
-                <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
+                <ColumnDefinition Width="0" Name="rightColumn" /> <!-- MinWidth="420" Width="*"/-->
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" Name="ToolbarRow" />
-                <RowDefinition Height="Auto" Name="TitleRow"  />
+                <RowDefinition Height="Auto" Name="ToolbarRow"  />
+                <RowDefinition Height="Auto" Name="TitleRow"    />
                 <RowDefinition Height="*"    Name="TreeViewRow" />
-                <RowDefinition Height="Auto" Name="EditionRow" />
+                <RowDefinition Height="Auto" Name="EditionRow"  />
                 <RowDefinition Height="Auto" Name="SearchbarRow" />
             </Grid.RowDefinitions>
 
@@ -109,8 +109,9 @@
 
                         <TreeViewItem 
                             Selected="TreeViewItem_OnItemSelected"
-                            IsSelected="{Binding IsSelected}"
-                            IsExpanded="{Binding IsExpanded}"
+                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                            IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                            local:BringSelectedItemIntoViewBehavior.IsBringSelectedIntoView="True" 
                             >
                             <TreeViewItem.Header>
                             <!-- Affichage par défaut des données -->
@@ -224,8 +225,8 @@
                 <!-- On peut definir ausi le style des TreeViewItems de cette façon: -->
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                        <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                    </Style>
                 </TreeView.ItemContainerStyle>
 
