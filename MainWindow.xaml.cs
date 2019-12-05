@@ -113,7 +113,6 @@ namespace RegFineViewer
                 string fileName1 = droppedFiles[0];
                 string fileName2 = droppedFiles[1];
                 Tree1_InfoChip.Content = fileName1;
-                Tree2_InfoChip.Content = fileName2;
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
@@ -121,44 +120,6 @@ namespace RegFineViewer
                 Parser2.BuildList();
             }
         }
-        private void Tree2_drop(object sender, DragEventArgs e)
-        {
-            string[] droppedFiles = null;
-            // on remplit la liste avec les fichiers qui ont été droppés dans la fenetre
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-            }
-            // En cas de liste vide, on sort.
-            if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
-
-            DropZone2.Visibility = Visibility.Hidden;
-            TreeView2.Visibility = Visibility.Visible;
-
-            // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
-            if (droppedFiles.Length == 1)
-            {
-                string fileName = droppedFiles[0];
-                Tree2_InfoChip.Content = fileName;
-                // On remplit le RegistryTree à partir du fichier
-                Parser2.ParseFile(fileName);
-                Parser2.BuildList();
-            }
-            // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
-            else
-            {
-                string fileName1 = droppedFiles[0];
-                string fileName2 = droppedFiles[1];
-                Tree1_InfoChip.Content = fileName1;
-                Tree2_InfoChip.Content = fileName2;
-                // On remplit le RegistryTree à partir du fichier
-                Parser1.ParseFile(fileName1);
-                Parser2.ParseFile(fileName2);
-                Parser1.BuildList();
-                Parser2.BuildList();
-            }
-        }
-
         // -------------------------------------------------------------------------
         // Bouton CLOSE (de la Chip)
         // -------------------------------------------------------------------------
@@ -168,14 +129,6 @@ namespace RegFineViewer
             RegistryTree1.Clear();
             DropZone1.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
-
-        }
-        private void Tree2_CloseFile_bt(object sender, RoutedEventArgs e)
-        {
-            Tree2_InfoChip.Content = "no file loaded";
-            RegistryTree2.Clear();
-            DropZone2.Visibility = Visibility.Visible;
-            TreeView2.Visibility = Visibility.Hidden;
 
         }
 
@@ -201,12 +154,6 @@ namespace RegFineViewer
                 item.BringIntoView();
             RegistryItem racine = TreeView1.Items[0] as RegistryItem;
             racine.IsExpanded = true;
-        }
-
-        private void Tree2_Search_bt(object sender, RoutedEventArgs e)
-        {
-            this.SearchedWord = SearchedWord2.Text.ToUpper();
-            RegistryItem Result = Parser1.NodeList.Find(Predicat);
         }
 
         // --------------------------------------------
