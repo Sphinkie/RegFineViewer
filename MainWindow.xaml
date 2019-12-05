@@ -179,7 +179,7 @@
             <!-- *************************************************************** -->
             <!--                     Separateur                                  -->
             <!-- *************************************************************** -->
-            <GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" />
+            <!--<GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" />-->
 
             <!-- *************************************************************** -->
             <!--                     Grille de droite                            -->
