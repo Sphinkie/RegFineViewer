@@ -43,10 +43,10 @@
     <DockPanel Name="dockpanel">
         <!-- On definit une grille de 2 colonnes: Left et Right -->
         <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" Name="leftColumn" MinWidth="420"/>
-                <ColumnDefinition Width="5" Name="separatorColumn"/>
-                <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
+           <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" Name="leftColumn" MinWidth="820"/>
+                <!--<ColumnDefinition Width="5" Name="separatorColumn"/-->
+                <!--<ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/-->
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" Name="ToolbarRow"  />
@@ -64,15 +64,18 @@
             <!-- ==========================-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
-                    <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
-                        <materialDesign:PackIcon Kind="ExpandLess"/>
-                    </Button>
+                    <!--Stats Button-->
                     <Button ToolTip="Tree stats" Name="bTray1Button1" Click="bTray1Button1_Click">
                         <materialDesign:PackIcon Kind="ChartBarStacked" />
                     </Button>
+                    <!--Debug Buttton-->
                     <Button ToolTip="Length stats" Name="bTray1Button2" Click="bTray1Button2_Click">
                         <materialDesign:PackIcon Kind="ChartGantt" />
                     </Button>
+                  <!--Debug Button-->
+                  <Button ToolTip="Create a Test tree" Click="FillRegistryTree"  Visibility="Hidden" >
+                    <materialDesign:PackIcon Kind="ExpandLess"/>
+                  </Button>
                 </ToolBar>
             </ToolBarTray>
 
@@ -91,9 +94,10 @@
             <!-- DROP ZONE 1  -->
             <!-- ==========================-->
             <TextBlock x:Name="DropZone1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop" 
-                       Text="drop your registry file here" 
-                       FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" />
-            <!-- ==========================-->
+                       FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" >
+                       drop your<LineBreak/>registry file<LineBreak/>here
+              </TextBlock>
+              <!-- ==========================-->
             <!-- TREE VIEW 1  -->
             <!-- ==========================-->
             <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0" Visibility="Hidden"
@@ -220,9 +224,9 @@
             <!-- ==========================-->
             <!-- TREE VIEW 2 avec Binding  -->
             <!-- ==========================-->
-            <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0" Visibility="Hidden">
+            <!--<TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0" Visibility="Hidden">
 
-                <!-- On peut definir ausi le style des TreeViewItems de cette façon: -->
+                --><!-- On peut definir ausi le style des TreeViewItems de cette façon: --><!--
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -235,7 +239,7 @@
               DataType="{x:Type local:RegistryItem}"
               ItemsSource="{Binding Path=SubItem}">
 
-                        <!-- Affichage par défaut des données -->
+                        --><!-- Affichage par défaut des données --><!--
                         <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
                             <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" VerticalAlignment="Center"/>
                             <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center" />
@@ -244,7 +248,7 @@
                         </StackPanel>
 
                         <HierarchicalDataTemplate.Triggers>
-                            <!-- On change certaines propriétés dans le cas d'un NODE -->
+                            --><!-- On change certaines propriétés dans le cas d'un NODE --><!--
                             <DataTrigger Binding="{Binding DType}" Value="node" >
                                 <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
                                 <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
@@ -252,12 +256,12 @@
                                 <Setter TargetName="lbName"    Property="Margin"     Value="2" />
                                 <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
                             </DataTrigger>
-                            <!-- On change certaines propriétés dans le cas d'un STRING -->
+                            --><!-- On change certaines propriétés dans le cas d'un STRING --><!--
                             <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
                                 <Setter TargetName="lbValue"   Property="Width"      Value="480" />
                                 <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
                             </DataTrigger>
-                            <!-- On change certaines propriétés dans le cas d'un DWORD -->
+                            --><!-- On change certaines propriétés dans le cas d'un DWORD --><!--
                             <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
                                 <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
                                 <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
@@ -266,7 +270,7 @@
 
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
-            </TreeView>
+            </TreeView>-->
 
 
 

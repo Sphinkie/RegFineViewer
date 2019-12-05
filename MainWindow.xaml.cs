@@ -22,10 +22,8 @@ namespace RegFineViewer
     {
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
-        private ObservableCollection<RegistryItem> RegistryTree2 = new ObservableCollection<RegistryItem>();
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
-        private RegFileParser Parser2;
         // Pour les recherches
         string SearchedWord;
 
@@ -38,10 +36,8 @@ namespace RegFineViewer
             UnitDictionnary = new KeyUnitDictionnary("Config.xml");
             // On initialise les parseurs
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
-            Parser2 = new RegFileParser(RegistryTree2, UnitDictionnary);
             // On binde les RegistryTree avec les TreeView de l'affichage
             TreeView1.ItemsSource = RegistryTree1;
-            TreeView2.ItemsSource = RegistryTree2;
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
         }
@@ -142,8 +138,8 @@ namespace RegFineViewer
             // On lance la recherche
             this.SearchedWord = SearchedWord1.Text.ToUpper();
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
-            // On se positionne sur cet item
-            Result.IsSelected = true;
+            // On sélectionne cet item
+            if (Result is RegistryItem) Result.IsSelected = true;
             // On expand le node parent
             TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
             if (item is TreeViewItem)
