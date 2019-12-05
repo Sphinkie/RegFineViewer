@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;       // ObservableCollections
-using System.Collections;                   // Hashtables
 
 
 namespace RegFineViewer
@@ -24,7 +22,6 @@ namespace RegFineViewer
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
-        // Pour les recherches
         string SearchedWord;
 
         public MainWindow()
@@ -34,16 +31,17 @@ namespace RegFineViewer
             DataContext = this;
             // On charge le dictionnaire des unités préférées
             UnitDictionnary = new KeyUnitDictionnary("Config.xml");
-            // On initialise les parseurs
+            // On initialise le parseur
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
             // On binde les RegistryTree avec les TreeView de l'affichage
             TreeView1.ItemsSource = RegistryTree1;
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
+            // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
         }
 
         // -------------------------------------------------------------------------
-        // Pour les tests, ce bouton remplit le RegistryTree2
+        // Pour les tests, ce bouton remplit le RegistryTree
         // -------------------------------------------------------------------------
         private void FillRegistryTree(object sender, RoutedEventArgs e)
         {
@@ -75,6 +73,8 @@ namespace RegFineViewer
             N4.AddSubItem(K5);
             N4.AddSubItem(K6);
             N2.AddSubItem(N4);
+            DropZone1.Visibility = Visibility.Hidden;
+            TreeView1.Visibility = Visibility.Visible;
         }
 
         // -------------------------------------------------------------------------
@@ -113,6 +113,7 @@ namespace RegFineViewer
                 Parser1.BuildList();
             }
         }
+
         // -------------------------------------------------------------------------
         // Bouton CLOSE (de la Chip)
         // -------------------------------------------------------------------------
@@ -140,12 +141,6 @@ namespace RegFineViewer
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
             // On sélectionne cet item
             if (Result is RegistryItem) Result.IsSelected = true;
-            // On expand le node parent
-            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
-            if (item is TreeViewItem)
-                item.BringIntoView();
-            RegistryItem racine = TreeView1.Items[0] as RegistryItem;
-            racine.IsExpanded = true;
         }
 
         // --------------------------------------------
@@ -166,7 +161,6 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var X = sender;     // Treeview1
         }
 
 
@@ -256,18 +250,62 @@ namespace RegFineViewer
 
         // -------------------------------------------------------------------------
         // Selection du TreeViewItem
+        // On ne passe ici que si l'item est visible (expanded) : 
+        // il faut donc ouvrir tout l'arbre avant de faire la recherche.
         // -------------------------------------------------------------------------
         private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
         {
-            var X = sender as TreeViewItem;
-            var E = e;
-            var S = e.Source;
+            TreeViewItem S = e.Source as TreeViewItem;
+            S.BringIntoView();
 
-            //le pb est qu'il y a (au bout d'un moment) plusieurs items sélectionnées et on passe ici N fois
+            // l'un des deux ne sert à rien ...
+
+            TreeViewItem X = sender as TreeViewItem;
             X.BringIntoView();
-            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
+        }
+
+        
+        private void TreeView1_ExpandAll(object sender, RoutedEventArgs e)
+        {
+
+            // Methode 3: un peu mieux: chaque clic expand 1 niveau
+            foreach (object item in this.TreeView1.Items)
+            {
+                TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+                if (treeItem != null)
+                    ExpandAll(treeItem, true);
+                treeItem.IsExpanded = true;
+            }
+
+            // Methode 2 : non
+            /*
+            foreach (var item in TreeView1.Items)
+            {
+                var tvi = item as TreeViewItem;
+                if (tvi != null)
+                    tvi.ExpandSubtree();
+            }
+            */
+
+            // Methode 1 : non
+            // RegistryItem racine = TreeView1.Items[0] as RegistryItem;
+            // racine.IsExpanded = true;
         }
 
 
+        private void ExpandAll(ItemsControl items, bool expand)
+        {
+            foreach (object obj in items.Items)
+            {
+                ItemsControl childControl = items.ItemContainerGenerator.ContainerFromItem(obj) as ItemsControl;
+                if (childControl != null)
+                {
+                    ExpandAll(childControl, expand);
+                }
+                TreeViewItem item = childControl as TreeViewItem;
+                if (item != null)
+                    item.IsExpanded = true;
+            }
+        }
     }
 }
