@@ -46,7 +46,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" Name="leftColumn" MinWidth="420"/>
                 <ColumnDefinition Width="5" Name="separatorColumn"/>
-                <ColumnDefinition Width="0" Name="rightColumn" /> <!-- MinWidth="420" Width="*"/-->
+                <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" Name="ToolbarRow"  />

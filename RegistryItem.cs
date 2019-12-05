@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace RegFineViewer
 {
-    class RegistryItem : TreeViewItemBase 
+    class RegistryItem  : TreeViewItemBase 
     {
         // --------------------------------------------
         // constructeur
@@ -121,5 +121,6 @@ namespace RegFineViewer
         public ObservableCollection<RegistryItem> SubItem { get; }
         public string UserFriendlyUnit { get; set; }
         public string UserFriendlyValue { get; set; }
+
     }
 }

@@ -185,11 +185,11 @@ namespace RegFineViewer
         private void Tree1_Search_bt(object sender, RoutedEventArgs e)
         {
             // On deselectionne les TreeItems pouvant être deja selectionnés
-            RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
-            while (SI is RegistryItem)
-            {
-                SI.IsSelected = false; 
-            }
+            //RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
+            //while (SI is RegistryItem)
+            //{
+            //    SI.IsSelected = false; 
+            //}
             // On lance la recherche
             this.SearchedWord = SearchedWord1.Text.ToUpper();
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
@@ -199,6 +199,8 @@ namespace RegFineViewer
             TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
             if (item is TreeViewItem)
                 item.BringIntoView();
+            RegistryItem racine = TreeView1.Items[0] as RegistryItem;
+            racine.IsExpanded = true;
         }
 
         private void Tree2_Search_bt(object sender, RoutedEventArgs e)
