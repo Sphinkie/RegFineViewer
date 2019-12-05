@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 //using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 //using System.Linq;
 
 namespace RegFineViewer
 {
-    class RegistryItem
+    class RegistryItem  : TreeViewItemBase 
     {
         // --------------------------------------------
         // constructeur
         // --------------------------------------------
         public RegistryItem(string name, string type)
         {
-            // Initialisations
+            // InitialisationsB
             Name = name;
             DType = type;
             Value = string.Empty;
@@ -109,8 +111,9 @@ namespace RegFineViewer
         // Ajout d'un sous-item (key ou Node)
         // --------------------------------------------
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
+
         // --------------------------------------------
-        // Variables
+        // Propriétés publiques
         // --------------------------------------------
         public string Name { get; set; }
         public string DType { get; }
@@ -118,5 +121,6 @@ namespace RegFineViewer
         public ObservableCollection<RegistryItem> SubItem { get; }
         public string UserFriendlyUnit { get; set; }
         public string UserFriendlyValue { get; set; }
+
     }
 }

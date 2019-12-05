@@ -11,15 +11,27 @@ namespace RegFineViewer
     // Cette classe de base provient du tutoriel WPF-TUTORIAL;COM
     // Les objets qui heritent de cette classe de base bénéficie de deux propriétés:
     // isSelected et isExpanded
-    // qui permettent de d'accéder à ces attributs de la TreeView depuis le code-bihind
+    // qui permettent de d'accéder à ces attributs de la TreeView depuis le code-behind
     // (Ce que le WPF ne permet pas de façon native)
     // ----------------------------------------------------------
     public class TreeViewItemBase : INotifyPropertyChanged
     {
+        // ----------------------------------------------------------
+        // Propriété isSelected et IsSelected
+        // ----------------------------------------------------------
         private bool isSelected;
         public bool IsSelected
         {
-            get { return this.isSelected; }
+            // ------------------------------------------------------
+            // Get: on stocke dana la variable privée
+            // ------------------------------------------------------
+            get
+            { 
+                return this.isSelected; 
+            }
+            // ------------------------------------------------------
+            // Set: si changement, on notifie le TreeViewItem
+            // ------------------------------------------------------
             set
             {
                 if (value != this.isSelected)
@@ -30,10 +42,19 @@ namespace RegFineViewer
             }
         }
 
+        // ----------------------------------------------------------
+        // Propriété isExpanded et IsExpanded
+        // ----------------------------------------------------------
         private bool isExpanded;
         public bool IsExpanded
         {
+            // ------------------------------------------------------
+            // Get: on stocke dana la variable privée
+            // ------------------------------------------------------
             get { return this.isExpanded; }
+            // ------------------------------------------------------
+            // Set: si changement, on notifie le TreeViewItem
+            // ------------------------------------------------------
             set
             {
                 if (value != this.isExpanded)
@@ -44,8 +65,14 @@ namespace RegFineViewer
             }
         }
 
+        // ----------------------------------------------------------
+        // fonction héritée de INotifyPropertyChanged
+        // ----------------------------------------------------------
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // ----------------------------------------------------------
+        // Notification
+        // ----------------------------------------------------------
         public void NotifyPropertyChanged(string propName)
         {
             if (this.PropertyChanged != null)
@@ -60,11 +87,11 @@ namespace RegFineViewer
 // -------------------------------------------------------------
 // <TreeView.ItemContainerStyle>
 //    <Style TargetType = "TreeViewItem" >
-//        < Setter Property="IsSelected" Value="{Binding IsSelected}" />
-//        <Setter Property = "IsExpanded" Value="{Binding IsExpanded}" />
+//        <Setter Property= "IsSelected" Value="{Binding IsSelected}" />
+//        <Setter Property= "IsExpanded" Value="{Binding IsExpanded}" />
 //    </Style>
 // </TreeView.ItemContainerStyle>
 // -------------------------------------------------------------
-// Malheureusement non compatible avec la library MaterialDesign
+// Malheureusement non-compatible avec la library MaterialDesign
 // -------------------------------------------------------------
 

@@ -26,6 +26,8 @@ namespace RegFineViewer
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
         private RegFileParser Parser2;
+        // Pour les recherches
+        string SearchedWord;
 
         public MainWindow()
         {
@@ -56,13 +58,13 @@ namespace RegFineViewer
             K2.Value = "0002";
             N1.AddSubItem(K1);
             N1.AddSubItem(K2);
-            RegistryTree2.Add(N1);
+            RegistryTree1.Add(N1);
 
             RegistryItem K3 = new RegistryItem("clef 3", "dword");
             RegistryItem N2 = new RegistryItem("Node 2", "node");
             K3.Value = "0003";
             N2.AddSubItem(K3);
-            RegistryTree2.Add(N2);
+            RegistryTree1.Add(N2);
 
             RegistryItem K4 = new RegistryItem("clef 4", "dword");
             RegistryItem N3 = new RegistryItem("SubNode 3", "node");
@@ -90,7 +92,11 @@ namespace RegFineViewer
                 droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
             }
 
-            if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
+            if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
+
+            DropZone1.Visibility = Visibility.Hidden;
+            TreeView1.Visibility = Visibility.Visible;
+
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
             if (droppedFiles.Length == 1)
             {
@@ -98,7 +104,9 @@ namespace RegFineViewer
                 Tree1_InfoChip.Content = fileName;
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName);
+                Parser1.BuildList();
             }
+
             // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
             else
             {
@@ -109,6 +117,8 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
+                Parser1.BuildList();
+                Parser2.BuildList();
             }
         }
         private void Tree2_drop(object sender, DragEventArgs e)
@@ -120,7 +130,10 @@ namespace RegFineViewer
                 droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
             }
             // En cas de liste vide, on sort.
-            if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
+            if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
+
+            DropZone2.Visibility = Visibility.Hidden;
+            TreeView2.Visibility = Visibility.Visible;
 
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
             if (droppedFiles.Length == 1)
@@ -129,6 +142,7 @@ namespace RegFineViewer
                 Tree2_InfoChip.Content = fileName;
                 // On remplit le RegistryTree à partir du fichier
                 Parser2.ParseFile(fileName);
+                Parser2.BuildList();
             }
             // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
             else
@@ -140,6 +154,8 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName1);
                 Parser2.ParseFile(fileName2);
+                Parser1.BuildList();
+                Parser2.BuildList();
             }
         }
 
@@ -150,19 +166,68 @@ namespace RegFineViewer
         {
             Tree1_InfoChip.Content = "no file loaded";
             RegistryTree1.Clear();
+            DropZone1.Visibility = Visibility.Visible;
+            TreeView1.Visibility = Visibility.Hidden;
+
         }
         private void Tree2_CloseFile_bt(object sender, RoutedEventArgs e)
         {
             Tree2_InfoChip.Content = "no file loaded";
             RegistryTree2.Clear();
+            DropZone2.Visibility = Visibility.Visible;
+            TreeView2.Visibility = Visibility.Hidden;
+
         }
 
         // -------------------------------------------------------------------------
-        // Selection
+        // Bouton FIND (barre de recherche)
+        // -------------------------------------------------------------------------
+        private void Tree1_Search_bt(object sender, RoutedEventArgs e)
+        {
+            // On deselectionne les TreeItems pouvant être deja selectionnés
+            //RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
+            //while (SI is RegistryItem)
+            //{
+            //    SI.IsSelected = false; 
+            //}
+            // On lance la recherche
+            this.SearchedWord = SearchedWord1.Text.ToUpper();
+            RegistryItem Result = Parser1.NodeList.Find(Predicat);
+            // On se positionne sur cet item
+            Result.IsSelected = true;
+            // On expand le node parent
+            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
+            if (item is TreeViewItem)
+                item.BringIntoView();
+            RegistryItem racine = TreeView1.Items[0] as RegistryItem;
+            racine.IsExpanded = true;
+        }
+
+        private void Tree2_Search_bt(object sender, RoutedEventArgs e)
+        {
+            this.SearchedWord = SearchedWord2.Text.ToUpper();
+            RegistryItem Result = Parser1.NodeList.Find(Predicat);
+        }
+
+        // --------------------------------------------
+        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (ne tient pas compte de la casse)
+        // --------------------------------------------
+        private bool Predicat(RegistryItem item)
+        {
+            string UpperName = item.Name.ToUpper();
+            string UpperValue = item.Value.ToUpper();
+            if (UpperName.Contains(this.SearchedWord) || UpperValue.Contains(this.SearchedWord))
+                return true;
+            else
+                return false;
+        }
+
+        // -------------------------------------------------------------------------
+        // Selection du TreeView: (inutile)
         // -------------------------------------------------------------------------
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-
+            var X = sender;     // Treeview1
         }
         private void Tree2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -241,48 +306,43 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Click sur le bouton ChangeUnit d'un Registry Key du Registry Tree
         // -------------------------------------------------------------------------
-        private void ChangeUnit_Click(object sender, RoutedEventArgs e)
+        private void TreeView_ChangeUnit_Click(object sender, RoutedEventArgs e)
         {
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
-            RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
-            // On modifie son unité préférée
-            Item.ChangeToNextUnit(UnitDictionnary);
-            // On raffraichit le texte du bouton "btUfUnit"
-            UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
-            // On raffraichit le texte de son frere TextBlock "lbUfValue"
-            var StackP = UnitButton.Parent as StackPanel;
-            var TextB = StackP.Children[3] as TextBlock;
-            TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-            
-            Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
-            Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
-            var Z = UnitButton.Style.BasedOn;
-            /*
-            // UnitButton.Style = PlainStyle;
-            var Col = UnitButton.Foreground;
-            UnitButton.Foreground = UnitButton.Background;
-            UnitButton.Background = Col;
-            */
+            // DataContext renvoie le DataSource du Control
+            RegistryItem Item = UnitButton.DataContext as RegistryItem;
+
             // 3 méthodes possibles pour faire un refresh du binding
             // ((TextBox)sender).GetBindingExpression(ComboBox.TextProperty).UpdateSource();         // Update le DataSource en fonction du Control
             // ((ComboBox)sender).GetBindingExpression(ComboBox.ItemsSourceProperty).UpdateTarget(); // Update le Control en fonction du DataSource
             // OnPropertyChanged("Property");
-        }
+            // Style PlainStyle = Application.Current.Resources["PlainStyle"] as Style;
+            // Style OutlinedStyle = Application.Current.Resources["OutlinedStyle"] as Style;
 
-        private void ChangeUnit2_Click(object sender, RoutedEventArgs e)
-        {
-            // On retrouve l'item en cours du TreeView
-            var UnitButton = sender as Button;
-            RegistryItem Item = UnitButton.DataContext as RegistryItem;         // DataContext renvoie le DataSource du Control
             // On modifie son unité préférée
             Item.ChangeToNextUnit(UnitDictionnary);
             // On raffraichit le texte du bouton "btUfUnit"
             UnitButton.GetBindingExpression(Button.ContentProperty).UpdateTarget();
-            // On raffraichit le texte de son frere TextBlock "lbUfValue"
+            // On raffraichit le texte de son frère TextBlock "lbUfValue"
             var StackP = UnitButton.Parent as StackPanel;
             var TextB = StackP.Children[3] as TextBlock;
             TextB.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+        }
+
+        // -------------------------------------------------------------------------
+        // Selection du TreeViewItem
+        // -------------------------------------------------------------------------
+        private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
+        {
+            var X = sender as TreeViewItem;
+            var E = e;
+            var S = e.Source;
+
+            //le pb est qu'il y a (au bout d'un moment) plusieurs items sélectionnées et on passe ici N fois
+            X.BringIntoView();
+            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
+
         }
     }
 }
