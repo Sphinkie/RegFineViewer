@@ -111,13 +111,10 @@ namespace RegFineViewer
             else
             {
                 string fileName1 = droppedFiles[0];
-                string fileName2 = droppedFiles[1];
                 Tree1_InfoChip.Content = fileName1;
                 // On remplit le RegistryTree à partir du fichier
                 Parser1.ParseFile(fileName1);
-                Parser2.ParseFile(fileName2);
                 Parser1.BuildList();
-                Parser2.BuildList();
             }
         }
         // -------------------------------------------------------------------------
@@ -129,7 +126,6 @@ namespace RegFineViewer
             RegistryTree1.Clear();
             DropZone1.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
-
         }
 
         // -------------------------------------------------------------------------
@@ -176,21 +172,12 @@ namespace RegFineViewer
         {
             var X = sender;     // Treeview1
         }
-        private void Tree2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
 
-        }
 
         // -------------------------------------------------------------------------
         // Boutons du Tray
         // -------------------------------------------------------------------------
-        private void bTray2Button1_Click(object sender, RoutedEventArgs e)
-        {
-            tbStatLevels.Text = Parser2.NbLevels.ToString();
-            tbStatNodes.Text = Parser2.NbNodes.ToString();
-            tbStatKeys.Text = Parser2.NbKeys.ToString();
-            CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
-        }
+
         private void bTray1Button1_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();
@@ -199,12 +186,6 @@ namespace RegFineViewer
             CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
         }
 
-        private void bTray2Button2_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshLengthStats(Parser2);
-            // Affiche ou masque le popup
-            CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
-        }
         private void bTray1Button2_Click(object sender, RoutedEventArgs e)
         {
             RefreshLengthStats(Parser1);
@@ -289,7 +270,8 @@ namespace RegFineViewer
             //le pb est qu'il y a (au bout d'un moment) plusieurs items sélectionnées et on passe ici N fois
             X.BringIntoView();
             TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
-
         }
+
+
     }
 }

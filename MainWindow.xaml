@@ -150,6 +150,37 @@
                 </TreeView.Resources>
             </TreeView>
 
+
+          <!-- ========================== -->
+          <!-- BOUTON AJOUTER             -->
+          <!-- ========================== -->
+          <materialDesign:PopupBox Grid.Column="0" Grid.Row="3"
+        Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+        IsEnabled="False"
+        PlacementMode="LeftAndAlignMiddles"
+        UnfurlOrientation="Horizontal"
+        ToolTip="Manage Registry key"
+        Margin="0 0 10 10"  Width="42"  Height="42"
+        HorizontalAlignment="Right" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+              <Button ToolTip="Add a key" Command="{Binding AddCommand}">
+                <Path
+        Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+        Stretch="Uniform"
+        Width="14"  Height="14"
+        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+              </Button>
+              <Button ToolTip="Remove selected key" Command="{Binding RemoveSelectedItemCommand}">
+                <Path
+        Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+        Stretch="Uniform" Width="14" Height="14"
+        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+              </Button>
+            </StackPanel>
+          </materialDesign:PopupBox>
+          
+          
+          
             <!-- ========================== -->
             <!-- Barre de Recherche 1       -->
             <!-- ========================== -->
@@ -189,8 +220,7 @@
             <!-- ==========================-->
             <!-- TREE VIEW 2 avec Binding  -->
             <!-- ==========================-->
-            <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0" Visibility="Hidden"
-                SelectedItemChanged="Tree2_SelectedItemChanged">
+            <TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0" Visibility="Hidden">
 
                 <!-- On peut definir ausi le style des TreeViewItems de cette façon: -->
                 <TreeView.ItemContainerStyle>
@@ -238,33 +268,7 @@
                 </TreeView.Resources>
             </TreeView>
 
-            <!-- ========================== -->
-            <!-- BOUTON AJOUTER             -->
-            <!-- ========================== -->
-            <materialDesign:PopupBox Grid.Column="2" Grid.Row="3"
-          Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
-          IsEnabled="False"
-          PlacementMode="LeftAndAlignMiddles"
-          UnfurlOrientation="Horizontal"
-          ToolTip="Manage Registry key"
-          Margin="0 0 10 10"  Width="42"  Height="42"
-          HorizontalAlignment="Right" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal">
-                    <Button ToolTip="Add a key" Command="{Binding AddCommand}">
-                        <Path
-                Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                Stretch="Uniform"
-                Width="14"  Height="14"
-                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                    </Button>
-                    <Button ToolTip="Remove selected key" Command="{Binding RemoveSelectedItemCommand}">
-                        <Path
-                Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                Stretch="Uniform" Width="14" Height="14"
-                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                    </Button>
-                </StackPanel>
-            </materialDesign:PopupBox>
+
 
 
         </Grid>
