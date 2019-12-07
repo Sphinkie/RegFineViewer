@@ -164,7 +164,8 @@ namespace RegFineViewer
                 string greatParentPath = GetParentPath(parentpath);
                 AttachToParentNode(parentNode, greatParentPath);
             }
-            if (parentNode.SubItem.Count == 1) NbLevels++;
+            // On l'ouvre
+//            parentNode.ExpandAll(parentNode, true);
         }
 
         // ------------------------------------------------------------------

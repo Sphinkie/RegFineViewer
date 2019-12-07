@@ -90,11 +90,8 @@ namespace RegFineViewer
 
             if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
 
-            DropZone1.Visibility = Visibility.Hidden;
-            TreeView1.Visibility = Visibility.Visible;
-
             // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
-            if (droppedFiles.Length == 1)
+            if (droppedFiles.Length >0)
             {
                 string fileName = droppedFiles[0];
                 Tree1_InfoChip.Content = fileName;
@@ -102,16 +99,8 @@ namespace RegFineViewer
                 Parser1.ParseFile(fileName);
                 Parser1.BuildList();
             }
-
-            // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
-            else
-            {
-                string fileName1 = droppedFiles[0];
-                Tree1_InfoChip.Content = fileName1;
-                // On remplit le RegistryTree à partir du fichier
-                Parser1.ParseFile(fileName1);
-                Parser1.BuildList();
-            }
+            DropZone1.Visibility = Visibility.Hidden;
+            TreeView1.Visibility = Visibility.Visible;
         }
 
         // -------------------------------------------------------------------------
@@ -134,13 +123,17 @@ namespace RegFineViewer
             //RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
             //while (SI is RegistryItem)
             //{
-            //    SI.IsSelected = false; 
+            //    SI.IsSelected = false;
             //}
+
             // On lance la recherche
             this.SearchedWord = SearchedWord1.Text.ToUpper();
             RegistryItem Result = Parser1.NodeList.Find(Predicat);
             // On sélectionne cet item
             if (Result is RegistryItem) Result.IsSelected = true;
+
+//            GetTreeViewItem(TreeView1, Result);
+
         }
 
         // --------------------------------------------
@@ -175,7 +168,6 @@ namespace RegFineViewer
             tbStatKeys.Text = Parser1.NbKeys.ToString();
             CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
         }
-
         private void bTray1Button2_Click(object sender, RoutedEventArgs e)
         {
             RefreshLengthStats(Parser1);
@@ -210,7 +202,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Ferme le Popup
+        // Ferme le Popup (Card)
         // -------------------------------------------------------------------------
         private void CardlengthStats_Close(object sender, RoutedEventArgs e)
         {
@@ -250,7 +242,7 @@ namespace RegFineViewer
 
         // -------------------------------------------------------------------------
         // Selection du TreeViewItem
-        // On ne passe ici que si l'item est visible (expanded) : 
+        // On ne passe ici que si l'item est visible (expanded):
         // il faut donc ouvrir tout l'arbre avant de faire la recherche.
         // -------------------------------------------------------------------------
         private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
@@ -264,48 +256,132 @@ namespace RegFineViewer
             X.BringIntoView();
         }
 
-        
+
+        // -------------------------------------------------------------------------
+        // Boutons EXPAND et COLLAPSE
+        // -------------------------------------------------------------------------
+        private void TreeView1_CollapseAll(object sender, RoutedEventArgs e)
+        {
+            TreeView_CollapseAll();
+        }
         private void TreeView1_ExpandAll(object sender, RoutedEventArgs e)
         {
+            TreeView_ExpandAll();
+        }
 
-            // Methode 3: un peu mieux: chaque clic expand 1 niveau
+
+        // -------------------------------------------------------------------------
+        // N'agit que sur les nodes qui sont dejà associés à un IUElement (cad visibles).
+        // Donc il ne traite qu'un level à la fois.
+        // -------------------------------------------------------------------------
+        private void TreeView_ExpandAll()
+        {
             foreach (object item in this.TreeView1.Items)
             {
                 TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
                 if (treeItem != null)
-                    ExpandAll(treeItem, true);
-                treeItem.IsExpanded = true;
+                {
+                    ExpandAllChilds(treeItem, true);
+                    treeItem.IsExpanded = true;
+                }
             }
-
-            // Methode 2 : non
-            /*
-            foreach (var item in TreeView1.Items)
-            {
-                var tvi = item as TreeViewItem;
-                if (tvi != null)
-                    tvi.ExpandSubtree();
-            }
-            */
-
-            // Methode 1 : non
-            // RegistryItem racine = TreeView1.Items[0] as RegistryItem;
-            // racine.IsExpanded = true;
         }
 
+        // -------------------------------------------------------------------------
+        // Agit sur tous les nodes qui sont dejà associés à un IUElement (cad visibles).
+        // Donc referme tous les levels à la fois.
+        // -------------------------------------------------------------------------
+        private void TreeView_CollapseAll()
+        {
+            foreach (object item in this.TreeView1.Items)
+            {
+                TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+                if (treeItem != null)
+                {
+                    ExpandAllChilds(treeItem, false);
+                    treeItem.IsExpanded = false;
+                }
+            }
+        }
 
-        private void ExpandAll(ItemsControl items, bool expand)
+        // -------------------------------------------------------------------------
+        // Expand ou referme tous les Childs d'un treeViewItem visible
+        // -------------------------------------------------------------------------
+        private void ExpandAllChilds(ItemsControl items, bool expand)
         {
             foreach (object obj in items.Items)
             {
                 ItemsControl childControl = items.ItemContainerGenerator.ContainerFromItem(obj) as ItemsControl;
                 if (childControl != null)
                 {
-                    ExpandAll(childControl, expand);
+                    ExpandAllChilds(childControl, expand);
                 }
                 TreeViewItem item = childControl as TreeViewItem;
                 if (item != null)
-                    item.IsExpanded = true;
+                    item.IsExpanded = expand;  // true
             }
         }
+
+
+        // -------------------------------------------------------------------------
+        // Essai pour expandre tout l'arbre d'un coup.
+        // Comportement bizarre: c'est long (10 secs), et fait une exception
+        // -------------------------------------------------------------------------
+        private void test1(object sender, RoutedEventArgs e)
+        {
+            object NodeRacine = TreeView1.Items[0];
+            TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(NodeRacine) as TreeViewItem;
+            if (treeItem != null)
+            {
+                treeItem.ExpandSubtree();
+                //treeItem.IsExpanded = true;
+            }
+        }
+
+
+        // -------------------------------------------------------------------------
+        // exemple Microsoft
+        // Ne marche pas: selected item est toujours à null
+        // -------------------------------------------------------------------------
+        private void expandSelected_Click(object sender, RoutedEventArgs e)
+        {
+            if (TreeView1.SelectedItem == null)
+            {
+                return;
+            }
+
+            TreeViewItem tvi = GetTreeViewItem(TreeView1, TreeView1.SelectedItem);
+
+            if (tvi != null)
+            {
+                tvi.ExpandSubtree();
+            }
+        }
+
+        // Traverse the TreeView to find the TreeViewItem that corresponds to the given item.
+        // Ne marche pas: ne trouve rien 
+        private TreeViewItem GetTreeViewItem(ItemsControl parent, object item)
+        {
+            // Check whether the selected item is a direct child of 
+            // the parent ItemsControl.
+            TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+
+            if (tvi == null)
+            {
+                // The selected item is not a child of parent, so check
+                // the child items of parent.
+                foreach (object child in parent.Items)
+                {
+                    TreeViewItem childItem = parent.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;
+                    if (childItem != null)
+                    {
+                        // Check the next level for the appropriate item.
+                        tvi = GetTreeViewItem(childItem, item);
+                    }
+                }
+            }
+            return tvi;
+        }
+
     }
 }

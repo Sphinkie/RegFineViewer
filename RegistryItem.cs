@@ -112,6 +112,24 @@ namespace RegFineViewer
         // --------------------------------------------
         public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
 
+
+        // --------------------------------------------
+        // --------------------------------------------
+        public void ExpandAll(ItemsControl items, bool expand)
+        {
+            foreach (object obj in items.Items)
+            {
+                ItemsControl childControl = items.ItemContainerGenerator.ContainerFromItem(obj) as ItemsControl;
+                if (childControl != null)
+                {
+                    ExpandAll(childControl, expand);
+                }
+                TreeViewItem item = childControl as TreeViewItem;
+                if (item != null)
+                    item.IsExpanded = true;
+            }
+        }
+
         // --------------------------------------------
         // Propriétés publiques
         // --------------------------------------------
