@@ -160,7 +160,6 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Boutons du Tray
         // -------------------------------------------------------------------------
-
         private void bTray1Button1_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();

@@ -19,10 +19,12 @@
 
   <!--On définit quelques styles généraux-->
   <Window.Resources>
+    <!-- Style for chips-->
     <Style TargetType="materialDesign:Chip" >
       <Setter Property="Margin" Value="16,0,0,0"/>
     </Style>
 
+    <!--Style  pour les boutons "change unit" -->
     <Style TargetType="Button" x:Key="OutlinedSmallButton"  BasedOn="{StaticResource MaterialDesignOutlinedButton}" >
       <Setter Property="Width"      Value="60"/>
       <Setter Property="Height"     Value="20" />
@@ -41,9 +43,9 @@
   </Window.Resources>
 
   <DockPanel Name="dockpanel">
-      <!-- *************************************************************** -->
-      <!--                       Grille                                    -->
-      <!-- *************************************************************** -->
+    <!-- *************************************************************** -->
+    <!--                       Grille                                    -->
+    <!-- *************************************************************** -->
     <Grid >
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" Name="leftColumn" MinWidth="820"/>
@@ -108,43 +110,43 @@
                  FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" >
         drop your<LineBreak/>registry file<LineBreak/>here
       </TextBlock>
-      
+
       <!-- ==========================-->
       <!-- TREE VIEW                 -->
       <!-- ==========================-->
-      <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0" Visibility="Hidden"
+      <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="4" Visibility="Hidden"
           SelectedItemChanged="TreeView1_SelectedItemChanged"
-        AllowDrop="True" Drop="Tree1_drop">
+          AllowDrop="True" Drop="Tree1_drop">
+        
 
         <!--VirtualizingStackPanel.IsVirtualizing="True"
         VirtualizingStackPanel.VirtualizationMode ="Recycling"-->
 
         <TreeView.Resources>
-          
-          <HierarchicalDataTemplate
-          DataType="{x:Type local:RegistryItem}"
-          ItemsSource="{Binding Path=SubItem}">
+
+          <HierarchicalDataTemplate DataType="{x:Type local:RegistryItem}" ItemsSource="{Binding Path=SubItem}">
 
             <TreeViewItem
                 Selected="TreeViewItem_OnItemSelected"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
                 IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-                            >
+                Margin="0,-6,0,-6" Padding="0,0,0,0" >
               <!--local:BringSelectedItemIntoViewBehavior.IsBringSelectedIntoView="True"-->
 
-              <TreeViewItem.Header>
+              <TreeViewItem.Header >
                 <!-- Affichage par défaut des données -->
-                <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
-                  <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" TextTrimming="CharacterEllipsis"/>
-                  <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" />
+                <StackPanel Orientation="Horizontal" MinHeight="0" >
+                  <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                  <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center"/>
                   <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="TreeView_ChangeUnit_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
-                  <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0"/>
+                  <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
               </TreeViewItem.Header>
+
             </TreeViewItem>
 
             <HierarchicalDataTemplate.Triggers>
-              <!-- On change certaines propriétés dans le cas d'un NODE -->
+              <!-- Avec un Trigger, on change certaines propriétés dans le cas d'un NODE -->
               <DataTrigger Binding="{Binding DType}" Value="node" >
                 <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
                 <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
@@ -152,12 +154,12 @@
                 <Setter TargetName="lbName"    Property="Margin"     Value="2"  />
                 <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
               </DataTrigger>
-              <!-- On change certaines propriétés dans le cas d'un STRING -->
+              <!-- Avec un Trigger, on change certaines propriétés dans le cas d'un STRING -->
               <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
                 <Setter TargetName="lbValue"   Property="Width"      Value="480" />
                 <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
               </DataTrigger>
-              <!-- On change certaines propriétés dans le cas d'un DWORD -->
+              <!-- Avec un Trigger, on change certaines propriétés dans le cas d'un DWORD -->
               <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
                 <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
                 <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
@@ -201,7 +203,7 @@
 
 
       <!-- ========================== -->
-      <!-- Barre de Recherche 1       -->
+      <!-- Barre de Recherche         -->
       <!-- ========================== -->
       <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8"
                                  IsEnabled="{Binding ElementName=TreeView1, Path=IsVisible}"
@@ -225,82 +227,35 @@
         </Grid>
       </materialDesign:ColorZone>
 
-
       <!-- *************************************************************** -->
       <!--                     Separateur                                  -->
       <!-- *************************************************************** -->
-      <!--<GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" />-->
+      <!--GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" -->
 
-      <!-- *************************************************************** -->
+    </Grid>
+
+    <!-- *************************************************************** -->
       <!--                     Grille de droite                            -->
       <!-- *************************************************************** -->
-
-
-      <!-- ==========================-->
-      <!-- TREE VIEW 2 avec Binding  -->
-      <!-- ==========================-->
-      <!--<TreeView Name="TreeView2" Grid.Column="2" Grid.Row="2"  Margin="16,16,0,0" Visibility="Hidden">
-
-                -->
-      <!-- On peut definir ausi le style des TreeViewItems de cette façon: -->
       <!--
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="TreeViewItem">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                   </Style>
-                </TreeView.ItemContainerStyle>
-
                 <TreeView.Resources>
                     <HierarchicalDataTemplate
-              DataType="{x:Type local:RegistryItem}"
-              ItemsSource="{Binding Path=SubItem}">
+                            DataType="{x:Type local:RegistryItem}"
+                            ItemsSource="{Binding Path=SubItem}">
 
-                        -->
-      <!-- Affichage par défaut des données -->
-      <!--
                         <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
                             <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center" />
-                            <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="TreeView_ChangeUnit_Click" Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
-                            <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80"  />
                         </StackPanel>
-
-                        <HierarchicalDataTemplate.Triggers>
-                            -->
-      <!-- On change certaines propriétés dans le cas d'un NODE -->
-      <!--
-                            <DataTrigger Binding="{Binding DType}" Value="node" >
-                                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
-                                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="lbName"    Property="Width"      Value="480" />
-                                <Setter TargetName="lbName"    Property="Margin"     Value="2" />
-                                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
-                            </DataTrigger>
-                            -->
-      <!-- On change certaines propriétés dans le cas d'un STRING -->
-      <!--
-                            <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
-                                <Setter TargetName="lbValue"   Property="Width"      Value="480" />
-                                <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
-                            </DataTrigger>
-                            -->
-      <!-- On change certaines propriétés dans le cas d'un DWORD -->
-      <!--
-                            <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
-                                <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
-                                <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </HierarchicalDataTemplate.Triggers>
 
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
-            </TreeView>-->
+            </TreeView>
+      -->
 
 
 
 
-    </Grid>
 
     <!--==========================================================-->
     <!--                  POPUP D'INFOS SUR LE TREEVIEW           -->
