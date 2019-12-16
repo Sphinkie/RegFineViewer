@@ -23,6 +23,9 @@ namespace RegFineViewer
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
         string SearchedWord;
+        bool SearchedWordIsDirty;
+        List<RegistryItem> SearchedWordResults;
+        int SearchedWordResultsIndex;
 
         public MainWindow()
         {
@@ -90,17 +93,20 @@ namespace RegFineViewer
 
             if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
 
-            // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
-            if (droppedFiles.Length >0)
+            // S'il y a un (ou plus) fichier(s) droppé(s), on ouvre le premier dans la TreeView 
+            if (droppedFiles.Length > 0)
             {
                 string fileName = droppedFiles[0];
                 Tree1_InfoChip.Content = fileName;
-                // On remplit le RegistryTree à partir du fichier
+                // On remplit le RegistryTree à partir du fichier REG
                 Parser1.ParseFile(fileName);
                 Parser1.BuildList();
             }
             DropZone1.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
+            // Initialisation de la recherche
+            SearchedWordResultsIndex = 0;
+            SearchedWordIsDirty = false;
         }
 
         // -------------------------------------------------------------------------
@@ -120,24 +126,47 @@ namespace RegFineViewer
         private void Tree1_Search_bt(object sender, RoutedEventArgs e)
         {
             // On deselectionne les TreeItems pouvant être deja selectionnés
-            //RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
-            //while (SI is RegistryItem)
-            //{
-            //    SI.IsSelected = false;
-            //}
+            if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
+            {
+                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
+                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
+            }
 
-            // On lance la recherche
-            this.SearchedWord = SearchedWord1.Text.ToUpper();
-            RegistryItem Result = Parser1.NodeList.Find(Predicat);
-            // On sélectionne cet item
-            if (Result is RegistryItem) Result.IsSelected = true;
+            if (SearchedWordIsDirty)
+            // On vient de cliquer sur FIND, *après* avoir modifié le SearchedWord
+            {
+                // On lance la recherche
+                this.SearchedWord = SearchedWord1.Text.ToUpper();
+                // On recupère la liste des RegistryItems correspondant à la recherche
+                SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
+                // On sélectionne le premier RegistryItem de la liste
+                SearchedWordResultsIndex = 0;
+                if (SearchedWordResults.Count>0)
+                    if (SearchedWordResults[0] is RegistryItem) 
+                        SearchedWordResults[0].IsSelected = true;
+            }
+            else if ((SearchedWordResults != null) && (SearchedWordResults.Count>0))
+            // On vient de cliquer sur FIND, *sans* avoir modifié le SearchedWord
+            {
+                // on déselectionne l'item précédent
+                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
+                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
+                // On incrémente l'index
+                if (SearchedWordResultsIndex < SearchedWordResults.Count-1)
+                    SearchedWordResultsIndex++;
+                else
+                    SearchedWordResultsIndex = 0;
+                // on selectionne l'item suivant
+                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
+                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
+            }
 
-//            GetTreeViewItem(TreeView1, Result);
-
+            //  GetTreeViewItem(TreeView1, Result);
+            SearchedWordIsDirty = false;
         }
 
         // --------------------------------------------
-        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (ne tient pas compte de la casse)
+        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (sans tenir compte de la casse)
         // --------------------------------------------
         private bool Predicat(RegistryItem item)
         {
@@ -254,7 +283,6 @@ namespace RegFineViewer
             TreeViewItem X = sender as TreeViewItem;
             X.BringIntoView();
         }
-
 
         // -------------------------------------------------------------------------
         // Boutons EXPAND et COLLAPSE
@@ -382,5 +410,9 @@ namespace RegFineViewer
             return tvi;
         }
 
+        private void SearchedWord_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SearchedWordIsDirty = true;
+        }
     }
 }
