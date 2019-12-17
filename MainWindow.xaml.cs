@@ -26,6 +26,7 @@ namespace RegFineViewer
         bool SearchedWordIsDirty;
         List<RegistryItem> SearchedWordResults;
         int SearchedWordResultsIndex;
+        int SearchDirection = 1;
 
         public MainWindow()
         {
@@ -41,6 +42,7 @@ namespace RegFineViewer
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
             // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
+            SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -107,6 +109,7 @@ namespace RegFineViewer
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
+            SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -133,36 +136,58 @@ namespace RegFineViewer
             }
 
             if (SearchedWordIsDirty)
-            // On vient de cliquer sur FIND, *après* avoir modifié le SearchedWord
+            // Si on vient de cliquer sur FIND, *après* avoir modifié le SearchedWord
             {
                 // On lance la recherche
                 this.SearchedWord = SearchedWord1.Text.ToUpper();
                 // On recupère la liste des RegistryItems correspondant à la recherche
                 SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
+                // On change quelques textes
+                switch (SearchedWordResults.Count)
+                {
+                    case 0:
+                        SearchedWordCount.Text = "no item found";
+                        btFind.Content = "Find";
+                        break;
+                    case 1:
+                        SearchedWordCount.Text = "1 item found";
+                        btFind.Content = "Find";
+                        break;
+                    default:
+                        SearchedWordCount.Text = "1/" + SearchedWordResults.Count.ToString();
+                        btFind.Content = "Next";
+                        break;
+                }
                 // On sélectionne le premier RegistryItem de la liste
                 SearchedWordResultsIndex = 0;
+                SearchDirection = 1;
                 if (SearchedWordResults.Count>0)
                     if (SearchedWordResults[0] is RegistryItem) 
                         SearchedWordResults[0].IsSelected = true;
             }
+
             else if ((SearchedWordResults != null) && (SearchedWordResults.Count>0))
-            // On vient de cliquer sur FIND, *sans* avoir modifié le SearchedWord
+            // Si on vient de cliquer sur FIND, *sans* avoir modifié le SearchedWord
             {
                 // on déselectionne l'item précédent
                 if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
                     SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
                 // On incrémente l'index
-                if (SearchedWordResultsIndex < SearchedWordResults.Count-1)
-                    SearchedWordResultsIndex++;
-                else
-                    SearchedWordResultsIndex = 0;
+                SearchedWordResultsIndex += SearchDirection;
+                // Vérification des bornes
+                if (SearchedWordResultsIndex < 0) SearchedWordResultsIndex = SearchedWordResults.Count-1;
+                if (SearchedWordResultsIndex >= SearchedWordResults.Count) SearchedWordResultsIndex = 0;
                 // on selectionne l'item suivant
                 if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
                     SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
+                // On met à jour le No de l'item
+                SearchedWordCount.Text = (SearchedWordResultsIndex+1).ToString() + "/" + SearchedWordResults.Count.ToString();
             }
 
             //  GetTreeViewItem(TreeView1, Result);
             SearchedWordIsDirty = false;
+            // Affiche les boutons UP/DOWN
+            SearchDirButton.IsPopupOpen = true;
         }
 
         // --------------------------------------------
@@ -296,7 +321,6 @@ namespace RegFineViewer
             TreeView_ExpandAll();
         }
 
-
         // -------------------------------------------------------------------------
         // N'agit que sur les nodes qui sont dejà associés à un IUElement (cad visibles).
         // Donc il ne traite qu'un level à la fois.
@@ -410,9 +434,28 @@ namespace RegFineViewer
             return tvi;
         }
 
+        // -------------------------------------------------------------------------
+        // Appelé chaque fois que le mot à chercher change.
+        // -------------------------------------------------------------------------
         private void SearchedWord_TextChanged(object sender, TextChangedEventArgs e)
         {
             SearchedWordIsDirty = true;
+            btFind.Content = "Find";
         }
+
+        // -------------------------------------------------------------------------
+        // Changement de la direction de la recherche
+        // -------------------------------------------------------------------------
+        private void Button_SearchDown_Click(object sender, RoutedEventArgs e)
+        {
+            SearchDirection = 1;
+            if ((string)btFind.Content == "Prev") btFind.Content = "Next";
+        }
+        private void Button_SearchUp_Click(object sender, RoutedEventArgs e)
+        {
+            SearchDirection = -1;
+            if ((string)btFind.Content == "Next") btFind.Content = "Prev";
+        }
+
     }
 }
