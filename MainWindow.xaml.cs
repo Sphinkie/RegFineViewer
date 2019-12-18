@@ -142,7 +142,7 @@ namespace RegFineViewer
                 working.IsOpen = true;  // Popup sablier
                 this.SearchedWord = SearchedWord1.Text.ToUpper();
                 // On recupère la liste des RegistryItems correspondant à la recherche
-                SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
+                this.SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
                 // On change quelques textes
                 switch (SearchedWordResults.Count)
                 {
@@ -211,7 +211,6 @@ namespace RegFineViewer
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
         }
-
 
         // -------------------------------------------------------------------------
         // Boutons du Tray
@@ -314,30 +313,15 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Boutons EXPAND et COLLAPSE
         // -------------------------------------------------------------------------
-        private void TreeView1_CollapseAll(object sender, RoutedEventArgs e)
+        private void TreeView_Collapse(object sender, RoutedEventArgs e)
         {
             TreeView_CollapseAll();
+            working.IsOpen = false;      // Popup Sablier
         }
-        private void TreeView1_ExpandAll(object sender, RoutedEventArgs e)
+        private void TreeView_Expand(object sender, RoutedEventArgs e)
         {
-            TreeView_ExpandAll();
-        }
-
-        // -------------------------------------------------------------------------
-        // N'agit que sur les nodes qui sont dejà associés à un IUElement (cad visibles).
-        // Donc il ne traite qu'un level à la fois.
-        // -------------------------------------------------------------------------
-        private void TreeView_ExpandAll()
-        {
-            foreach (object item in this.TreeView1.Items)
-            {
-                TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-                if (treeItem != null)
-                {
-                    ExpandAllChilds(treeItem, true);
-                    treeItem.IsExpanded = true;
-                }
-            }
+            working.IsOpen = true;      // Popup Sablier
+            TreeView_ExpandLevel();
         }
 
         // -------------------------------------------------------------------------
@@ -358,6 +342,25 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
+        // N'agit que sur les nodes qui sont dejà associés à un IUElement (cad visibles).
+        // Donc il ne traite qu'un level à la fois.
+        // -------------------------------------------------------------------------
+        private void TreeView_ExpandLevel()
+        {
+            foreach (object item in this.TreeView1.Items)
+            {
+                TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+                if (treeItem != null)
+                {
+                    ExpandAllChilds(treeItem, true);
+                    treeItem.IsExpanded = true;
+                }
+            }
+            // Le rendu visuel est asynchrone: 
+            // donc il n'est pas fini quand on sort de la fonction...
+        }
+
+        // -------------------------------------------------------------------------
         // Expand ou referme tous les Childs d'un treeViewItem visible
         // -------------------------------------------------------------------------
         private void ExpandAllChilds(ItemsControl items, bool expand)
@@ -375,54 +378,85 @@ namespace RegFineViewer
             }
         }
 
-
         // -------------------------------------------------------------------------
         // Essai pour expandre tout l'arbre d'un coup.
-        // Comportement bizarre: c'est long (10 secs), et fait une exception
+        // Semble fonctionner mais c'est long, et même le sablier se fige (quand il apparait...)
         // -------------------------------------------------------------------------
-        private void test1(object sender, RoutedEventArgs e)
+        private void ExpandAllTree(object sender, RoutedEventArgs e)
         {
+            working.IsOpen = true;      // Popup Sablier !! pb : n'a pas le temps de s'afficher ....
+
+            /*
+            // Methode 1: methode du node racine. C'est long
+
             object NodeRacine = TreeView1.Items[0];
             TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(NodeRacine) as TreeViewItem;
             if (treeItem != null)
             {
                 treeItem.ExpandSubtree();
-                //treeItem.IsExpanded = true;
             }
+            */
+
+            // Methode 2: test en cours
+            this.SearchedWord = "LAST";
+            // On recupère la liste des RegistryItems correspondant à la recherche
+            this.SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
+            RegistryItem t1 = this.SearchedWordResults[0];
+
+            GetTreeViewItemParent(TreeView1, t1);
         }
 
-
         // -------------------------------------------------------------------------
-        // exemple Microsoft
-        // Ne marche pas: selected item est toujours à null
+        // 
         // -------------------------------------------------------------------------
-        private void expandSelected_Click(object sender, RoutedEventArgs e)
+        private TreeViewItem GetTreeViewItemParent (ItemsControl parent, object item)
         {
-            if (TreeView1.SelectedItem == null)
-            {
-                return;
-            }
-
-            TreeViewItem tvi = GetTreeViewItem(TreeView1, TreeView1.SelectedItem);
-
-            if (tvi != null)
-            {
-                tvi.ExpandSubtree();
-            }
-        }
-
-        // Traverse the TreeView to find the TreeViewItem that corresponds to the given item.
-        // Ne marche pas: ne trouve rien 
-        private TreeViewItem GetTreeViewItem(ItemsControl parent, object item)
-        {
-            // Check whether the selected item is a direct child of 
-            // the parent ItemsControl.
+            // Check whether the selected item is a direct child of the parent ItemsControl.
             TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
 
             if (tvi == null)
             {
-                // The selected item is not a child of parent, so check
-                // the child items of parent.
+                // Si tvi est nul, c'est que l'item donné n'est pas un child direct du parent.
+                // Donc on verifie pour s'il est un child de l'un des Items enfants du parent.
+                foreach (object child in parent.Items)
+                {
+                    // pour chaque enfant du Parent
+                    // si ce n'est pas un node: on passe
+                    RegistryItem CurrentChild = child as RegistryItem;
+                    if (CurrentChild.DType != "node") continue;
+                    // Si c'est un node: on récupère son TVI
+                    TreeViewItem childItem = parent.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;
+                    if (childItem != null)
+                    {
+                        // Check the next level for the appropriate item.
+                        tvi = GetTreeViewItemParent(childItem, item);
+                    }
+                }
+            }
+            else
+            {
+                // le tvi est un child direct de ce parent, donc ont peut expandre le parent
+                TreeViewItem t = parent as TreeViewItem;
+                if (t is TreeViewItem)
+                    t.IsExpanded = true;
+            }
+            return tvi;
+        }
+
+        // -----------------------------------------------------------------------------------
+        // Traverse le TreeView pour trouver le TreeViewItem qui correspond à l'item donné.
+        // Pour le premier appel, utiliser: parent = TreeView1
+        // Exemple d'utilisation: on peut appliquer ExpandSubtree() sur le tvi retourné.
+        // -----------------------------------------------------------------------------------
+        private TreeViewItem GetTreeViewItem(ItemsControl parent, object item)
+        {
+            // Check whether the selected item is a direct child of the parent ItemsControl.
+            TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+
+            if (tvi == null)
+            {
+                // Si tvi est nul, c'est que l'item donné n'est pas un child direct du parent.
+                // Donc on verifie pour s'il est un child de l'un des Items enfants du parent.
                 foreach (object child in parent.Items)
                 {
                     TreeViewItem childItem = parent.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;

@@ -66,21 +66,21 @@
                 <RowDefinition Height="Auto" Name="SearchbarRow" />
             </Grid.RowDefinitions>
 
-            <!-- *************************************************************** -->
-            <!--                Toolbar                                          -->
-            <!-- *************************************************************** -->
+            <!-- ==========================-->
+            <!-- TOOLBAR                   -->
+            <!-- ==========================-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
                     <!--Expand Button-->
-                    <Button ToolTip="Expand Tree" Click="TreeView1_ExpandAll" >
+                    <Button ToolTip="Expand Level" Click="TreeView_Expand" >
                         <materialDesign:PackIcon Kind="ExpandMore"/>
                     </Button>
                     <!--Collapse Button-->
-                    <Button ToolTip="Collapse Tree" Click="TreeView1_CollapseAll" >
+                    <Button ToolTip="Collapse Tree" Click="TreeView_Collapse" >
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
                     <!--Test Button-->
-                    <Button ToolTip="Expand sub tree" Click="expandSelected_Click" >
+                    <Button ToolTip="Expand sub tree" Click="ExpandAllTree" >
                         <materialDesign:PackIcon Kind="ChartBarStacked"/>
                     </Button>
                     <!--Stats Button-->
@@ -170,7 +170,6 @@
                 </TreeView.Resources>
             </TreeView>
 
-
             <!-- ========================== -->
             <!-- BOUTON AJOUTER             -->
             <!-- ========================== -->
@@ -196,9 +195,8 @@
                 </StackPanel>
             </materialDesign:PopupBox>
 
-
             <!-- ========================== -->
-            <!-- Barre de Recherche         -->
+            <!-- BARRE DE RECHERCHE         -->
             <!-- ========================== -->
             <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" IsEnabled="{Binding ElementName=TreeView1, Path=IsVisible}" materialDesign:ShadowAssist.ShadowDepth="Depth3">
                 <Grid Margin="8">
