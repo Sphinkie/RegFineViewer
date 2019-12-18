@@ -139,6 +139,7 @@ namespace RegFineViewer
             // Si on vient de cliquer sur FIND, *après* avoir modifié le SearchedWord
             {
                 // On lance la recherche
+                working.IsOpen = true;  // Popup sablier
                 this.SearchedWord = SearchedWord1.Text.ToUpper();
                 // On recupère la liste des RegistryItems correspondant à la recherche
                 SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
@@ -182,6 +183,7 @@ namespace RegFineViewer
                     SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
                 // On met à jour le No de l'item
                 SearchedWordCount.Text = (SearchedWordResultsIndex+1).ToString() + "/" + SearchedWordResults.Count.ToString();
+                working.IsOpen = false;  // Popup sablier
             }
 
             //  GetTreeViewItem(TreeView1, Result);

@@ -14,10 +14,11 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:RegFineViewer"
-        Name="Fenetre"
-        >
+        Name="Fenetre">
 
-    <!--On définit quelques styles généraux-->
+    <!-- *************************************************************** -->
+    <!-- On définit quelques styles généraux                             -->
+    <!-- *************************************************************** -->
     <Window.Resources>
         <!-- Style for chips-->
         <Style TargetType="materialDesign:Chip" >
@@ -33,7 +34,12 @@
             <Setter Property="FontWeight" Value="Light" />
         </Style>
 
-        <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />-->
+        <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />
+        Les couleurs du thème:      Accent colors:
+          PrimaryHueDarkBrush       SecondaryHueDarkBrush      PrimaryHueDarkForegroundBrush
+          PrimaryHueMidBrush        SecondaryHueMidBrush
+          PrimaryHueLightBrush      SecondaryHueLightBrush
+                  -->
 
         <!--<Style TargetType="TreeViewItem" >
             <Setter Property="IsSelected" Value="{Binding IsSelected}" />
@@ -61,7 +67,7 @@
             </Grid.RowDefinitions>
 
             <!-- *************************************************************** -->
-            <!--                Toolbar 1                                        -->
+            <!--                Toolbar                                          -->
             <!-- *************************************************************** -->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
@@ -112,7 +118,7 @@
             <!-- TREE VIEW                 -->
             <!-- ==========================-->
             <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="4" Visibility="Hidden" AllowDrop="True" Drop="Tree1_drop"
-          SelectedItemChanged="TreeView1_SelectedItemChanged">
+                SelectedItemChanged="TreeView1_SelectedItemChanged">
                 <!--VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode ="Recycling"-->
 
                 <TreeView.Resources>
@@ -120,10 +126,10 @@
                     <HierarchicalDataTemplate DataType="{x:Type local:RegistryItem}" ItemsSource="{Binding Path=SubItem}">
 
                         <TreeViewItem
-                Selected="TreeViewItem_OnItemSelected"
-                IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-                Margin="0,-6,0,-6" Padding="0,0,0,0" >
+                            Selected="TreeViewItem_OnItemSelected"
+                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                            IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                            Margin="0,-6,0,-6" Padding="0,0,0,0" >
                             <!--local:BringSelectedItemIntoViewBehavior.IsBringSelectedIntoView="True"-->
 
                             <TreeViewItem.Header >
@@ -169,24 +175,23 @@
             <!-- BOUTON AJOUTER             -->
             <!-- ========================== -->
             <materialDesign:PopupBox Grid.Column="0" Grid.Row="3"
-    Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
-    IsEnabled="False"
-    PlacementMode="LeftAndAlignMiddles"
-    UnfurlOrientation="Horizontal"
-    ToolTip="Manage Registry key"
-    Margin="0 0 10 10"  Width="42"  Height="42"
-    HorizontalAlignment="Right" VerticalAlignment="Center">
+                Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                IsEnabled="False"
+                PlacementMode="LeftAndAlignMiddles"
+                UnfurlOrientation="Horizontal"
+                ToolTip="Manage Registry key"
+                Margin="0 0 10 10"  Width="42"  Height="42"
+                HorizontalAlignment="Right" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <Button ToolTip="Add a key" Command="{Binding AddCommand}">
                         <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-    Stretch="Uniform"
-    Width="14" Height="14"
-    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                            Stretch="Uniform" Width="14" Height="14"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
                     </Button>
                     <Button ToolTip="Remove selected key" Command="{Binding RemoveSelectedItemCommand}">
                         <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-    Stretch="Uniform" Width="14" Height="14"
-    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                            Stretch="Uniform" Width="14" Height="14"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
                     </Button>
                 </StackPanel>
             </materialDesign:PopupBox>
@@ -202,16 +207,48 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32"/>
-                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" />
-                    <materialDesign:ColorZone Grid.Column="2"  Mode="Light" Height="32" CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                    <!-- Icone et label -->
+                    <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" VerticalAlignment="Center"/>
+                    <!-- Champs de saisie -->
+                    <materialDesign:ColorZone Grid.Column="2" Mode="Light" Height="32" CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Margin="2" >
                             <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Name="SearchedWord1" TextChanged="SearchedWord_TextChanged" />
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Width="400" Name="SearchedWord1" TextChanged="SearchedWord_TextChanged" />
                         </StackPanel>
                     </materialDesign:ColorZone>
-                    <Button Grid.Column="3"  Margin="8 0 0 0 " Click="Tree1_Search_bt" Name="btFind">Find</Button>
+                    <!-- Bouton FIND -->
+                    <Button Grid.Column="3" Margin="8 0 0 0" Click="Tree1_Search_bt" Name="btFind" VerticalAlignment="Center" Content="Find"/>
+                    <!--
+                    PopupMode="Click"
+                    ToggleCheckedContentCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=wpfExample:Buttons}, Path=FloatingActionDemoCommand}"
+                    Visibility={Binding Path=IsPopupOpen, ElementName=SearchDirButton, Converter={StaticResource BoolToVisibilityConverter}}
+                    -->
+                    <materialDesign:PopupBox Name="SearchDirButton" Grid.Column="4" Height="48" Width="48"
+                        Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}"
+                        IsEnabled="{Binding ElementName=btFind, Path=IsEnabled}"
+                        PlacementMode="RightAndAlignTopEdges"
+                        ToggleCheckedContentCommandParameter="wowsers"
+                        Margin="8 0 0 0" 
+                        ToolTip="Change search direction">
+                        <!--Bouton principal-->
+                        <materialDesign:PopupBox.ToggleCheckedContent>
+                            <materialDesign:PackIcon Kind="Search" Width="24" Height="24" />
+                        </materialDesign:PopupBox.ToggleCheckedContent>
+                        <!--Sous-boutons-->
+                        <StackPanel Visibility="Visible" Orientation="Horizontal" Margin="8 0 0 0" >
+                            <Button ToolTip="Search up" Click="Button_SearchUp_Click" >
+                                <materialDesign:PackIcon Kind="TransferUp" Width="24" Height="24" />
+                            </Button>
+                            <Button ToolTip="Search down" Click="Button_SearchDown_Click">
+                                <materialDesign:PackIcon Kind="TransferDown" Width="24" Height="24" />
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Name="SearchedWordCount" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+
                 </Grid>
             </materialDesign:ColorZone>
 
@@ -362,37 +399,16 @@
             </Grid>
         </Popup>
 
+
+        
         <!--==========================================================-->
-        <!--          POPUP POUR LE FIND                              -->
+        <!--           SABLIER                                        -->
         <!--==========================================================-->
-        <!--
-                PopupMode="Click"
-                ToggleCheckedContentCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=wpfExample:Buttons}, Path=FloatingActionDemoCommand}"
-                Visibility={Binding Path=IsPopupOpen, ElementName=SearchDirButton, Converter={StaticResource BoolToVisibilityConverter}}
-        -->
-
-        <materialDesign:PopupBox Name="SearchDirButton" Style="{StaticResource MaterialDesignMultiFloatingActionAccentPopupBox}"
-                                     PlacementMode="RightAndAlignTopEdges"
-                                     ToggleCheckedContentCommandParameter="wowsers"
-                                     Margin="0 0 48 0"
-                                     ToolTip="Change search direction">
-            <!--Bouton principal-->
-            <materialDesign:PopupBox.ToggleCheckedContent>
-                <materialDesign:PackIcon Kind="Search" Width="24" Height="24" />
-            </materialDesign:PopupBox.ToggleCheckedContent>
-            <!--Sous-boutons-->
-            <StackPanel Visibility="Visible" Orientation="Horizontal">
-                <Button ToolTip="Search up" Click="Button_SearchUp_Click">
-                    <materialDesign:PackIcon Kind="TransferUp" Width="24" Height="24" />
-                </Button>
-                <Button ToolTip="Search down" Click="Button_SearchDown_Click">
-                    <materialDesign:PackIcon Kind="TransferDown" Width="24" Height="24" />
-                </Button>
-                <TextBlock VerticalAlignment="Center" Name="SearchedWordCount" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
-            </StackPanel>
-        </materialDesign:PopupBox>
-
-
+        <Popup Name="working" IsOpen="False" Placement="Center" AllowsTransparency="True" >
+            <materialDesign:Card UniformCornerRadius="25" Width="50" Height="50" Margin="10">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="40" IsIndeterminate="True" />
+            </materialDesign:Card>
+        </Popup>
 
         <!--==========================================================-->
         <!--           ESSAIS DIVERS                                  -->
