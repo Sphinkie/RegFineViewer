@@ -80,8 +80,8 @@
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
                     <!--Test Button-->
-                    <Button ToolTip="Expand sub tree" Click="ExpandAllTree" >
-                        <materialDesign:PackIcon Kind="ChartBarStacked"/>
+                    <Button ToolTip="Test Function" Click="TestFunction" >
+                        <materialDesign:PackIcon Kind="TestTube"/>
                     </Button>
                     <!--Stats Button-->
                     <Button ToolTip="Tree stats" Name="bTray1Button1" Click="bTray1Button1_Click">
@@ -128,9 +128,10 @@
                         <TreeViewItem
                             Selected="TreeViewItem_OnItemSelected"
                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                            IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                             Margin="0,-6,0,-6" Padding="0,0,0,0" >
                             <!--local:BringSelectedItemIntoViewBehavior.IsBringSelectedIntoView="True"-->
+                            <!--IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                            Expanded="OnExpanded"-->
 
                             <TreeViewItem.Header >
                                 <!-- Affichage par défaut des données -->

@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Collections.ObjectModel;       // ObservableCollections
-
+using System.Windows.Threading;
 
 namespace RegFineViewer
 {
@@ -22,11 +22,15 @@ namespace RegFineViewer
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
         private KeyUnitDictionnary UnitDictionnary;
         private RegFileParser Parser1;
-        string SearchedWord;
-        bool SearchedWordIsDirty;
-        List<RegistryItem> SearchedWordResults;
-        int SearchedWordResultsIndex;
-        int SearchDirection = 1;
+
+        // Pour la fonction de recherche
+        private string SearchedWord;
+        private int SearchDirection = 1;
+        private bool SearchedWordIsDirty;
+        private int SearchedWordResultsIndex;
+        private List<RegistryItem> SearchedWordResults;
+
+        string Debug;
 
         public MainWindow()
         {
@@ -50,23 +54,23 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void FillRegistryTree(object sender, RoutedEventArgs e)
         {
+            RegistryItem N1 = new RegistryItem("Node 1", "node");
             RegistryItem K1 = new RegistryItem("clef 1", "dword");
             RegistryItem K2 = new RegistryItem("clef 2", "dword");
-            RegistryItem N1 = new RegistryItem("Node 1", "node");
             K1.Value = "0001";
             K2.Value = "0002";
             N1.AddSubItem(K1);
             N1.AddSubItem(K2);
             RegistryTree1.Add(N1);
 
-            RegistryItem K3 = new RegistryItem("clef 3", "dword");
             RegistryItem N2 = new RegistryItem("Node 2", "node");
+            RegistryItem K3 = new RegistryItem("clef 3", "dword");
             K3.Value = "0003";
             N2.AddSubItem(K3);
             RegistryTree1.Add(N2);
 
-            RegistryItem K4 = new RegistryItem("clef 4", "dword");
             RegistryItem N3 = new RegistryItem("SubNode 3", "node");
+            RegistryItem K4 = new RegistryItem("clef 4", "dword");
             K4.Value = "0004";
             N3.AddSubItem(K4);
             N2.AddSubItem(N3);
@@ -162,12 +166,12 @@ namespace RegFineViewer
                 // On sélectionne le premier RegistryItem de la liste
                 SearchedWordResultsIndex = 0;
                 SearchDirection = 1;
-                if (SearchedWordResults.Count>0)
-                    if (SearchedWordResults[0] is RegistryItem) 
+                if (SearchedWordResults.Count > 0)
+                    if (SearchedWordResults[0] is RegistryItem)
                         SearchedWordResults[0].IsSelected = true;
             }
 
-            else if ((SearchedWordResults != null) && (SearchedWordResults.Count>0))
+            else if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
             // Si on vient de cliquer sur FIND, *sans* avoir modifié le SearchedWord
             {
                 // on déselectionne l'item précédent
@@ -176,16 +180,24 @@ namespace RegFineViewer
                 // On incrémente l'index
                 SearchedWordResultsIndex += SearchDirection;
                 // Vérification des bornes
-                if (SearchedWordResultsIndex < 0) SearchedWordResultsIndex = SearchedWordResults.Count-1;
+                if (SearchedWordResultsIndex < 0) SearchedWordResultsIndex = SearchedWordResults.Count - 1;
                 if (SearchedWordResultsIndex >= SearchedWordResults.Count) SearchedWordResultsIndex = 0;
                 // on selectionne l'item suivant
                 if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
                     SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
-                // On met à jour le No de l'item
-                SearchedWordCount.Text = (SearchedWordResultsIndex+1).ToString() + "/" + SearchedWordResults.Count.ToString();
-                working.IsOpen = false;  // Popup sablier
+                // On met à jour le No de l'item affiché dans le compteur
+                SearchedWordCount.Text = (SearchedWordResultsIndex + 1).ToString() + "/" + SearchedWordResults.Count.ToString();
             }
 
+            // On deploie le TreeView jusquà l'item
+            List<RegistryItem> PathToNode = new List<RegistryItem> { };
+            PathToNode = this.BuildPathToNode(SearchedWordResults[SearchedWordResultsIndex]);
+            this.ExpandPath(PathToNode);
+            PathToNode.Clear();
+
+
+
+            working.IsOpen = false;  // Popup sablier
             //  GetTreeViewItem(TreeView1, Result);
             SearchedWordIsDirty = false;
             // Affiche les boutons UP/DOWN
@@ -308,6 +320,7 @@ namespace RegFineViewer
 
             TreeViewItem X = sender as TreeViewItem;
             X.BringIntoView();
+            Debug = "TreeViewItem_OnItemSelected";
         }
 
         // -------------------------------------------------------------------------
@@ -380,36 +393,62 @@ namespace RegFineViewer
 
         // -------------------------------------------------------------------------
         // Essai pour expandre tout l'arbre d'un coup.
-        // Semble fonctionner mais c'est long, et même le sablier se fige (quand il apparait...)
         // -------------------------------------------------------------------------
-        private void ExpandAllTree(object sender, RoutedEventArgs e)
+        private void TestFunction(object sender, RoutedEventArgs e)
         {
-            working.IsOpen = true;      // Popup Sablier !! pb : n'a pas le temps de s'afficher ....
-
-            /*
-            // Methode 1: methode du node racine. C'est long
-
-            object NodeRacine = TreeView1.Items[0];
-            TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(NodeRacine) as TreeViewItem;
-            if (treeItem != null)
-            {
-                treeItem.ExpandSubtree();
-            }
-            */
-
-            // Methode 2: test en cours
+            working.IsOpen = true;      // Popup Sablier
             this.SearchedWord = "LAST";
             // On recupère la liste des RegistryItems correspondant à la recherche
             this.SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
             RegistryItem t1 = this.SearchedWordResults[0];
 
-            GetTreeViewItemParent(TreeView1, t1);
+            List<RegistryItem> PathToNode = new List<RegistryItem> {};
+            PathToNode = this.BuildPathToNode(t1);
+            this.ExpandPath(PathToNode);
+            PathToNode.Clear();
+            working.IsOpen = false;      // Popup Sablier
         }
 
         // -------------------------------------------------------------------------
-        // 
+        // Construit une liste des Nodes conduisant à l'Item donné
         // -------------------------------------------------------------------------
-        private TreeViewItem GetTreeViewItemParent (ItemsControl parent, object item)
+        private List<RegistryItem> BuildPathToNode(RegistryItem item)
+        {
+            List<RegistryItem> PathToItem = new List<RegistryItem> { };
+            RegistryItem Curseur = item;
+            while (Curseur.Parent is RegistryItem)
+            {
+                PathToItem.Add(Curseur.Parent);
+                Curseur = Curseur.Parent;
+            }
+            PathToItem.Reverse();
+            return PathToItem;
+        }
+
+        // -------------------------------------------------------------------------
+        // -------------------------------------------------------------------------
+        private void ExpandPath(List<RegistryItem> path)
+        {
+            ItemsControl ParentTvi = TreeView1;
+            foreach (var item in path)
+            {
+                // Pour expandre un Node, il faut son Control (tvi).
+                // Pour l'obtenir, il faut le Control du parent (ParentTvi) et l'Object du Node (item).
+                TreeViewItem tvi = ParentTvi.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+                // S'il n'est pas nul, on l'expand
+                if (tvi is TreeViewItem) tvi.IsExpanded = true;
+                // pour le node suivant: le node courant est le parent du node suivant de la liste
+                ParentTvi = tvi;
+                // On attend que l'UI ait fini l'expansion
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                if (ParentTvi == null) return;
+            }
+        }
+
+        // -------------------------------------------------------------------------
+        // Test
+        // -------------------------------------------------------------------------
+        private TreeViewItem GetTreeViewItemParent(ItemsControl parent, object item)
         {
             // Check whether the selected item is a direct child of the parent ItemsControl.
             TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
