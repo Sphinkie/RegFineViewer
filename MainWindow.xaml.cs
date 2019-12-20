@@ -42,17 +42,10 @@ namespace RegFineViewer
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
             // On binde les RegistryTree avec les TreeView de l'affichage
             TreeView1.ItemsSource = RegistryTree1;
-<<<<<<< HEAD
-//            TreeView2.ItemsSource = RegistryTree2;
-            // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
-            // ... ItemsSource="{Binding Source=RegistryTree1}" ...
-            // ItemsSource = "{Binding Source={StaticResource myEmployeeData}
-=======
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
             // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
             Lb_SearchedWordCount.Text = "";
->>>>>>> version-1.3
         }
 
         // -------------------------------------------------------------------------
@@ -108,67 +101,13 @@ namespace RegFineViewer
                 Parser1.ParseFile(fileName);
                 Parser1.BuildList();
             }
-<<<<<<< HEAD
-
-            // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
-            else
-            {
-                string fileName1 = droppedFiles[0];
-                string fileName2 = droppedFiles[1];
-                Tree1_InfoChip.Content = fileName1;
-//                Tree2_InfoChip.Content = fileName2;
-                // On remplit le RegistryTree à partir du fichier
-                Parser1.ParseFile(fileName1);
-                Parser2.ParseFile(fileName2);
-                Parser1.BuildList();
-                Parser2.BuildList();
-            }
-=======
             DropZone1.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
             Lb_SearchedWordCount.Text = "";
->>>>>>> version-1.3
         }
-        //private void Tree2_drop(object sender, DragEventArgs e)
-        //{
-        //    string[] droppedFiles = null;
-        //    // on remplit la liste avec les fichiers qui ont été droppés dans la fenetre
-        //    if (e.Data.GetDataPresent(DataFormats.FileDrop))
-        //    {
-        //        droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-        //    }
-        //    // En cas de liste vide, on sort.
-        //    if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
-
-        //    DropZone2.Visibility = Visibility.Hidden;
-        //    TreeView2.Visibility = Visibility.Visible;
-
-        //    // S'il y a un seul fichier droppé, on l'ouvre dans la TreeView courante
-        //    if (droppedFiles.Length == 1)
-        //    {
-        //        string fileName = droppedFiles[0];
-        //        Tree2_InfoChip.Content = fileName;
-        //        // On remplit le RegistryTree à partir du fichier
-        //        Parser2.ParseFile(fileName);
-        //        Parser2.BuildList();
-        //    }
-        //    // S'il y a plusieurs fichiers droppés, on ouvre les deux premiers dans chaque TreeView
-        //    else
-        //    {
-        //        string fileName1 = droppedFiles[0];
-        //        string fileName2 = droppedFiles[1];
-        //        Tree1_InfoChip.Content = fileName1;
-        //        Tree2_InfoChip.Content = fileName2;
-        //        // On remplit le RegistryTree à partir du fichier
-        //        Parser1.ParseFile(fileName1);
-        //        Parser2.ParseFile(fileName2);
-        //        Parser1.BuildList();
-        //        Parser2.BuildList();
-        //    }
-        //}
 
         // -------------------------------------------------------------------------
         // Bouton CLOSE (de la Chip)
@@ -179,90 +118,21 @@ namespace RegFineViewer
             RegistryTree1.Clear();
             DropZone1.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
-<<<<<<< HEAD
-
-        }
-        //private void Tree2_CloseFile_bt(object sender, RoutedEventArgs e)
-        //{
-        //    Tree2_InfoChip.Content = "no file loaded";
-        //    RegistryTree2.Clear();
-        //    DropZone2.Visibility = Visibility.Visible;
-        //    TreeView2.Visibility = Visibility.Hidden;
-        //}
-=======
             Bt_Search.Content = "Find";
             Tb_SearchedWord.Text = "";
             this.SearchedWordIsDirty = true;
             Lb_SearchedWordCount.Text = "";
         }
->>>>>>> version-1.3
 
         // -------------------------------------------------------------------------
         // Affiche un popup de Statistiques relatives au Tree
         // -------------------------------------------------------------------------
-<<<<<<< HEAD
-        private void Tree1_Search_bt(object sender, RoutedEventArgs e)
-        {
-            // On deselectionne les TreeItems pouvant être deja selectionnés
-            //RegistryItem SI = TreeView1.SelectedItem as RegistryItem;
-            //while (SI is RegistryItem)
-            //{
-            //    SI.IsSelected = false; 
-            //}
-            // On lance la recherche
-            this.SearchedWord = SearchedWord1.Text.ToUpper();
-            RegistryItem Result = Parser1.NodeList.Find(Predicat);
-            // On se positionne sur cet item
-            Result.IsSelected = false;
-            Result.IsSelected = true;
-<<<<<<< Updated upstream
-            // On expand le node parent
-            TreeViewItem item = TreeView1.SelectedItem as TreeViewItem;
-            if (item is TreeViewItem)
-                item.BringIntoView();
-            RegistryItem racine = TreeView1.Items[0] as RegistryItem;
-            racine.IsExpanded = true;
-=======
-            // test:
-            TreeViewItem selectedTVI = (TreeViewItem)TreeView1.SelectedItem;
->>>>>>> Stashed changes
-        }
-
-        //private void Tree2_Search_bt(object sender, RoutedEventArgs e)
-        //{
-        //    this.SearchedWord = SearchedWord2.Text.ToUpper();
-        //    RegistryItem Result = Parser1.NodeList.Find(Predicat);
-        //}
-
-        // --------------------------------------------
-        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (ne tient pas compte de la casse)
-        // --------------------------------------------
-        private bool Predicat(RegistryItem item)
-        {
-            string UpperName = item.Name.ToUpper();
-            string UpperValue = item.Value.ToUpper();
-            if (UpperName.Contains(this.SearchedWord) || UpperValue.Contains(this.SearchedWord))
-                return true;
-            else
-                return false;
-        }
-
-        // -------------------------------------------------------------------------
-        // Selection du TreeView: (inutile)
-        // -------------------------------------------------------------------------
-        private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            var X = sender;     // Treeview1
-                                //Perform actions when SelectedItem changes
-            MessageBox.Show(((TreeViewItem)e.NewValue).Header.ToString());
-=======
         private void Bt_TreeInfos_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();
             tbStatNodes.Text  = Parser1.NbNodes.ToString();
             tbStatKeys.Text   = Parser1.NbKeys.ToString();
             Pu_TreeInfos.IsOpen = !Pu_TreeInfos.IsOpen;
->>>>>>> version-1.3
         }
         private void Bt_TreeInfos_Close(object sender, RoutedEventArgs e)
         {
@@ -574,12 +444,6 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
         {
-<<<<<<< HEAD
-            // On affiche l'item sélectionné
-            TreeViewItem item = sender as TreeViewItem;
-            if (item is TreeViewItem)
-                item.BringIntoView();
-=======
             TreeViewItem tvi = sender as TreeViewItem;
             tvi.BringIntoView();
         }
@@ -601,7 +465,6 @@ namespace RegFineViewer
         {
             SearchDirection = 1;
             if ((string)Bt_Search.Content == "Prev") Bt_Search.Content = "Next";
->>>>>>> version-1.3
         }
         private void Bt_SearchUp_Click(object sender, RoutedEventArgs e)
         {
