@@ -173,9 +173,9 @@
             <!-- ========================== -->
             <!-- BOUTON AJOUTER             -->
             <!-- ========================== -->
-            <materialDesign:PopupBox Grid.Column="0" Grid.Row="3"
+            <!--<materialDesign:PopupBox Grid.Column="0" Grid.Row="3"
                 Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
-                IsEnabled="False"
+                IsEnabled="False" 
                 PlacementMode="LeftAndAlignMiddles"
                 UnfurlOrientation="Horizontal"
                 ToolTip="Manage Registry key"
@@ -193,7 +193,7 @@
                             Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
                     </Button>
                 </StackPanel>
-            </materialDesign:PopupBox>
+            </materialDesign:PopupBox>-->
 
             <!-- ========================== -->
             <!-- BARRE DE RECHERCHE         -->
