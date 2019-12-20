@@ -122,22 +122,6 @@ namespace RegFineViewer
                 xmlWriter.WriteEndElement();
             }
             xmlWriter.WriteEndElement();    // Units
-
-            // On enregistre les elements ouverts les plus recents
-            xmlWriter.WriteStartElement("Recents");
-
-            xmlWriter.WriteStartElement("Recent");
-            xmlWriter.WriteAttributeString("type", "file");
-            xmlWriter.WriteString(@"D:\source\repos\RegFineViewer\bin\Debug\example3.reg");
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteStartElement("Recent");
-            xmlWriter.WriteAttributeString("type", "reg");
-            xmlWriter.WriteString(@"[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSRS12.MSSQLSERVER\MSSQLServer]");
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteEndElement();    // Recents
-
             xmlWriter.WriteEndElement();    // Root
 
             xmlWriter.WriteEndDocument();

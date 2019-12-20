@@ -1,0 +1,17 @@
+﻿<Root>
+  <Units>
+    <Prefered unit="bool">Audio Video Split Use</Prefered>
+    <Prefered unit="bool">Use</Prefered>
+    <Prefered unit="frames">PreRoll Play</Prefered>
+    <Prefered unit="frames">PreRoll Break</Prefered>
+    <Prefered unit="frames">PostRoll</Prefered>
+    <Prefered unit="frames">PreRoll Thread</Prefered>
+    <Prefered unit="msecs">Timeout</Prefered>
+    <Prefered unit="bool">Use Freeze</Prefered>
+    <Prefered unit="frames">Debut decompte en images</Prefered>
+    <Prefered unit="bool">MultiClient</Prefered>
+    <Prefered unit="bool">UseFrameInGapOvl</Prefered>
+    <Prefered unit="bool">Memorize Last Departures</Prefered>
+    <Prefered unit="msecs">Period</Prefered>
+  </Units>
+</Root>

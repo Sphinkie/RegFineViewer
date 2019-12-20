@@ -1,7 +1,15 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RegFineViewer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="RecentFile_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\source\repos\RegFineViewer\bin\Debug\example3.reg</Value>
+    </Setting>
+    <Setting Name="RecentFile_2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">E:\source\repos\RegFineViewer\_example2.reg</Value>
+    </Setting>
+    <Setting Name="RecentReg_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSRS12.MSSQLSERVER\MSSQLServer]</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
