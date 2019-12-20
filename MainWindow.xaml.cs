@@ -265,6 +265,8 @@ namespace RegFineViewer
                 if (childControl != null)
                 {
                     ExpandAllChilds(childControl, expand);
+                    // On diminue la priorité du thread, pour que l'UI se raffraichisse en priorité
+                    Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 }
                 TreeViewItem item = childControl as TreeViewItem;
                 if (item != null)
