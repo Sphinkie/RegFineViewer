@@ -44,7 +44,7 @@ namespace RegFineViewer
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
             // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
-            SearchedWordCount.Text = "";
+            Lb_SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -53,30 +53,24 @@ namespace RegFineViewer
         private void FillRegistryTree(object sender, RoutedEventArgs e)
         {
             RegistryItem N1 = new RegistryItem("Node 1", "node");
-            RegistryItem K1 = new RegistryItem("clef 1", "dword");
-            RegistryItem K2 = new RegistryItem("clef 2", "dword");
-            K1.Value = "0001";
-            K2.Value = "0002";
+            RegistryItem K1 = new RegistryItem("clef 1", "dword") { Value = "0001" };
+            RegistryItem K2 = new RegistryItem("clef 2", "dword") { Value = "0002" };
             N1.AddSubItem(K1);
             N1.AddSubItem(K2);
             RegistryTree1.Add(N1);
 
             RegistryItem N2 = new RegistryItem("Node 2", "node");
-            RegistryItem K3 = new RegistryItem("clef 3", "dword");
-            K3.Value = "0003";
+            RegistryItem K3 = new RegistryItem("clef 3", "dword") { Value = "0003" };
             N2.AddSubItem(K3);
             RegistryTree1.Add(N2);
 
             RegistryItem N3 = new RegistryItem("SubNode 3", "node");
-            RegistryItem K4 = new RegistryItem("clef 4", "dword");
-            K4.Value = "0004";
+            RegistryItem K4 = new RegistryItem("clef 4", "dword") { Value = "0004" };
             N3.AddSubItem(K4);
             N2.AddSubItem(N3);
-            RegistryItem K5 = new RegistryItem("clef 5", "dword");
-            RegistryItem K6 = new RegistryItem("clef 6", "dword");
+            RegistryItem K5 = new RegistryItem("clef 5", "dword") { Value = "0005" };
+            RegistryItem K6 = new RegistryItem("clef 6", "dword") { Value = "0006" };
             RegistryItem N4 = new RegistryItem("SubNode 4", "node");
-            K5.Value = "0005";
-            K6.Value = "0006";
             N4.AddSubItem(K5);
             N4.AddSubItem(K6);
             N2.AddSubItem(N4);
@@ -111,7 +105,7 @@ namespace RegFineViewer
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
-            SearchedWordCount.Text = "";
+            Lb_SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -123,99 +117,10 @@ namespace RegFineViewer
             RegistryTree1.Clear();
             DropZone1.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
-            btFind.Content = "Find";
-            SearchedWord1.Text = "";
+            Bt_Search.Content = "Find";
+            Tb_SearchedWord.Text = "";
             this.SearchedWordIsDirty = true;
-            SearchedWordCount.Text = "";
-        }
-
-        // -------------------------------------------------------------------------
-        // Bouton FIND (barre de recherche)
-        // -------------------------------------------------------------------------
-        private void Bt_Search_Click(object sender, RoutedEventArgs e)
-        {
-            // On deselectionne les TreeItems pouvant être deja selectionnés
-            if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
-            {
-                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
-                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
-            }
-
-            if (SearchedWordIsDirty)
-            // Si on vient de cliquer sur FIND, *après* avoir modifié le SearchedWord
-            {
-                // On lance la recherche
-                working.IsOpen = true;  // Popup sablier
-                this.SearchedWord = SearchedWord1.Text.ToUpper();
-                // On recupère la liste des RegistryItems correspondant à la recherche
-                this.SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
-                // On change quelques textes
-                switch (SearchedWordResults.Count)
-                {
-                    case 0:
-                        SearchedWordCount.Text = "no item found";
-                        btFind.Content = "Find";
-                        break;
-                    case 1:
-                        SearchedWordCount.Text = "1 item found";
-                        btFind.Content = "Find";
-                        break;
-                    default:
-                        SearchedWordCount.Text = "1/" + SearchedWordResults.Count.ToString();
-                        btFind.Content = "Next";
-                        break;
-                }
-                // On sélectionne le premier RegistryItem de la liste
-                SearchedWordResultsIndex = 0;
-                SearchDirection = 1;
-            }
-
-            else if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
-            // Si on vient de cliquer sur FIND, *sans* avoir modifié le SearchedWord
-            {
-                // on déselectionne l'item précédent
-                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
-                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
-                // On incrémente l'index
-                SearchedWordResultsIndex += SearchDirection;
-                // Vérification des bornes
-                if (SearchedWordResultsIndex < 0) SearchedWordResultsIndex = SearchedWordResults.Count - 1;
-                if (SearchedWordResultsIndex >= SearchedWordResults.Count) SearchedWordResultsIndex = 0;
-                // On met à jour le No de l'item affiché dans le compteur
-                SearchedWordCount.Text = (SearchedWordResultsIndex + 1).ToString() + "/" + SearchedWordResults.Count.ToString();
-            }
-
-            if (SearchedWordResultsIndex < SearchedWordResults.Count)
-            {
-                // On deploie le TreeView jusquà l'item
-                List<RegistryItem> PathToNode = new List<RegistryItem> { };
-                PathToNode = this.BuildPathToNode(SearchedWordResults[SearchedWordResultsIndex]);
-                this.ExpandPath(PathToNode);
-                PathToNode.Clear();
-
-                // On surligne l'item
-                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
-                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
-            }
-
-            working.IsOpen = false;  // Popup sablier
-            //  GetTreeViewItem(TreeView1, Result);
-            SearchedWordIsDirty = false;
-            // Affiche les boutons UP/DOWN
-            SearchDirButton.IsPopupOpen = true;
-        }
-
-        // --------------------------------------------
-        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (sans tenir compte de la casse)
-        // --------------------------------------------
-        private bool Predicat(RegistryItem item)
-        {
-            string UpperName = item.Name.ToUpper();
-            string UpperValue = item.Value.ToUpper();
-            if (UpperName.Contains(this.SearchedWord) || UpperValue.Contains(this.SearchedWord))
-                return true;
-            else
-                return false;
+            Lb_SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -224,13 +129,13 @@ namespace RegFineViewer
         private void Bt_TreeInfos_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();
-            tbStatNodes.Text = Parser1.NbNodes.ToString();
-            tbStatKeys.Text = Parser1.NbKeys.ToString();
-            CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
+            tbStatNodes.Text  = Parser1.NbNodes.ToString();
+            tbStatKeys.Text   = Parser1.NbKeys.ToString();
+            Pu_TreeInfos.IsOpen = !Pu_TreeInfos.IsOpen;
         }
         private void Bt_TreeInfos_Close(object sender, RoutedEventArgs e)
         {
-            CardTreeInfo.IsOpen = false;
+            Pu_TreeInfos.IsOpen = false;
         }
 
         // -------------------------------------------------------------------------
@@ -242,12 +147,12 @@ namespace RegFineViewer
             // Affiche ou masque le popup
             CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
         }
-        private void RefreshLengthStats(RegFileParser Parser)
+        private void RefreshLengthStats(RegFileParser parser)
         {
-            Int32 Moyenne = Parser.GetAverageLength();  // A calculer en premier
-            Int32 ModalLength = Parser.ModalLabelLength;
-            Int32 EcartType = Parser.GetStandardDeviation();
-            Int32 Nombre = Parser.NbNodes + Parser.NbKeys;
+            Int32 Moyenne     = parser.GetAverageLength();  // A calculer en premier
+            Int32 ModalLength = parser.ModalLabelLength;
+            Int32 EcartType   = parser.GetStandardDeviation();
+            Int32 Nombre      = parser.NbNodes + parser.NbKeys;
             // Les stats disent que 84% de la population se trouve entre 0 et Moy + EcType
             Int32 SD84 = Moyenne + EcartType;
             // Les stats disent que 98% de la population se trouve entre 0 et Moy + 2 x EcType
@@ -255,14 +160,14 @@ namespace RegFineViewer
             // On met à jour les textes affichés dans l'UI
             nbItems.Text = Nombre.ToString();
             tbAvLength.Text = Moyenne.ToString() + " chars";
-            nbAvLength.Text = Parser.GetNbOfItemsLengthEqualsTo(Moyenne).ToString();
+            nbAvLength.Text = parser.GetNbOfItemsLengthEqualsTo(Moyenne).ToString();
             tbModelength.Text = ModalLength.ToString() + " chars";
-            nbModelength.Text = Parser.GetNbOfItemsLengthEqualsTo(ModalLength).ToString();
+            nbModelength.Text = parser.GetNbOfItemsLengthEqualsTo(ModalLength).ToString();
             tbSD.Text = EcartType.ToString() + " chars";
             tbSD84.Text = SD84.ToString() + " chars";
-            nbSD84.Text = Parser.GetNbOfItemsLengthLowerThan(SD84).ToString();
+            nbSD84.Text = parser.GetNbOfItemsLengthLowerThan(SD84).ToString();
             tbSD98.Text = SD98.ToString() + " chars";
-            nbSD98.Text = Parser.GetNbOfItemsLengthLowerThan(SD98).ToString();
+            nbSD98.Text = parser.GetNbOfItemsLengthLowerThan(SD98).ToString();
         }
         private void Bt_LengthStats_Close(object sender, RoutedEventArgs e)
         {
@@ -297,37 +202,15 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Selection du TreeViewItem
-        // On ne passe ici que si l'item est visible (expanded):
-        // il faut donc ouvrir tout l'arbre avant de faire la recherche.
-        // -------------------------------------------------------------------------
-        private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem S = e.Source as TreeViewItem;
-            S.BringIntoView();
-
-            // l'un des deux ne sert à rien ...
-
-            TreeViewItem X = sender as TreeViewItem;
-            X.BringIntoView();
-        }
-
-        // -------------------------------------------------------------------------
-        // Boutons EXPAND et COLLAPSE
+        // Bouton COLLAPSE
         // -------------------------------------------------------------------------
         private void Bt_Collapse_Click(object sender, RoutedEventArgs e)
         {
             TreeView_CollapseAll();
-            working.IsOpen = false;      // Popup Sablier
+            Pu_Working.IsOpen = false;      // Popup Sablier
         }
-        private void Bt_Expand_Click(object sender, RoutedEventArgs e)
-        {
-            working.IsOpen = true;      // Popup Sablier
-            TreeView_ExpandLevel();
-        }
-
         // -------------------------------------------------------------------------
-        // Agit sur tous les nodes qui sont dejà associés à un IUElement (cad visibles).
+        // Agit sur tous les nodes qui sont associés à un IUElement (cad visibles).
         // Donc referme tous les levels à la fois.
         // -------------------------------------------------------------------------
         private void TreeView_CollapseAll()
@@ -343,6 +226,14 @@ namespace RegFineViewer
             }
         }
 
+        // -------------------------------------------------------------------------
+        // Bouton EXPAND
+        // -------------------------------------------------------------------------
+        private void Bt_Expand_Click(object sender, RoutedEventArgs e)
+        {
+            Pu_Working.IsOpen = true;      // Popup Sablier
+            TreeView_ExpandLevel();
+        }
         // -------------------------------------------------------------------------
         // N'agit que sur les nodes qui sont dejà associés à un IUElement (cad visibles).
         // Donc il ne traite qu'un level à la fois.
@@ -361,7 +252,6 @@ namespace RegFineViewer
             // Le rendu visuel est asynchrone: 
             // donc il n'est pas fini quand on sort de la fonction...
         }
-
         // -------------------------------------------------------------------------
         // Expand ou referme tous les Childs d'un treeViewItem visible
         // -------------------------------------------------------------------------
@@ -376,26 +266,136 @@ namespace RegFineViewer
                 }
                 TreeViewItem item = childControl as TreeViewItem;
                 if (item != null)
-                    item.IsExpanded = expand;  // true
+                    item.IsExpanded = expand;
             }
         }
 
         // -------------------------------------------------------------------------
-        // Essai pour expandre tout l'arbre d'un coup.
-        // -------------------------------------------------------------------------
-        private void Bt_TestFunction_Click(object sender, RoutedEventArgs e)
-        {
-            working.IsOpen = true;      // Popup Sablier
-            this.SearchedWord = "LAST";
-            // On recupère la liste des RegistryItems correspondant à la recherche
-            this.SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
-            RegistryItem t1 = this.SearchedWordResults[0];
+        // Example: Traverse le TreeView pour trouver le TreeViewItem qui correspond à l'item donné.
+        // Pour le premier appel, utiliser: parent = TreeView1
+        // Exemple d'utilisation: on peut appliquer ExpandSubtree() sur le tvi retourné.
+        // -----------------------------------------------------------------------------------
 
-            List<RegistryItem> PathToNode = new List<RegistryItem> {};
-            PathToNode = this.BuildPathToNode(t1);
-            this.ExpandPath(PathToNode);
-            PathToNode.Clear();
-            working.IsOpen = false;      // Popup Sablier
+        private TreeViewItem TestFunction(ItemsControl parent, object item)
+        {
+            // Check whether the selected item is a direct child of the parent ItemsControl.
+            TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+
+            if (tvi == null)
+            {
+                // Si tvi est nul, c'est que l'item donné n'est pas un child direct du parent.
+                // Donc on verifie pour s'il est un child de l'un des Items enfants du parent.
+                foreach (object child in parent.Items)
+                {
+                    // pour chaque enfant du Parent
+                    // si ce n'est pas un node: on passe
+                    RegistryItem CurrentChild = child as RegistryItem;
+                    if (CurrentChild.DType != "node") continue;
+                    // Si c'est un node: on récupère son TVI
+                    TreeViewItem childItem = parent.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;
+                    if (childItem != null)
+                    {
+                        // Check the next level for the appropriate item.
+                        tvi = TestFunction(childItem, item);
+                    }
+                }
+            }
+            else
+            {
+                // le tvi est un child direct de ce parent, donc ont peut expandre le parent
+                TreeViewItem t = parent as TreeViewItem;
+                if (t is TreeViewItem)
+                    t.IsExpanded = true;
+            }
+            return tvi;
+        }
+
+        // -------------------------------------------------------------------------
+        // Bouton FIND (barre de recherche)
+        // -------------------------------------------------------------------------
+        private void Bt_Search_Click(object sender, RoutedEventArgs e)
+        {
+            // On deselectionne les TreeItems pouvant être déjà sélectionnés
+            if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
+            {
+                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
+                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
+            }
+
+            if (SearchedWordIsDirty)
+            // Si on vient de cliquer sur FIND, *après* avoir modifié le SearchedWord
+            {
+                // On lance la recherche
+                Pu_Working.IsOpen = true;  // Popup sablier
+                this.SearchedWord = Tb_SearchedWord.Text.ToUpper();
+                // On recupère la liste des RegistryItems correspondant à la recherche
+                this.SearchedWordResults = Parser1.NodeList.FindAll(Predicat);
+                // On change quelques textes
+                switch (this.SearchedWordResults.Count)
+                {
+                    case 0:
+                        Lb_SearchedWordCount.Text = "no item found";
+                        Bt_Search.Content = "Find";
+                        break;
+                    case 1:
+                        Lb_SearchedWordCount.Text = "1 item found";
+                        Bt_Search.Content = "Find";
+                        break;
+                    default:
+                        Lb_SearchedWordCount.Text = "1/" + this.SearchedWordResults.Count.ToString();
+                        Bt_Search.Content = "Next";
+                        break;
+                }
+                // On sélectionne le premier RegistryItem de la liste
+                this.SearchedWordResultsIndex = 0;
+                this.SearchDirection = 1;
+            }
+
+            else if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
+            // Si on vient de cliquer sur FIND, *sans* avoir modifié le SearchedWord
+            {
+                // on déselectionne l'item précédent
+                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
+                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = false;
+                // On incrémente l'index
+                SearchedWordResultsIndex += SearchDirection;
+                // Vérification des bornes
+                if (SearchedWordResultsIndex < 0) SearchedWordResultsIndex = SearchedWordResults.Count - 1;
+                if (SearchedWordResultsIndex >= SearchedWordResults.Count) SearchedWordResultsIndex = 0;
+                // On met à jour le No de l'item affiché dans le compteur
+                Lb_SearchedWordCount.Text = (SearchedWordResultsIndex + 1).ToString() + "/" + SearchedWordResults.Count.ToString();
+            }
+
+            if (SearchedWordResultsIndex < SearchedWordResults.Count)
+            {
+                RegistryItem Item = SearchedWordResults[SearchedWordResultsIndex];
+                // On deploie le TreeView jusquà l'item
+                List<RegistryItem> PathToNode = new List<RegistryItem> { };
+                PathToNode = this.BuildPathToNode(Item);
+                this.ExpandPath(PathToNode);
+                PathToNode.Clear();
+
+                // On surligne l'item
+                if (Item is RegistryItem)
+                    Item.IsSelected = true;
+            }
+
+            Pu_Working.IsOpen = false;                  // Popup sablier OFF
+            this.SearchedWordIsDirty = false;
+            Bt_SearchDirection.IsPopupOpen = true;      // Affiche les boutons UP/DOWN
+        }
+
+        // --------------------------------------------
+        // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (sans tenir compte de la casse)
+        // --------------------------------------------
+        private bool Predicat(RegistryItem item)
+        {
+            string UpperName = item.Name.ToUpper();
+            string UpperValue = item.Value.ToUpper();
+            if (UpperName.Contains(this.SearchedWord) || UpperValue.Contains(this.SearchedWord))
+                return true;
+            else
+                return false;
         }
 
         // -------------------------------------------------------------------------
@@ -404,13 +404,16 @@ namespace RegFineViewer
         private List<RegistryItem> BuildPathToNode(RegistryItem item)
         {
             List<RegistryItem> PathToItem = new List<RegistryItem> { };
-            RegistryItem Curseur = item;
-            while (Curseur.Parent is RegistryItem)
+            if (item != null)
             {
-                PathToItem.Add(Curseur.Parent);
-                Curseur = Curseur.Parent;
+                RegistryItem Curseur = item;
+                while (Curseur.Parent is RegistryItem)
+                {
+                    PathToItem.Add(Curseur.Parent);
+                    Curseur = Curseur.Parent;
+                }
+                PathToItem.Reverse();
             }
-            PathToItem.Reverse();
             return PathToItem;
         }
 
@@ -438,77 +441,23 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Test
+        // Affiche la partie du TreeView qui contient l'item sélectionné. 
+        // On ne passe ici que si l'item fait partie de l'UI: il faut donc expandre l'arbre avant.
         // -------------------------------------------------------------------------
-        private TreeViewItem GetTreeViewItemParent(ItemsControl parent, object item)
+        private void TreeViewItem_OnItemSelected(object sender, RoutedEventArgs e)
         {
-            // Check whether the selected item is a direct child of the parent ItemsControl.
-            TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-
-            if (tvi == null)
-            {
-                // Si tvi est nul, c'est que l'item donné n'est pas un child direct du parent.
-                // Donc on verifie pour s'il est un child de l'un des Items enfants du parent.
-                foreach (object child in parent.Items)
-                {
-                    // pour chaque enfant du Parent
-                    // si ce n'est pas un node: on passe
-                    RegistryItem CurrentChild = child as RegistryItem;
-                    if (CurrentChild.DType != "node") continue;
-                    // Si c'est un node: on récupère son TVI
-                    TreeViewItem childItem = parent.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;
-                    if (childItem != null)
-                    {
-                        // Check the next level for the appropriate item.
-                        tvi = GetTreeViewItemParent(childItem, item);
-                    }
-                }
-            }
-            else
-            {
-                // le tvi est un child direct de ce parent, donc ont peut expandre le parent
-                TreeViewItem t = parent as TreeViewItem;
-                if (t is TreeViewItem)
-                    t.IsExpanded = true;
-            }
-            return tvi;
-        }
-
-        // -----------------------------------------------------------------------------------
-        // Traverse le TreeView pour trouver le TreeViewItem qui correspond à l'item donné.
-        // Pour le premier appel, utiliser: parent = TreeView1
-        // Exemple d'utilisation: on peut appliquer ExpandSubtree() sur le tvi retourné.
-        // -----------------------------------------------------------------------------------
-        private TreeViewItem GetTreeViewItem(ItemsControl parent, object item)
-        {
-            // Check whether the selected item is a direct child of the parent ItemsControl.
-            TreeViewItem tvi = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-
-            if (tvi == null)
-            {
-                // Si tvi est nul, c'est que l'item donné n'est pas un child direct du parent.
-                // Donc on verifie pour s'il est un child de l'un des Items enfants du parent.
-                foreach (object child in parent.Items)
-                {
-                    TreeViewItem childItem = parent.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;
-                    if (childItem != null)
-                    {
-                        // Check the next level for the appropriate item.
-                        tvi = GetTreeViewItem(childItem, item);
-                    }
-                }
-            }
-            return tvi;
+            TreeViewItem tvi = sender as TreeViewItem;
+            tvi.BringIntoView();
         }
 
         // -------------------------------------------------------------------------
         // Appelé chaque fois que le mot à chercher change.
         // -------------------------------------------------------------------------
-        private void SearchedWord_TextChanged(object sender, TextChangedEventArgs e)
+        private void Tb_SearchedWord_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.SearchedWordIsDirty = true;
-            btFind.Content = "Find";
-            SearchedWordCount.Text = "";
+            Bt_Search.Content = "Find";
+            Lb_SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -517,12 +466,12 @@ namespace RegFineViewer
         private void Bt_SearchDown_Click(object sender, RoutedEventArgs e)
         {
             SearchDirection = 1;
-            if ((string)btFind.Content == "Prev") btFind.Content = "Next";
+            if ((string)Bt_Search.Content == "Prev") Bt_Search.Content = "Next";
         }
         private void Bt_SearchUp_Click(object sender, RoutedEventArgs e)
         {
             SearchDirection = -1;
-            if ((string)btFind.Content == "Next") btFind.Content = "Prev";
+            if ((string)Bt_Search.Content == "Next") Bt_Search.Content = "Prev";
         }
 
     }

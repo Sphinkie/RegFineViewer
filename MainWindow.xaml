@@ -79,10 +79,6 @@
                     <Button ToolTip="Collapse Tree" Click="Bt_Collapse_Click" >
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
-                    <!--Test Button-->
-                    <Button ToolTip="Test Function" Click="Bt_TestFunction_Click" >
-                        <materialDesign:PackIcon Kind="TestTube"/>
-                    </Button>
                     <!--Tree Stats Button-->
                     <Button ToolTip="Tree stats" Click="Bt_TreeInfos_Click">
                         <materialDesign:PackIcon Kind="ChartBarStacked" />
@@ -93,6 +89,10 @@
                     </Button>
                     <!--Debug Button-->
                     <Button ToolTip="Create a Test tree" Click="FillRegistryTree"  Visibility="Hidden" >
+                        <materialDesign:PackIcon Kind="TestTube"/>
+                    </Button>
+                    <!--Test Button-->
+                    <Button ToolTip="Test Function" Visibility="Hidden" >
                         <materialDesign:PackIcon Kind="TestTube"/>
                     </Button>
                 </ToolBar>
@@ -214,20 +214,20 @@
                     <materialDesign:ColorZone Grid.Column="2" Mode="Light" Height="32" CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Margin="2" >
                             <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
-                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Width="400" Name="SearchedWord1" TextChanged="SearchedWord_TextChanged" />
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Width="400" Name="Tb_SearchedWord" TextChanged="Tb_SearchedWord_TextChanged" />
                         </StackPanel>
                     </materialDesign:ColorZone>
                     <!-- Bouton FIND -->
-                    <Button Grid.Column="3" Margin="8 0 0 0" Click="Bt_Search_Click" Name="btFind" VerticalAlignment="Center" Content="Find"/>
+                    <Button Grid.Column="3" Margin="8 0 0 0" Click="Bt_Search_Click" x:Name="Bt_Search" VerticalAlignment="Center" Content="Find"/>
                     <!--Bouton SEARCH DIRECTION-->
                     <!--
                     PopupMode="Click"
                     ToggleCheckedContentCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=wpfExample:Buttons}, Path=FloatingActionDemoCommand}"
                     Visibility={Binding Path=IsPopupOpen, ElementName=SearchDirButton, Converter={StaticResource BoolToVisibilityConverter}}
                     -->
-                    <materialDesign:PopupBox Name="SearchDirButton" Grid.Column="4" Height="48" Width="48"
+                    <materialDesign:PopupBox Name="Bt_SearchDirection" Grid.Column="4" Height="48" Width="48"
                         Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}"
-                        IsEnabled="{Binding ElementName=btFind, Path=IsEnabled}"
+                        IsEnabled="{Binding ElementName=Bt_Search, Path=IsEnabled}"
                         PlacementMode="RightAndAlignTopEdges"
                         ToggleCheckedContentCommandParameter="wowsers"
                         Margin="8 0 0 0" 
@@ -244,7 +244,7 @@
                             <Button ToolTip="Search down" Click="Bt_SearchDown_Click">
                                 <materialDesign:PackIcon Kind="TransferDown" Width="24" Height="24" />
                             </Button>
-                            <TextBlock VerticalAlignment="Center" Name="SearchedWordCount" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
+                            <TextBlock VerticalAlignment="Center" Name="Lb_SearchedWordCount" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
                         </StackPanel>
                     </materialDesign:PopupBox>
 
@@ -287,7 +287,7 @@
             AllowsTransparency="True" PopupAnimation="Slide"  
             HorizontalAlignment="Center"    VerticalAlignment="Top" 
             -->
-        <Popup Name="CardTreeInfo" Margin="10,10,0,13" IsOpen="False" Placement="Mouse" AllowsTransparency="True" >
+        <Popup Name="Pu_TreeInfos" Margin="10,10,0,13" IsOpen="False" Placement="Mouse" AllowsTransparency="True" >
             <Grid>
                 <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                     <!--Padding="0" Width="200"-->
@@ -403,7 +403,7 @@
         <!--==========================================================-->
         <!--           SABLIER                                        -->
         <!--==========================================================-->
-        <Popup Name="working" IsOpen="False" Placement="Center" AllowsTransparency="True" >
+        <Popup Name="Pu_Working" IsOpen="False" Placement="Center" AllowsTransparency="True" >
             <materialDesign:Card UniformCornerRadius="25" Width="50" Height="50" Margin="10">
                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="40" IsIndeterminate="True" />
             </materialDesign:Card>
