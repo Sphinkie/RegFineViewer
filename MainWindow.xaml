@@ -22,7 +22,8 @@
     <Window.Resources>
         <!-- Style for chips-->
         <Style TargetType="materialDesign:Chip" >
-            <Setter Property="Margin" Value="16,0,0,0"/>
+            <Setter Property="Margin" Value="16,2,16,2"/>
+            <Setter Property="IsDeletable" Value="True"/>
         </Style>
 
         <!--Style  pour les boutons "change unit" -->
@@ -80,8 +81,16 @@
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
                     <!--Tree Stats Button-->
-                    <Button ToolTip="Tree stats" Click="Bt_TreeInfos_Click">
+                    <Button ToolTip="Tree Infos" Click="Bt_TreeInfos_Click">
                         <materialDesign:PackIcon Kind="ChartBarStacked" />
+                    </Button>
+                    <!--Open History Button -->
+                    <Button Name="Bt_OpenRecent" ToolTip="Open Recent" Click="Bt_OpenRecent_Click">
+                        <materialDesign:PackIcon Kind="Recent" />
+                    </Button>
+                    <!--Open Hive Button -->
+                    <Button ToolTip="Open Registry" Click="Bt_OpenHive_Click" IsEnabled="False">
+                        <materialDesign:PackIcon Kind="OpenInApp" />
                     </Button>
                     <!--Buttton de Stats sur la longueur des textes -->
                     <Button ToolTip="Length stats" Name="Bt_LengthStats" Click="Bt_LengthStats_Click">
@@ -101,9 +110,9 @@
             <!-- ==========================-->
             <!-- CHIP                      -->
             <!-- ==========================-->
-            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip" Content="no file loaded" IsDeletable="True" DeleteClick="Bt_CloseFile_Click"  DeleteToolTip="Close the file">
+            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip" Content="no file loaded" DeleteClick="Bt_CloseFile_Click"  DeleteToolTip="Close the file">
                 <materialDesign:Chip.Icon>
-                    <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
+                    <materialDesign:PackIcon Kind="File"/>
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
 
@@ -307,7 +316,7 @@
                             <materialDesign:PackIcon Kind="ChartBarStacked" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </materialDesign:ColorZone>
                         <!--Titre-->
-                        <TextBlock Grid.Row="1" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Statistics" />
+                        <TextBlock Grid.Row="1" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Tree Infos" />
                         <!--Separator line-->
                         <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
                         <!--Node count-->
@@ -398,8 +407,6 @@
             </Grid>
         </Popup>
 
-
-        
         <!--==========================================================-->
         <!--           SABLIER                                        -->
         <!--==========================================================-->
@@ -408,6 +415,77 @@
                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="40" IsIndeterminate="True" />
             </materialDesign:Card>
         </Popup>
+
+        <!--==========================================================-->
+        <!--                  POPUP of RECENT TREES                   -->
+        <!--==========================================================-->
+        <!--  NOTES:
+            PlacementTarget="{Binding ElementName=bTray2Button1}"   
+            Placement="Bottom" Placement="Mouse" 
+            
+            -->
+        <Popup Name="Pu_Recent" Margin="10,10,0,13" Placement="Mouse" AllowsTransparency="True" >
+            <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                <!--Padding="0" Width="200"-->
+                <StackPanel Name="Sp_RecentStack" Orientation="Vertical" >
+                    <StackPanel.Resources>
+                        <!-- Style for the chips of this Popup -->
+                        <Style TargetType="materialDesign:Chip" >
+                            <Setter Property="Margin" Value="8,2,8,2"/>
+                            <Setter Property="IsDeletable" Value="True"/>
+                            <Setter Property="DeleteToolTip" Value="Remove"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <!--Logo-->
+                    <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" VerticalAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="Recent" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </materialDesign:ColorZone>
+                    <!--Titre-->
+                    <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="recent registries" />
+                    <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
+                    <!--Recent trees. Index: 3 et svts -->
+                    <materialDesign:Chip Name="Ch_Recent1" Content="recent file 1" DeleteClick="Bt_CloseRecent_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Kind="File"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Name="Ch_Recent2" Content="recent file 2" DeleteClick="Bt_CloseRecent_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Kind="File"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Name="Ch_Recent3" Content="recent file 3" DeleteClick="Bt_CloseRecent_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Kind="File"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Name="Ch_Recent4" Content="recent hive 1" DeleteClick="Bt_CloseRecent_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Kind="Cube"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Name="Ch_Recent5" Content="recent hive 2" DeleteClick="Bt_CloseRecent_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Kind="Cube"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Name="Ch_Recent6" Content="recent hive 3" DeleteClick="Bt_CloseRecent_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Kind="Cube"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <!--separator line-->
+                    <!--<Separator Style="{StaticResource MaterialDesignLightSeparator}" />-->
+                    <!--Close Button-->
+                    <Button HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="Pu_Recent_Close" materialDesign:RippleAssist.IsCentered="True">
+                        <materialDesign:PackIcon  Kind="CloseCircleOutline" />
+                    </Button>
+                </StackPanel>
+            </materialDesign:Card>
+        </Popup>
+
 
         <!--==========================================================-->
         <!--           ESSAIS DIVERS                                  -->

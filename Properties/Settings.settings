@@ -2,14 +2,23 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RegFineViewer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="RecentFile_1" Type="System.String" Scope="User">
+    <Setting Name="RecentFile_1" Type="System.String" Scope="Application">
       <Value Profile="(Default)">D:\source\repos\RegFineViewer\bin\Debug\example3.reg</Value>
     </Setting>
-    <Setting Name="RecentFile_2" Type="System.String" Scope="User">
+    <Setting Name="RecentFile_2" Type="System.String" Scope="Application">
       <Value Profile="(Default)">E:\source\repos\RegFineViewer\_example2.reg</Value>
     </Setting>
-    <Setting Name="RecentReg_1" Type="System.String" Scope="User">
+    <Setting Name="RecentFile_3" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RecentHive_1" Type="System.String" Scope="Application">
       <Value Profile="(Default)">[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSRS12.MSSQLSERVER\MSSQLServer]</Value>
+    </Setting>
+    <Setting Name="RecentHive_2" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RecentHive_3" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Collections.ObjectModel;       // ObservableCollections
 using System.Windows.Threading;
+using System.Configuration;
 
 namespace RegFineViewer
 {
@@ -474,5 +475,56 @@ namespace RegFineViewer
             if ((string)Bt_Search.Content == "Next") Bt_Search.Content = "Prev";
         }
 
+        private void Bt_OpenHive_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        // -------------------------------------------------------------------------
+        // -------------------------------------------------------------------------
+        private void Bt_OpenRecent_Click(object sender, RoutedEventArgs e)
+        {
+            // Ouvre/Ferme le popup "Recent trees"
+            Pu_Recent.IsOpen = !Pu_Recent.IsOpen;
+            // On renseigne les Chips de ce Popup
+            List<string> RecentsFiles = new List<string>
+            {
+                Properties.Settings.Default.RecentFile_1,
+                Properties.Settings.Default.RecentFile_2,
+                Properties.Settings.Default.RecentFile_3
+            };
+
+            List<string> RecentsHives = new List<string>
+            {
+                Properties.Settings.Default.RecentHive_1,
+                Properties.Settings.Default.RecentHive_2,
+                Properties.Settings.Default.RecentHive_3
+            };
+
+            // A partir de 3 ce sont les RECENT FILES
+            for (int index = 0; index < RecentsFiles.Count(); index++)
+            {
+                var CurrentChip = Sp_RecentStack.Children[3+index];
+                CurrentChip.SetValue(ContentProperty, RecentsFiles[index]);
+                CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
+            }
+
+            // A partir de 6 ce sont les RECENT HIVES
+            for (int index = 0; index < RecentsHives.Count(); index++)
+            {
+                var CurrentChip = Sp_RecentStack.Children[6 + index];
+                CurrentChip.SetValue(ContentProperty, RecentsHives[index]);
+                CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
+            }
+
+        }
+
+        private void Bt_CloseRecent_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void Pu_Recent_Close(object sender, RoutedEventArgs e)
+        {
+            Pu_Recent.IsOpen = false;
+        }
     }
 }

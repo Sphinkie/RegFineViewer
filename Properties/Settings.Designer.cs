@@ -23,40 +23,58 @@ namespace RegFineViewer.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\source\\repos\\RegFineViewer\\bin\\Debug\\example3.reg")]
         public string RecentFile_1 {
             get {
                 return ((string)(this["RecentFile_1"]));
             }
-            set {
-                this["RecentFile_1"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("E:\\source\\repos\\RegFineViewer\\_example2.reg")]
         public string RecentFile_2 {
             get {
                 return ((string)(this["RecentFile_2"]));
             }
-            set {
-                this["RecentFile_2"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RecentFile_3 {
+            get {
+                return ((string)(this["RecentFile_3"]));
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SQL Server\\MSRS12.MSSQLSERVER\\MS" +
             "SQLServer]")]
-        public string RecentReg_1 {
+        public string RecentHive_1 {
             get {
-                return ((string)(this["RecentReg_1"]));
+                return ((string)(this["RecentHive_1"]));
             }
-            set {
-                this["RecentReg_1"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RecentHive_2 {
+            get {
+                return ((string)(this["RecentHive_2"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RecentHive_3 {
+            get {
+                return ((string)(this["RecentHive_3"]));
             }
         }
     }
