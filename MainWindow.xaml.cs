@@ -21,6 +21,7 @@ namespace RegFineViewer
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
         private KeyUnitDictionnary UnitDictionnary;
+        // Parseur de fichier REG qui remplit un RegistryTree
         private RegFileParser Parser1;
 
         // Pour la fonction de recherche
@@ -231,8 +232,9 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_Expand_Click(object sender, RoutedEventArgs e)
         {
-            Pu_Working.IsOpen = true;      // Popup Sablier
+            Pu_Working.IsOpen = true;      // Popup Sablier ON
             TreeView_ExpandLevel();
+            Pu_Working.IsOpen = false;      // Popup Sablier OFF
         }
         // -------------------------------------------------------------------------
         // N'agit que sur les nodes qui sont dejà associés à un IUElement (cad visibles).
@@ -275,7 +277,6 @@ namespace RegFineViewer
         // Pour le premier appel, utiliser: parent = TreeView1
         // Exemple d'utilisation: on peut appliquer ExpandSubtree() sur le tvi retourné.
         // -----------------------------------------------------------------------------------
-
         private TreeViewItem TestFunction(ItemsControl parent, object item)
         {
             // Check whether the selected item is a direct child of the parent ItemsControl.
@@ -384,7 +385,6 @@ namespace RegFineViewer
             this.SearchedWordIsDirty = false;
             Bt_SearchDirection.IsPopupOpen = true;      // Affiche les boutons UP/DOWN
         }
-
         // --------------------------------------------
         // Retourne TRUE si le nom ou la valeur de l'item contient le mot recherché (sans tenir compte de la casse)
         // --------------------------------------------
@@ -416,7 +416,6 @@ namespace RegFineViewer
             }
             return PathToItem;
         }
-
         // -------------------------------------------------------------------------
         // Expand les nodes donnés dans la liste passée en paramètre. 
         // (Liste ordonnée en partant de la racine).
@@ -439,7 +438,6 @@ namespace RegFineViewer
                 if (ParentTvi == null) return;
             }
         }
-
         // -------------------------------------------------------------------------
         // Affiche la partie du TreeView qui contient l'item sélectionné. 
         // On ne passe ici que si l'item fait partie de l'UI: il faut donc expandre l'arbre avant.
