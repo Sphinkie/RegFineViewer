@@ -33,7 +33,6 @@ namespace RegFineViewer
             Array.Clear(TableStats, 0, TableStats.Length);
             AverageLabelLengh = 0;
             ModalLabelLength = 0;
-            NbLevels = 0;
             NbNodes = 0;
             NbKeys = 0;
         }
@@ -50,7 +49,8 @@ namespace RegFineViewer
             NodepathTable.Clear();
             AverageLabelLengh = 0;
             ModalLabelLength = 0;
-            NbLevels = 0;
+            HighestNodeLevel = 0;
+            RacineNodeLevel = 0;
             NbNodes = 0;
             NbKeys = 0;
             Array.Clear(TableStats, 0, TableStats.Length);
@@ -83,7 +83,6 @@ namespace RegFineViewer
             RegistryItem currentNode = new RegistryItem("root", "node");
             RegistryTree.Add(currentNode);
             bool firstNode = true;
-            NbLevels = 1;
             NbNodes = 1;
 
             // On parcourt le tableau des lignes du fichier
@@ -101,7 +100,9 @@ namespace RegFineViewer
                 {
                     string nodePath = ligne.Trim('[', ']');
                     string parentPath = GetParentPath(nodePath);
+                    // ----------------------------------------------------------------------
                     // S'il s'agit du premier node
+                    // ----------------------------------------------------------------------
                     // Le node racine du treeView est le parent du premier node du fichier REG
                     if (firstNode)
                     {
@@ -113,6 +114,8 @@ namespace RegFineViewer
                             currentNode.Name = nodePath;
                         // On met le node Racine dans le dictionnaire
                         AddToNodeTable(currentNode, currentNode.Name);
+                        // On memorise le Level de ce Node
+                        RacineNodeLevel = nodePath.Split('\\').Length;
                         firstNode = false;
                     }
                     // on cree un nouveau node
@@ -164,7 +167,8 @@ namespace RegFineViewer
                 string greatParentPath = GetParentPath(parentpath);
                 AttachToParentNode(parentNode, greatParentPath);
             }
-            if (parentNode.SubItem.Count == 1) NbLevels++;
+            // On l'ouvre
+//            parentNode.ExpandAll(parentNode, true);
         }
 
         // ------------------------------------------------------------------
@@ -221,6 +225,9 @@ namespace RegFineViewer
             AddToNodeTable(NewNode, nodepath);
             NbNodes++;
             TableStats[nodeName.Length] += 1;
+            // On determine le Level de ce Node
+            int NodeLevel = nodepath.Split('\\').Length;
+            if (NodeLevel > this.HighestNodeLevel) this.HighestNodeLevel = NodeLevel;
             return NewNode;
         }
 
@@ -291,7 +298,7 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
-        // Fonction recursive: on lui donne un Node, elle retourne la Liste de ses nodes children
+        // Fonction recursive: on lui donne un Node, elle retourne la liste de ses nodes Children
         // ------------------------------------------------------------------
         private List<RegistryItem> BuildNodeList(RegistryItem item)
         {
@@ -343,7 +350,7 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         // STATISTIQUES
         // ------------------------------------------------------------------
-        // Calcule l'ecart type: sqr(ariance)
+        // Calcule l'ecart type: sqr(variance)
         // variance = 1/n * (somme (x²) - moy²)
         // ------------------------------------------------------------------
         public Int32 GetStandardDeviation()
@@ -405,8 +412,10 @@ namespace RegFineViewer
         public int ModalLabelLength { get; private set; }
         public int NbKeys { get; private set; }
         public int NbNodes { get; private set; }
-        public int NbLevels { get; private set; }
+        public int NbLevels { get { return HighestNodeLevel - RacineNodeLevel +1; } }
         // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
         public List<RegistryItem> NodeList { get; private set; }
+        private int RacineNodeLevel;
+        private int HighestNodeLevel;
     }
 }

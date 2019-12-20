@@ -14,9 +14,9 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:RegFineViewer"
-        Name="Fenetre"
-        >
+        Name="Fenetre">
 
+<<<<<<< HEAD
   <!--On définit quelques styles généraux-->
   <Window.Resources>
     <Style TargetType="materialDesign:Chip" >
@@ -34,6 +34,34 @@
     <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />-->
 
     <!--<Style TargetType="TreeViewItem" >
+=======
+    <!-- *************************************************************** -->
+    <!-- On définit quelques styles généraux                             -->
+    <!-- *************************************************************** -->
+    <Window.Resources>
+        <!-- Style for chips-->
+        <Style TargetType="materialDesign:Chip" >
+            <Setter Property="Margin" Value="16,0,0,0"/>
+        </Style>
+
+        <!--Style  pour les boutons "change unit" -->
+        <Style TargetType="Button" x:Key="OutlinedSmallButton"  BasedOn="{StaticResource MaterialDesignOutlinedButton}" >
+            <Setter Property="Width"      Value="60"/>
+            <Setter Property="Height"     Value="20" />
+            <Setter Property="Padding"    Value="0"/>
+            <Setter Property="FontSize"   Value="12" />
+            <Setter Property="FontWeight" Value="Light" />
+        </Style>
+
+        <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green" />
+        Les couleurs du thème:      Accent colors:
+          PrimaryHueDarkBrush       SecondaryHueDarkBrush      PrimaryHueDarkForegroundBrush
+          PrimaryHueMidBrush        SecondaryHueMidBrush
+          PrimaryHueLightBrush      SecondaryHueLightBrush
+                  -->
+
+        <!--<Style TargetType="TreeViewItem" >
+>>>>>>> version-1.3
             <Setter Property="IsSelected" Value="{Binding IsSelected}" />
             <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
         </Style>-->
@@ -42,12 +70,14 @@
     </Window.Resources>
 
     <DockPanel Name="dockpanel">
-        <!-- On definit une grille de 2 colonnes: Left et Right -->
+        <!-- *************************************************************** -->
+        <!--                       Grille                                    -->
+        <!-- *************************************************************** -->
         <Grid >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" Name="leftColumn" MinWidth="420"/>
-                <ColumnDefinition Width="5" Name="separatorColumn"/>
-                <ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/>
+                <ColumnDefinition Width="*" Name="leftColumn" MinWidth="820"/>
+                <!--<ColumnDefinition Width="5" Name="separatorColumn"/-->
+                <!--<ColumnDefinition Width="*" Name="rightColumn" MinWidth="420"/-->
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" Name="ToolbarRow"  />
@@ -57,60 +87,68 @@
                 <RowDefinition Height="Auto" Name="SearchbarRow" />
             </Grid.RowDefinitions>
 
-            <!-- *************************************************************** -->
-            <!--                     Grille de Gauche                            -->
-            <!-- *************************************************************** -->
             <!-- ==========================-->
-            <!-- Toolbar 1 -->
+            <!-- TOOLBAR                   -->
             <!-- ==========================-->
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
-                    <Button ToolTip="Create a Test tree" Click="FillRegistryTree">
+                    <!--Expand Button-->
+                    <Button ToolTip="Expand Level" Click="Bt_Expand_Click" >
+                        <materialDesign:PackIcon Kind="ExpandMore"/>
+                    </Button>
+                    <!--Collapse Button-->
+                    <Button ToolTip="Collapse Tree" Click="Bt_Collapse_Click" >
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
-                    <Button ToolTip="Tree stats" Name="bTray1Button1" Click="bTray1Button1_Click">
+                    <!--Tree Stats Button-->
+                    <Button ToolTip="Tree stats" Click="Bt_TreeInfos_Click">
                         <materialDesign:PackIcon Kind="ChartBarStacked" />
                     </Button>
-                    <Button ToolTip="Length stats" Name="bTray1Button2" Click="bTray1Button2_Click">
+                    <!--Buttton de Stats sur la longueur des textes -->
+                    <Button ToolTip="Length stats" Name="Bt_LengthStats" Click="Bt_LengthStats_Click">
                         <materialDesign:PackIcon Kind="ChartGantt" />
+                    </Button>
+                    <!--Debug Button-->
+                    <Button ToolTip="Create a Test tree" Click="FillRegistryTree"  Visibility="Hidden" >
+                        <materialDesign:PackIcon Kind="TestTube"/>
+                    </Button>
+                    <!--Test Button-->
+                    <Button ToolTip="Test Function" Visibility="Hidden" >
+                        <materialDesign:PackIcon Kind="TestTube"/>
                     </Button>
                 </ToolBar>
             </ToolBarTray>
 
             <!-- ==========================-->
-            <!-- CHIP 1 -->
+            <!-- CHIP                      -->
             <!-- ==========================-->
-            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip"
-          Content="no file loaded"
-          IsDeletable="True" DeleteClick="Tree1_CloseFile_bt"  DeleteToolTip="Close the file">
+            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip" Content="no file loaded" IsDeletable="True" DeleteClick="Bt_CloseFile_Click"  DeleteToolTip="Close the file">
                 <materialDesign:Chip.Icon>
                     <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
 
             <!-- ==========================-->
-            <!-- DROP ZONE 1  -->
+            <!-- DROP ZONE                 -->
             <!-- ==========================-->
-            <TextBlock x:Name="DropZone1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop" 
-                       Text="drop your registry file here" 
-                       FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" />
+            <TextBlock x:Name="DropZone1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop" FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" >
+                drop your<LineBreak/>registry file<LineBreak/>here
+            </TextBlock>
+
             <!-- ==========================-->
-            <!-- TREE VIEW 1  -->
+            <!-- TREE VIEW                 -->
             <!-- ==========================-->
-            <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="16,16,0,0" Visibility="Hidden"
-                AllowDrop="True" Drop="Tree1_drop"
-                      VirtualizingStackPanel.IsVirtualizing="True"
-                      VirtualizingStackPanel.VirtualizationMode ="Recycling"
-                SelectedItemChanged="TreeView1_SelectedItemChanged">
+            <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="4" Visibility="Hidden" AllowDrop="True" Drop="Tree1_drop">
+                <!--VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode ="Recycling"-->
 
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate
-                    DataType="{x:Type local:RegistryItem}"
-                    ItemsSource="{Binding Path=SubItem}">
 
-                        <TreeViewItem 
+                    <HierarchicalDataTemplate DataType="{x:Type local:RegistryItem}" ItemsSource="{Binding Path=SubItem}">
+
+                        <TreeViewItem
                             Selected="TreeViewItem_OnItemSelected"
                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
+<<<<<<< HEAD
                             IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                             local:BringSelectedItemIntoViewBehavior.IsBringSelectedIntoView="True" 
 =======
@@ -337,22 +375,160 @@
                         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                    </Style>
                 </TreeView.ItemContainerStyle>
+=======
+                            Margin="0,-6,0,-6" Padding="0,0,0,0" >
+                            <!--local:BringSelectedItemIntoViewBehavior.IsBringSelectedIntoView="True"-->
+                            <!--IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                            Expanded="OnExpanded"-->
 
+                            <TreeViewItem.Header >
+                                <!-- Affichage par défaut des données -->
+                                <StackPanel Orientation="Horizontal" MinHeight="0" >
+                                    <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center"/>
+                                    <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="Bt_ChangeUnit_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
+                                    <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TreeViewItem.Header>
+
+                        </TreeViewItem>
+
+                        <HierarchicalDataTemplate.Triggers>
+                            <!-- Avec un Trigger, on change certaines propriétés dans le cas d'un NODE -->
+                            <DataTrigger Binding="{Binding DType}" Value="node" >
+                                <Setter TargetName="lbName"    Property="Foreground" Value="Black" />
+                                <Setter TargetName="lbName"    Property="FontWeight" Value="Bold" />
+                                <Setter TargetName="lbName"    Property="Width"      Value="480" />
+                                <Setter TargetName="lbName"    Property="Margin"     Value="2"  />
+                                <Setter TargetName="lbValue"   Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                            <!-- Avec un Trigger, on change certaines propriétés dans le cas d'un STRING -->
+                            <DataTrigger Binding="{Binding DType}" Value="REG_SZ" >
+                                <Setter TargetName="lbValue"   Property="Width"      Value="480" />
+                                <Setter TargetName="lbValue"   Property="Foreground" Value="Green" />
+                            </DataTrigger>
+                            <!-- Avec un Trigger, on change certaines propriétés dans le cas d'un DWORD -->
+                            <DataTrigger Binding="{Binding DType}" Value="REG_DWORD" >
+                                <Setter TargetName="btUfUnit"  Property="Visibility" Value="Visible" />
+                                <Setter TargetName="lbUfValue" Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
+
+                    </HierarchicalDataTemplate>
+
+                </TreeView.Resources>
+            </TreeView>
+
+            <!-- ========================== -->
+            <!-- BOUTON AJOUTER             -->
+            <!-- ========================== -->
+            <!--<materialDesign:PopupBox Grid.Column="0" Grid.Row="3"
+                Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                IsEnabled="False" 
+                PlacementMode="LeftAndAlignMiddles"
+                UnfurlOrientation="Horizontal"
+                ToolTip="Manage Registry key"
+                Margin="0 0 10 10"  Width="42"  Height="42"
+                HorizontalAlignment="Right" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <Button ToolTip="Add a key" Command="{Binding AddCommand}">
+                        <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                            Stretch="Uniform" Width="14" Height="14"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                    </Button>
+                    <Button ToolTip="Remove selected key" Command="{Binding RemoveSelectedItemCommand}">
+                        <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                            Stretch="Uniform" Width="14" Height="14"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                    </Button>
+                </StackPanel>
+            </materialDesign:PopupBox>-->
+
+            <!-- ========================== -->
+            <!-- BARRE DE RECHERCHE         -->
+            <!-- ========================== -->
+            <materialDesign:ColorZone  Grid.Column="0" Grid.Row="4" Mode="PrimaryDark" Margin="8" CornerRadius="8" IsEnabled="{Binding ElementName=TreeView1, Path=IsVisible}" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Icone et label -->
+                    <materialDesign:PackIcon Grid.Column="0" Kind="Search" Height="32" Width="32" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Margin="8" Text="Registry key:" VerticalAlignment="Center"/>
+                    <!-- Champs de saisie -->
+                    <materialDesign:ColorZone Grid.Column="2" Mode="Light" Height="32" CornerRadius="4" materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Margin="2" >
+                            <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" />
+                            <TextBox Margin="8 0 12 4" materialDesign:HintAssist.Hint="Enter a key name to search..." Width="400" Name="Tb_SearchedWord" TextChanged="Tb_SearchedWord_TextChanged" />
+                        </StackPanel>
+                    </materialDesign:ColorZone>
+                    <!-- Bouton FIND -->
+                    <Button Grid.Column="3" Margin="8 0 0 0" Click="Bt_Search_Click" x:Name="Bt_Search" VerticalAlignment="Center" Content="Find"/>
+                    <!--Bouton SEARCH DIRECTION-->
+                    <!--
+                    PopupMode="Click"
+                    ToggleCheckedContentCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=wpfExample:Buttons}, Path=FloatingActionDemoCommand}"
+                    Visibility={Binding Path=IsPopupOpen, ElementName=SearchDirButton, Converter={StaticResource BoolToVisibilityConverter}}
+                    -->
+                    <materialDesign:PopupBox Name="Bt_SearchDirection" Grid.Column="4" Height="48" Width="48"
+                        Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}"
+                        IsEnabled="{Binding ElementName=Bt_Search, Path=IsEnabled}"
+                        PlacementMode="RightAndAlignTopEdges"
+                        ToggleCheckedContentCommandParameter="wowsers"
+                        Margin="8 0 0 0" 
+                        ToolTip="Change search direction">
+                        <!--Bouton principal-->
+                        <materialDesign:PopupBox.ToggleCheckedContent>
+                            <materialDesign:PackIcon Kind="Search" Width="24" Height="24" />
+                        </materialDesign:PopupBox.ToggleCheckedContent>
+                        <!--Sous-boutons-->
+                        <StackPanel Visibility="Visible" Orientation="Horizontal" Margin="8 0 0 0" >
+                            <Button ToolTip="Search up" Click="Bt_SearchUp_Click" >
+                                <materialDesign:PackIcon Kind="TransferUp" Width="24" Height="24" />
+                            </Button>
+                            <Button ToolTip="Search down" Click="Bt_SearchDown_Click">
+                                <materialDesign:PackIcon Kind="TransferDown" Width="24" Height="24" />
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Name="Lb_SearchedWordCount" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+
+                </Grid>
+            </materialDesign:ColorZone>
+
+            <!-- *************************************************************** -->
+            <!--                     Separateur                                  -->
+            <!-- *************************************************************** -->
+            <!--GridSplitter Grid.Column="1" Grid.RowSpan="5" Width="5" HorizontalAlignment="Stretch" -->
+
+        </Grid>
+>>>>>>> version-1.3
+
+        <!-- *************************************************************** -->
+        <!--                     Grille de droite                            -->
+        <!-- *************************************************************** -->
+        <!--
                 <TreeView.Resources>
                     <HierarchicalDataTemplate
-              DataType="{x:Type local:RegistryItem}"
-              ItemsSource="{Binding Path=SubItem}">
+                            DataType="{x:Type local:RegistryItem}"
+                            ItemsSource="{Binding Path=SubItem}">
 
+<<<<<<< HEAD
                         -->
       <!-- Affichage par défaut des données -->
       <!--
+=======
+>>>>>>> version-1.3
                         <StackPanel Orientation="Horizontal" MinHeight="0"  Margin="0,-6,0,-6" >
                             <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center" />
-                            <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="TreeView_ChangeUnit_Click" Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
-                            <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80"  />
                         </StackPanel>
 
+<<<<<<< HEAD
                         <HierarchicalDataTemplate.Triggers>
                             -->
       <!-- On change certaines propriétés dans le cas d'un NODE -->
@@ -446,11 +622,24 @@
     <!--==========================================================-->
     <!--  NOTES:
             PlacementTarget="{Binding ElementName=bTray2Button1}"   Placement="Bottom" 
+=======
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+        -->
+
+        <!--==========================================================-->
+        <!--                  POPUP D'INFOS SUR LE TREEVIEW           -->
+        <!--==========================================================-->
+        <!--  NOTES:
+            PlacementTarget="{Binding ElementName=bTray2Button1}"   
+            Placement="Bottom" Placement="Mouse" 
+>>>>>>> version-1.3
             IsOpen="{Binding ElementName=bTray2Button1,Path=IsMouseOver}" 
             // Popup peut etre animé uniquement si le bouton ne l'est pas
             AllowsTransparency="True" PopupAnimation="Slide"  
             HorizontalAlignment="Center"    VerticalAlignment="Top" 
             -->
+<<<<<<< HEAD
     <Popup
     Name="CardTreeInfo"
     Margin="10,10,0,13"
@@ -627,21 +816,150 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+=======
+        <Popup Name="Pu_TreeInfos" Margin="10,10,0,13" IsOpen="False" Placement="Mouse" AllowsTransparency="True" >
+            <Grid>
+                <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                    <!--Padding="0" Width="200"-->
+                    <Grid>
+                        <!--Grid de 7 lignes-->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" Name="logo_0"/>
+                            <RowDefinition Height="Auto" Name="titre_1" />
+                            <RowDefinition Height="Auto" Name="sepline_2" />
+                            <RowDefinition Height="Auto" Name="nb_nodes_3" />
+                            <RowDefinition Height="Auto" Name="nb_levels_4"/>
+                            <RowDefinition Height="Auto" Name="nb_keys_5"/>
+                            <RowDefinition Height="Auto" Name="sepline_and_close_6" />
+                        </Grid.RowDefinitions>
+                        <!--Logo-->
+                        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="ChartBarStacked" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </materialDesign:ColorZone>
+                        <!--Titre-->
+                        <TextBlock Grid.Row="1" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Statistics" />
+                        <!--Separator line-->
+                        <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
+                        <!--Node count-->
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="12,2,0,0">
+                            <TextBlock Text="Nb of nodes" />
+                            <TextBlock Name="tbStatNodes" Margin="12,0,0,0" />
+                        </StackPanel>
+                        <!--Levels count-->
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="12,2,0,0">
+                            <TextBlock Text="Nb of levels"/>
+                            <TextBlock Name="tbStatLevels" Margin="12,0,0,0" />
+                        </StackPanel>
+                        <!--Keys count-->
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="12,2,0,0">
+                            <TextBlock Text="Nb of keys"/>
+                            <TextBlock Name="tbStatKeys" Margin="12,0,0,0"/>
+                        </StackPanel>
+                        <!--separator line-->
+                        <Separator Grid.Row="6" Style="{StaticResource MaterialDesignLightSeparator}" />
+                        <!--Close Button-->
+                        <Button Grid.Row="6" HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="Bt_TreeInfos_Close" materialDesign:RippleAssist.IsCentered="True">
+                            <materialDesign:PackIcon  Kind="CloseCircleOutline" />
+                        </Button>
+                    </Grid>
+                </materialDesign:Card>
+            </Grid>
+        </Popup>
+
+        <!--==========================================================-->
+        <!--          POPUP DE STATISTIQUES SUR LE TREEVIEW           -->
+        <!--==========================================================-->
+        <Popup Name="CardlengthStats" Margin="10,10,0,13" IsOpen="False" Placement="Mouse" AllowsTransparency="True" >
+            <Grid>
+                <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                    <!--Padding="0" Width="200"-->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="3" Mode="PrimaryDark" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="ChartGantt" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </materialDesign:ColorZone>
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Length stats" />
+                        <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
+                        <!--Label count-->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Number of labels" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="(total)" />
+                        <TextBlock Grid.Row="3" Grid.Column="2" Name="nbItems" Margin="12,0,0,0"/>
+                        <!--Average length-->
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Average length" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Name="tbAvLength" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="2" Name="nbAvLength" Margin="12,0,12,0" />
+                        <!--Modal length-->
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Modal length"  Margin="12,2,0,0"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Name="tbModelength" Margin="12,0,0,0" />
+                        <TextBlock Grid.Row="5" Grid.Column="2" Name="nbModelength" Margin="12,0,0,0" />
+                        <!--Ecart Type-->
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Standard Deviation" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" Name="tbSD" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Inf Av+SD (84%)" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="7" Grid.Column="1" Name="tbSD84" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="7" Grid.Column="2" Name="nbSD84" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Inf Av+2*SD (98%)" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="8" Grid.Column="1" Name="tbSD98" Margin="12,0,0,0"/>
+                        <TextBlock Grid.Row="8" Grid.Column="2" Name="nbSD98" Margin="12,0,0,0"/>
+                        <Button    Grid.Row="9" Grid.Column="2" HorizontalAlignment="Right" Width="30"
+                                    Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                    Click="Bt_LengthStats_Close"
+                                    materialDesign:RippleAssist.IsCentered="True">
+                            <materialDesign:PackIcon  Kind="CloseCircleOutline" />
+                        </Button>
+                    </Grid>
+                </materialDesign:Card>
+            </Grid>
+        </Popup>
+
+
+        
+        <!--==========================================================-->
+        <!--           SABLIER                                        -->
+        <!--==========================================================-->
+        <Popup Name="Pu_Working" IsOpen="False" Placement="Center" AllowsTransparency="True" >
+            <materialDesign:Card UniformCornerRadius="25" Width="50" Height="50" Margin="10">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="40" IsIndeterminate="True" />
+            </materialDesign:Card>
+        </Popup>
+
+        <!--==========================================================-->
+        <!--           ESSAIS DIVERS                                  -->
+        <!--==========================================================-->
+        <!--
+        IsOpen="False"
+        PlacementTarget="{Binding ElementName=bTray2Button1}"   Placement="Bottom" 
+        IsOpen="{Binding ElementName=bTray2Button1,Path=IsMouseOver}" 
+        -->
+        <!--
+>>>>>>> version-1.3
                 <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" VerticalAlignment="Stretch">
-                    <materialDesign:PackIcon Kind="ChartBarStacked" 
-                        Height="60" Width="60"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center" />
+                    <materialDesign:PackIcon Kind="ChartBarStacked" HorizontalAlignment="Center" />
                 </materialDesign:ColorZone>
-                <TextBlock 
-                        Grid.Row="1" 
-                        Margin="16 16 16 4" 
-                        Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                        Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}">
-                Tree statistics:
+        
+                <TextBlock Grid.Row="1" Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}">
+                   Tree statistics:
                 </TextBlock>
+        
                 <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
 
+<<<<<<< HEAD
                 <StackPanel Grid.Row="3" Orientation="Vertical">
                     <TextBlock Text="Nb of Nodes"  Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
                     <TextBlock Text="Nb of keys"   Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
@@ -680,9 +998,26 @@
       <TextBlock Text="parent width" />
       <TextBlock Text="{Binding ElementName=dockpanel, Path=ActualWidth}" Margin="12,0,0,0" />
     </StackPanel>-->
+=======
+        <Button Grid.Row="4" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" materialDesign:RippleAssist.IsCentered="True">
+            <materialDesign:PackIcon Kind="Phone" />
+        </Button>
+>>>>>>> version-1.3
 
+        <materialDesign:PopupBox Style="{StaticResource MaterialDesignToolForegroundPopupBox}" HorizontalAlignment="Right" />
 
+        <StackPanel>
+            <TextBlock Text="{Binding ElementName=TreeView2, Path=ActualWidth}" Margin="12,0,0,0" />
+            <TextBlock Text="{Binding ElementName=dockpanel, Path=ActualWidth}" Margin="12,0,0,0" />
+            <TextBlock Text="Nb of levels" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+        </StackPanel>
+        
+        -->
 
+<<<<<<< HEAD
   </DockPanel>
 
+=======
+    </DockPanel>
+>>>>>>> version-1.3
 </Window>

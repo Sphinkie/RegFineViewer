@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-//using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
-//using System.Linq;
+
 
 namespace RegFineViewer
 {
@@ -17,6 +15,7 @@ namespace RegFineViewer
             // InitialisationsB
             Name = name;
             DType = type;
+            Parent = null;
             Value = string.Empty;
             UserFriendlyUnit = string.Empty;
             UserFriendlyValue = string.Empty;
@@ -110,7 +109,31 @@ namespace RegFineViewer
         // --------------------------------------------
         // Ajout d'un sous-item (key ou Node)
         // --------------------------------------------
-        public void AddSubItem(RegistryItem subnode) { SubItem.Add(subnode); }
+        public void AddSubItem(RegistryItem subnode) 
+        {
+            // On ajoute le subnode à la liste de children SubTitems
+            SubItem.Add(subnode);
+            // On s'enregistre comme parent du subnode
+            subnode.Parent = this;
+        }
+
+
+        // --------------------------------------------
+        // --------------------------------------------
+        public void ExpandAll(ItemsControl items, bool expand)
+        {
+            foreach (object obj in items.Items)
+            {
+                ItemsControl childControl = items.ItemContainerGenerator.ContainerFromItem(obj) as ItemsControl;
+                if (childControl != null)
+                {
+                    ExpandAll(childControl, expand);
+                }
+                TreeViewItem item = childControl as TreeViewItem;
+                if (item != null)
+                    item.IsExpanded = true;
+            }
+        }
 
         // --------------------------------------------
         // Propriétés publiques
@@ -121,6 +144,7 @@ namespace RegFineViewer
         public ObservableCollection<RegistryItem> SubItem { get; }
         public string UserFriendlyUnit { get; set; }
         public string UserFriendlyValue { get; set; }
-
+        public RegistryItem Parent { get; set; }           // Parent permet de trouver un chemin qui remonte jusqu'à la racine.
+        
     }
 }
