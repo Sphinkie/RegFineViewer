@@ -30,8 +30,6 @@ namespace RegFineViewer
         private int SearchedWordResultsIndex;
         private List<RegistryItem> SearchedWordResults;
 
-        string Debug;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -119,7 +117,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Bouton CLOSE (de la Chip)
         // -------------------------------------------------------------------------
-        private void Tree1_CloseFile_bt(object sender, RoutedEventArgs e)
+        private void Bt_CloseFile_Click(object sender, RoutedEventArgs e)
         {
             Tree1_InfoChip.Content = "no file loaded";
             RegistryTree1.Clear();
@@ -134,7 +132,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Bouton FIND (barre de recherche)
         // -------------------------------------------------------------------------
-        private void Tree1_Search_bt(object sender, RoutedEventArgs e)
+        private void Bt_Search_Click(object sender, RoutedEventArgs e)
         {
             // On deselectionne les TreeItems pouvant être deja selectionnés
             if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
@@ -221,32 +219,29 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Selection du TreeView: (inutile)
+        // Affiche un popup de Statistiques relatives au Tree
         // -------------------------------------------------------------------------
-        private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-        }
-
-        // -------------------------------------------------------------------------
-        // Boutons du Tray
-        // -------------------------------------------------------------------------
-        private void bTray1Button1_Click(object sender, RoutedEventArgs e)
+        private void Bt_TreeInfos_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();
             tbStatNodes.Text = Parser1.NbNodes.ToString();
             tbStatKeys.Text = Parser1.NbKeys.ToString();
             CardTreeInfo.IsOpen = !CardTreeInfo.IsOpen;
         }
-        private void bTray1Button2_Click(object sender, RoutedEventArgs e)
+        private void Bt_TreeInfos_Close(object sender, RoutedEventArgs e)
+        {
+            CardTreeInfo.IsOpen = false;
+        }
+
+        // -------------------------------------------------------------------------
+        // Calculs des statistiques sur la longueur des textes affichés
+        // -------------------------------------------------------------------------
+        private void Bt_LengthStats_Click(object sender, RoutedEventArgs e)
         {
             RefreshLengthStats(Parser1);
             // Affiche ou masque le popup
             CardlengthStats.IsOpen = !CardlengthStats.IsOpen;
         }
-
-        // -------------------------------------------------------------------------
-        // Calculs des valeurs statistiques, et refresh de l'UI
-        // -------------------------------------------------------------------------
         private void RefreshLengthStats(RegFileParser Parser)
         {
             Int32 Moyenne = Parser.GetAverageLength();  // A calculer en premier
@@ -269,23 +264,15 @@ namespace RegFineViewer
             tbSD98.Text = SD98.ToString() + " chars";
             nbSD98.Text = Parser.GetNbOfItemsLengthLowerThan(SD98).ToString();
         }
-
-        // -------------------------------------------------------------------------
-        // Ferme le Popup (Card)
-        // -------------------------------------------------------------------------
-        private void CardlengthStats_Close(object sender, RoutedEventArgs e)
+        private void Bt_LengthStats_Close(object sender, RoutedEventArgs e)
         {
             CardlengthStats.IsOpen = false;
-        }
-        private void CardTreeInfo_Close(object sender, RoutedEventArgs e)
-        {
-            CardTreeInfo.IsOpen = false;
         }
 
         // -------------------------------------------------------------------------
         // Click sur le bouton ChangeUnit d'un Registry Key du Registry Tree
         // -------------------------------------------------------------------------
-        private void TreeView_ChangeUnit_Click(object sender, RoutedEventArgs e)
+        private void Bt_ChangeUnit_Click(object sender, RoutedEventArgs e)
         {
             // On retrouve l'item en cours du TreeView
             var UnitButton = sender as Button;
@@ -323,18 +310,17 @@ namespace RegFineViewer
 
             TreeViewItem X = sender as TreeViewItem;
             X.BringIntoView();
-            Debug = "TreeViewItem_OnItemSelected";
         }
 
         // -------------------------------------------------------------------------
         // Boutons EXPAND et COLLAPSE
         // -------------------------------------------------------------------------
-        private void TreeView_Collapse(object sender, RoutedEventArgs e)
+        private void Bt_Collapse_Click(object sender, RoutedEventArgs e)
         {
             TreeView_CollapseAll();
             working.IsOpen = false;      // Popup Sablier
         }
-        private void TreeView_Expand(object sender, RoutedEventArgs e)
+        private void Bt_Expand_Click(object sender, RoutedEventArgs e)
         {
             working.IsOpen = true;      // Popup Sablier
             TreeView_ExpandLevel();
@@ -397,7 +383,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Essai pour expandre tout l'arbre d'un coup.
         // -------------------------------------------------------------------------
-        private void TestFunction(object sender, RoutedEventArgs e)
+        private void Bt_TestFunction_Click(object sender, RoutedEventArgs e)
         {
             working.IsOpen = true;      // Popup Sablier
             this.SearchedWord = "LAST";
@@ -429,6 +415,8 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
+        // Expand les nodes donnés dans la liste passée en paramètre. 
+        // (Liste ordonnée en partant de la racine).
         // -------------------------------------------------------------------------
         private void ExpandPath(List<RegistryItem> path)
         {
@@ -444,6 +432,7 @@ namespace RegFineViewer
                 ParentTvi = tvi;
                 // On attend que l'UI ait fini l'expansion
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                // Si on tomber sur un tvi null (non trouvé): on sort
                 if (ParentTvi == null) return;
             }
         }
@@ -525,12 +514,12 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Changement de la direction de la recherche
         // -------------------------------------------------------------------------
-        private void Button_SearchDown_Click(object sender, RoutedEventArgs e)
+        private void Bt_SearchDown_Click(object sender, RoutedEventArgs e)
         {
             SearchDirection = 1;
             if ((string)btFind.Content == "Prev") btFind.Content = "Next";
         }
-        private void Button_SearchUp_Click(object sender, RoutedEventArgs e)
+        private void Bt_SearchUp_Click(object sender, RoutedEventArgs e)
         {
             SearchDirection = -1;
             if ((string)btFind.Content == "Next") btFind.Content = "Prev";

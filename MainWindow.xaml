@@ -72,28 +72,28 @@
             <ToolBarTray DockPanel.Dock="top" Grid.Column="0" Grid.Row="0">
                 <ToolBar Style="{DynamicResource MaterialDesignToolBar}" >
                     <!--Expand Button-->
-                    <Button ToolTip="Expand Level" Click="TreeView_Expand" >
+                    <Button ToolTip="Expand Level" Click="Bt_Expand_Click" >
                         <materialDesign:PackIcon Kind="ExpandMore"/>
                     </Button>
                     <!--Collapse Button-->
-                    <Button ToolTip="Collapse Tree" Click="TreeView_Collapse" >
+                    <Button ToolTip="Collapse Tree" Click="Bt_Collapse_Click" >
                         <materialDesign:PackIcon Kind="ExpandLess"/>
                     </Button>
                     <!--Test Button-->
-                    <Button ToolTip="Test Function" Click="TestFunction" >
+                    <Button ToolTip="Test Function" Click="Bt_TestFunction_Click" >
                         <materialDesign:PackIcon Kind="TestTube"/>
                     </Button>
-                    <!--Stats Button-->
-                    <Button ToolTip="Tree stats" Name="bTray1Button1" Click="bTray1Button1_Click">
+                    <!--Tree Stats Button-->
+                    <Button ToolTip="Tree stats" Click="Bt_TreeInfos_Click">
                         <materialDesign:PackIcon Kind="ChartBarStacked" />
                     </Button>
-                    <!--Debug Buttton-->
-                    <Button ToolTip="Length stats" Name="bTray1Button2" Click="bTray1Button2_Click">
+                    <!--Buttton de Stats sur la longueur des textes -->
+                    <Button ToolTip="Length stats" Name="Bt_LengthStats" Click="Bt_LengthStats_Click">
                         <materialDesign:PackIcon Kind="ChartGantt" />
                     </Button>
                     <!--Debug Button-->
                     <Button ToolTip="Create a Test tree" Click="FillRegistryTree"  Visibility="Hidden" >
-                        <materialDesign:PackIcon Kind="ExpandLess"/>
+                        <materialDesign:PackIcon Kind="TestTube"/>
                     </Button>
                 </ToolBar>
             </ToolBarTray>
@@ -101,7 +101,7 @@
             <!-- ==========================-->
             <!-- CHIP                      -->
             <!-- ==========================-->
-            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip" Content="no file loaded" IsDeletable="True" DeleteClick="Tree1_CloseFile_bt"  DeleteToolTip="Close the file">
+            <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree1_InfoChip" Content="no file loaded" IsDeletable="True" DeleteClick="Bt_CloseFile_Click"  DeleteToolTip="Close the file">
                 <materialDesign:Chip.Icon>
                     <materialDesign:PackIcon  Kind="File"></materialDesign:PackIcon>
                 </materialDesign:Chip.Icon>
@@ -117,8 +117,7 @@
             <!-- ==========================-->
             <!-- TREE VIEW                 -->
             <!-- ==========================-->
-            <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="4" Visibility="Hidden" AllowDrop="True" Drop="Tree1_drop"
-                SelectedItemChanged="TreeView1_SelectedItemChanged">
+            <TreeView Name="TreeView1" Grid.Column="0" Grid.Row="2" Margin="4" Visibility="Hidden" AllowDrop="True" Drop="Tree1_drop">
                 <!--VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode ="Recycling"-->
 
                 <TreeView.Resources>
@@ -138,7 +137,7 @@
                                 <StackPanel Orientation="Horizontal" MinHeight="0" >
                                     <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                                     <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center"/>
-                                    <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="TreeView_ChangeUnit_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
+                                    <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}"  Click="Bt_ChangeUnit_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
                                     <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </TreeViewItem.Header>
@@ -219,7 +218,7 @@
                         </StackPanel>
                     </materialDesign:ColorZone>
                     <!-- Bouton FIND -->
-                    <Button Grid.Column="3" Margin="8 0 0 0" Click="Tree1_Search_bt" Name="btFind" VerticalAlignment="Center" Content="Find"/>
+                    <Button Grid.Column="3" Margin="8 0 0 0" Click="Bt_Search_Click" Name="btFind" VerticalAlignment="Center" Content="Find"/>
                     <!--Bouton SEARCH DIRECTION-->
                     <!--
                     PopupMode="Click"
@@ -239,10 +238,10 @@
                         </materialDesign:PopupBox.ToggleCheckedContent>
                         <!--Sous-boutons-->
                         <StackPanel Visibility="Visible" Orientation="Horizontal" Margin="8 0 0 0" >
-                            <Button ToolTip="Search up" Click="Button_SearchUp_Click" >
+                            <Button ToolTip="Search up" Click="Bt_SearchUp_Click" >
                                 <materialDesign:PackIcon Kind="TransferUp" Width="24" Height="24" />
                             </Button>
-                            <Button ToolTip="Search down" Click="Button_SearchDown_Click">
+                            <Button ToolTip="Search down" Click="Bt_SearchDown_Click">
                                 <materialDesign:PackIcon Kind="TransferDown" Width="24" Height="24" />
                             </Button>
                             <TextBlock VerticalAlignment="Center" Name="SearchedWordCount" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
@@ -329,7 +328,7 @@
                         <!--separator line-->
                         <Separator Grid.Row="6" Style="{StaticResource MaterialDesignLightSeparator}" />
                         <!--Close Button-->
-                        <Button Grid.Row="6" HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="CardTreeInfo_Close" materialDesign:RippleAssist.IsCentered="True">
+                        <Button Grid.Row="6" HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="Bt_TreeInfos_Close" materialDesign:RippleAssist.IsCentered="True">
                             <materialDesign:PackIcon  Kind="CloseCircleOutline" />
                         </Button>
                     </Grid>
@@ -390,7 +389,7 @@
                         <TextBlock Grid.Row="8" Grid.Column="2" Name="nbSD98" Margin="12,0,0,0"/>
                         <Button    Grid.Row="9" Grid.Column="2" HorizontalAlignment="Right" Width="30"
                                     Style="{StaticResource MaterialDesignToolForegroundButton}"
-                                    Click="CardlengthStats_Close"
+                                    Click="Bt_LengthStats_Close"
                                     materialDesign:RippleAssist.IsCentered="True">
                             <materialDesign:PackIcon  Kind="CloseCircleOutline" />
                         </Button>
