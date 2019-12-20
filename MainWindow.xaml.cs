@@ -125,6 +125,10 @@ namespace RegFineViewer
             RegistryTree1.Clear();
             DropZone1.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
+            btFind.Content = "Find";
+            SearchedWord1.Text = "";
+            this.SearchedWordIsDirty = true;
+            SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------
@@ -166,9 +170,6 @@ namespace RegFineViewer
                 // On sélectionne le premier RegistryItem de la liste
                 SearchedWordResultsIndex = 0;
                 SearchDirection = 1;
-                if (SearchedWordResults.Count > 0)
-                    if (SearchedWordResults[0] is RegistryItem)
-                        SearchedWordResults[0].IsSelected = true;
             }
 
             else if ((SearchedWordResults != null) && (SearchedWordResults.Count > 0))
@@ -182,20 +183,22 @@ namespace RegFineViewer
                 // Vérification des bornes
                 if (SearchedWordResultsIndex < 0) SearchedWordResultsIndex = SearchedWordResults.Count - 1;
                 if (SearchedWordResultsIndex >= SearchedWordResults.Count) SearchedWordResultsIndex = 0;
-                // on selectionne l'item suivant
-                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
-                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
                 // On met à jour le No de l'item affiché dans le compteur
                 SearchedWordCount.Text = (SearchedWordResultsIndex + 1).ToString() + "/" + SearchedWordResults.Count.ToString();
             }
 
-            // On deploie le TreeView jusquà l'item
-            List<RegistryItem> PathToNode = new List<RegistryItem> { };
-            PathToNode = this.BuildPathToNode(SearchedWordResults[SearchedWordResultsIndex]);
-            this.ExpandPath(PathToNode);
-            PathToNode.Clear();
+            if (SearchedWordResultsIndex < SearchedWordResults.Count)
+            {
+                // On deploie le TreeView jusquà l'item
+                List<RegistryItem> PathToNode = new List<RegistryItem> { };
+                PathToNode = this.BuildPathToNode(SearchedWordResults[SearchedWordResultsIndex]);
+                this.ExpandPath(PathToNode);
+                PathToNode.Clear();
 
-
+                // On surligne l'item
+                if (SearchedWordResults[SearchedWordResultsIndex] is RegistryItem)
+                    SearchedWordResults[SearchedWordResultsIndex].IsSelected = true;
+            }
 
             working.IsOpen = false;  // Popup sablier
             //  GetTreeViewItem(TreeView1, Result);
@@ -514,8 +517,9 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void SearchedWord_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SearchedWordIsDirty = true;
+            this.SearchedWordIsDirty = true;
             btFind.Content = "Find";
+            SearchedWordCount.Text = "";
         }
 
         // -------------------------------------------------------------------------

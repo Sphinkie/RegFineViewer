@@ -220,6 +220,7 @@
                     </materialDesign:ColorZone>
                     <!-- Bouton FIND -->
                     <Button Grid.Column="3" Margin="8 0 0 0" Click="Tree1_Search_bt" Name="btFind" VerticalAlignment="Center" Content="Find"/>
+                    <!--Bouton SEARCH DIRECTION-->
                     <!--
                     PopupMode="Click"
                     ToggleCheckedContentCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=wpfExample:Buttons}, Path=FloatingActionDemoCommand}"
