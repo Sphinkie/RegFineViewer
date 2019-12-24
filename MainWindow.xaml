@@ -446,32 +446,32 @@
                     <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="recent registries" />
                     <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
                     <!--Recent trees. Index: 3 et svts -->
-                    <materialDesign:Chip Name="Ch_Recent1" Content="recent file 1" DeleteClick="Bt_CloseRecent_Click">
+                    <materialDesign:Chip Name="Ch_Recent1" Content="recent 1" DeleteClick="Bt_CloseRecentChip_Click">
+                        <materialDesign:Chip.Icon>
+                            <materialDesign:PackIcon Name="Ch_Icon_1" Kind="File"/>
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Name="Ch_Recent2" Content="recent 2" DeleteClick="Bt_CloseRecentChip_Click">
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Kind="File"/>
                         </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent2" Content="recent file 2" DeleteClick="Bt_CloseRecent_Click">
+                    <materialDesign:Chip Name="Ch_Recent3" Content="recent 3" DeleteClick="Bt_CloseRecentChip_Click">
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Kind="File"/>
                         </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent3" Content="recent file 3" DeleteClick="Bt_CloseRecent_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Kind="File"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent4" Content="recent hive 1" DeleteClick="Bt_CloseRecent_Click">
+                    <materialDesign:Chip Name="Ch_Recent4" Content="recent 4" DeleteClick="Bt_CloseRecentChip_Click">
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Kind="Cube"/>
                         </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent5" Content="recent hive 2" DeleteClick="Bt_CloseRecent_Click">
+                    <materialDesign:Chip Name="Ch_Recent5" Content="recent 5" DeleteClick="Bt_CloseRecentChip_Click">
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Kind="Cube"/>
                         </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent6" Content="recent hive 3" DeleteClick="Bt_CloseRecent_Click">
+                    <materialDesign:Chip Name="Ch_Recent6" Content="recent 6" DeleteClick="Bt_CloseRecentChip_Click">
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Kind="Cube"/>
                         </materialDesign:Chip.Icon>

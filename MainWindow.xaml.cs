@@ -32,8 +32,20 @@ namespace RegFineViewer
         private int SearchedWordResultsIndex;
         private List<RegistryItem> SearchedWordResults;
 
+        // Gestion des Registry ouvertes récemment.
+        private List<string> RecentsRegs = new List<string> {};
+
+
         public MainWindow()
         {
+            // On met les Recent Registry (from Parameter File) dans une liste
+            this.RecentsRegs.Add(Properties.Settings.Default.Recent_1);
+            this.RecentsRegs.Add(Properties.Settings.Default.Recent_2);
+            this.RecentsRegs.Add(Properties.Settings.Default.Recent_3);
+            this.RecentsRegs.Add(Properties.Settings.Default.Recent_4);
+            this.RecentsRegs.Add(Properties.Settings.Default.Recent_5);
+            this.RecentsRegs.Add(Properties.Settings.Default.Recent_6);
+            
             InitializeComponent();
             // Cette instruction permet de rendre les classes visibles depuis le XAML
             DataContext = this;
@@ -480,51 +492,43 @@ namespace RegFineViewer
 
         }
         // -------------------------------------------------------------------------
+        // Dans VS: ils sont dans Project-Properties-Paramètres
         // -------------------------------------------------------------------------
         private void Bt_OpenRecent_Click(object sender, RoutedEventArgs e)
         {
             // Ouvre/Ferme le popup "Recent trees"
             Pu_Recent.IsOpen = !Pu_Recent.IsOpen;
             // On renseigne les Chips de ce Popup
-            List<string> RecentsFiles = new List<string>
-            {
-                Properties.Settings.Default.RecentFile_1,
-                Properties.Settings.Default.RecentFile_2,
-                Properties.Settings.Default.RecentFile_3
-            };
+            int ChipIndex = 3;                      // les elements 0-1-2 du StackPanel sont pour la déco. 3 et svt sont des chips.
 
-            List<string> RecentsHives = new List<string>
+            // On cree les Chips à partir des elements de la liste
+            for (int index = 0; index < this.RecentsRegs.Count(); index++)
             {
-                Properties.Settings.Default.RecentHive_1,
-                Properties.Settings.Default.RecentHive_2,
-                Properties.Settings.Default.RecentHive_3
-            };
-
-            // A partir de 3 ce sont les RECENT FILES
-            for (int index = 0; index < RecentsFiles.Count(); index++)
-            {
-                var CurrentChip = Sp_RecentStack.Children[3+index];
-                CurrentChip.SetValue(ContentProperty, RecentsFiles[index]);
-                CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
-            }
-
-            // A partir de 6 ce sont les RECENT HIVES
-            for (int index = 0; index < RecentsHives.Count(); index++)
-            {
-                var CurrentChip = Sp_RecentStack.Children[6 + index];
-                CurrentChip.SetValue(ContentProperty, RecentsHives[index]);
-                CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
+                if (RecentsRegs[index] != string.Empty)
+                {
+                    var CurrentChip = Sp_RecentStack.Children[ChipIndex++];         
+                    CurrentChip.SetValue(ContentProperty, RecentsRegs[index]);
+                    CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
+                    Ch_Icon_1.Kind = MaterialDesignThemes.Wpf.PackIconKind.About;
+                }
             }
 
         }
 
-        private void Bt_CloseRecent_Click(object sender, RoutedEventArgs e)
+        // -------------------------------------------------------------------------
+        // -------------------------------------------------------------------------
+        private void Bt_CloseRecentChip_Click(object sender, RoutedEventArgs e)
         {
-
+            var chip = sender;
         }
+        // -------------------------------------------------------------------------
+        // Fermeture du popup "Recent Registries"
+        // -------------------------------------------------------------------------
         private void Pu_Recent_Close(object sender, RoutedEventArgs e)
         {
             Pu_Recent.IsOpen = false;
         }
+
+
     }
 }

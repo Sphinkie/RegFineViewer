@@ -26,27 +26,27 @@ namespace RegFineViewer.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\source\\repos\\RegFineViewer\\bin\\Debug\\example3.reg")]
-        public string RecentFile_1 {
+        public string Recent_1 {
             get {
-                return ((string)(this["RecentFile_1"]));
+                return ((string)(this["Recent_1"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("E:\\source\\repos\\RegFineViewer\\_example2.reg")]
-        public string RecentFile_2 {
+        public string Recent_2 {
             get {
-                return ((string)(this["RecentFile_2"]));
+                return ((string)(this["Recent_2"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RecentFile_3 {
+        public string Recent_3 {
             get {
-                return ((string)(this["RecentFile_3"]));
+                return ((string)(this["Recent_3"]));
             }
         }
         
@@ -54,27 +54,27 @@ namespace RegFineViewer.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SQL Server\\MSRS12.MSSQLSERVER\\MS" +
             "SQLServer]")]
-        public string RecentHive_1 {
+        public string Recent_4 {
             get {
-                return ((string)(this["RecentHive_1"]));
+                return ((string)(this["Recent_4"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RecentHive_2 {
+        public string Recent_5 {
             get {
-                return ((string)(this["RecentHive_2"]));
+                return ((string)(this["Recent_5"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RecentHive_3 {
+        public string Recent_6 {
             get {
-                return ((string)(this["RecentHive_3"]));
+                return ((string)(this["Recent_6"]));
             }
         }
     }
