@@ -113,6 +113,8 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier REG
                 Parser1.ParseFile(fileName);
                 Parser1.BuildList();
+                // Ajout à la liste des Recent Regs
+                this.RecentsRegs.Add(fileName);
             }
             DropZone1.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
@@ -464,7 +466,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Appelé chaque fois que le mot à chercher change.
+        // Event appelé chaque fois que le TextBox du "mot à chercher" change.
         // -------------------------------------------------------------------------
         private void Tb_SearchedWord_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -474,7 +476,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Changement de la direction de la recherche
+        // Boutons de changement de la direction de la recherche
         // -------------------------------------------------------------------------
         private void Bt_SearchDown_Click(object sender, RoutedEventArgs e)
         {
@@ -487,6 +489,9 @@ namespace RegFineViewer
             if ((string)Bt_Search.Content == "Next") Bt_Search.Content = "Prev";
         }
 
+        // -------------------------------------------------------------------------
+        // MENU: Ouverture de la base de registre du poste
+        // -------------------------------------------------------------------------
         private void Bt_OpenHive_Click(object sender, RoutedEventArgs e)
         {
 
@@ -506,9 +511,18 @@ namespace RegFineViewer
             {
                 if (RecentsRegs[index] != string.Empty)
                 {
-                    var CurrentChip = Sp_RecentStack.Children[ChipIndex++];         
+                    UIElement CurrentChip = Sp_RecentStack.Children[ChipIndex++];         
                     CurrentChip.SetValue(ContentProperty, RecentsRegs[index]);
                     CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
+
+                    MaterialDesignThemes.Wpf.Chip X = CurrentChip as MaterialDesignThemes.Wpf.Chip;
+                    object Z = X.Icon;
+                    object Y = X.GetValue(IconProperty);
+
+                    X.Icon = MaterialDesignThemes.Wpf.PackIconKind.Accelerometer;
+
+                    X.SetValue(ContentProperty, MaterialDesignThemes.Wpf.PackIconKind.Babel);
+
                     Ch_Icon_1.Kind = MaterialDesignThemes.Wpf.PackIconKind.About;
                 }
             }
@@ -516,11 +530,14 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
+        // Enleve un Recent Reg de la liste
         // -------------------------------------------------------------------------
         private void Bt_CloseRecentChip_Click(object sender, RoutedEventArgs e)
         {
             var chip = sender;
+            this.RecentsRegs.Remove(@"D:\source\repos\RegFineViewer\bin\Debug\example3.reg");
         }
+
         // -------------------------------------------------------------------------
         // Fermeture du popup "Recent Registries"
         // -------------------------------------------------------------------------
