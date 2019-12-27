@@ -435,7 +435,6 @@
                             <Setter Property="IsDeletable" Value="True"/>
                             <Setter Property="DeleteToolTip" Value="Remove"/>
                             <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="Visibility" Value="Hidden"/>
                         </Style>
                     </StackPanel.Resources>
                     <!--Logo-->
@@ -446,7 +445,30 @@
                     <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="recent registries" />
                     <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
                     <!--Recent trees. Index: 3 et svts -->
-                    <materialDesign:Chip Name="Ch_Recent1" Content="recent 1" DeleteClick="Bt_CloseRecentChip_Click">
+                    <StackPanel Name="Sp_Recents" Orientation="Vertical" >
+                        <StackPanel.Resources>
+                            <DataTemplate x:Key="RecentRegDataTemplate">
+                                <StackPanel>
+                                    <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_CloseRecentChip_Click" >
+                                        <materialDesign:Chip.Icon>
+                                            <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
+                                        </materialDesign:Chip.Icon>
+                                    </materialDesign:Chip>
+                                </StackPanel>
+                            </DataTemplate>
+                        </StackPanel.Resources>
+
+                        <ItemsControl x:Name="RecentRegData" ItemTemplate="{StaticResource RecentRegDataTemplate}" >
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Vertical"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+
+                    </StackPanel>
+                    <!--<materialDesign:Chip Name="Ch_Recent1" Content="recent 1" DeleteClick="Bt_CloseRecentChip_Click">
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Name="Ch_Icon_1" Kind="File"/>
                         </materialDesign:Chip.Icon>
@@ -475,7 +497,7 @@
                         <materialDesign:Chip.Icon>
                             <materialDesign:PackIcon Kind="Cube"/>
                         </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
+                    </materialDesign:Chip>-->
                     <!--separator line-->
                     <!--<Separator Style="{StaticResource MaterialDesignLightSeparator}" />-->
                     <!--Close Button-->

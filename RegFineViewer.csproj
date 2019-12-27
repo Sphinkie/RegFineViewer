@@ -91,6 +91,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BringSelectedItemIntoViewBehavior.cs" />
+    <Compile Include="RecentRegistryList.cs" />
+    <Compile Include="RecentRegistry.cs" />
     <Compile Include="KeyUnitDictionnary.cs" />
     <Compile Include="RegistryItem.cs" />
     <Compile Include="TreeViewItemBase.cs" />

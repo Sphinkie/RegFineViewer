@@ -21,6 +21,7 @@ namespace RegFineViewer
     {
         // Chaque RegistryTree est une collection de RegistryItems
         private ObservableCollection<RegistryItem> RegistryTree1 = new ObservableCollection<RegistryItem>();
+
         private KeyUnitDictionnary UnitDictionnary;
         // Parseur de fichier REG qui remplit un RegistryTree
         private RegFileParser Parser1;
@@ -33,22 +34,29 @@ namespace RegFineViewer
         private List<RegistryItem> SearchedWordResults;
 
         // Gestion des Registry ouvertes récemment.
-        private List<string> RecentsRegs = new List<string> {};
+        // private List<string> RecentsRegs = new List<string> {};
+        // private ObservableCollection<RecentRegistry> RecentsRegs = new ObservableCollection<RecentRegistry>();
+        private RecentRegistryList RecentsRegs = new RecentRegistryList();
 
 
+        // -------------------------------------------------------------------------
+        // -------------------------------------------------------------------------
         public MainWindow()
         {
             // On met les Recent Registry (from Parameter File) dans une liste
-            this.RecentsRegs.Add(Properties.Settings.Default.Recent_1);
-            this.RecentsRegs.Add(Properties.Settings.Default.Recent_2);
-            this.RecentsRegs.Add(Properties.Settings.Default.Recent_3);
-            this.RecentsRegs.Add(Properties.Settings.Default.Recent_4);
-            this.RecentsRegs.Add(Properties.Settings.Default.Recent_5);
-            this.RecentsRegs.Add(Properties.Settings.Default.Recent_6);
-            
+            RecentsRegs.Add(Properties.Settings.Default.Recent_1);
+            RecentsRegs.Add(Properties.Settings.Default.Recent_2);
+            RecentsRegs.Add(Properties.Settings.Default.Recent_3);
+            RecentsRegs.Add(Properties.Settings.Default.Recent_4);
+            RecentsRegs.Add(Properties.Settings.Default.Recent_5);
+            RecentsRegs.Add(Properties.Settings.Default.Recent_6);
+
             InitializeComponent();
             // Cette instruction permet de rendre les classes visibles depuis le XAML
             DataContext = this;
+            // On binde la stackPanel qui contient la liste des Recent Registry
+            RecentRegData.ItemsSource = this.RecentsRegs;
+
             // On charge le dictionnaire des unités préférées
             UnitDictionnary = new KeyUnitDictionnary("Config.xml");
             // On initialise le parseur
@@ -59,6 +67,14 @@ namespace RegFineViewer
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
             // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
             Lb_SearchedWordCount.Text = "";
+        }
+
+        // -------------------------------------------------------------------------
+        // -------------------------------------------------------------------------
+        private void AddToRecentRegList(string name)
+        {
+            if (name != string.Empty)
+                this.RecentsRegs.Add(new RecentRegistry(name));
         }
 
         // -------------------------------------------------------------------------
@@ -114,7 +130,7 @@ namespace RegFineViewer
                 Parser1.ParseFile(fileName);
                 Parser1.BuildList();
                 // Ajout à la liste des Recent Regs
-                this.RecentsRegs.Add(fileName);
+                RecentsRegs.Add(fileName);
             }
             DropZone1.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
@@ -494,8 +510,8 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_OpenHive_Click(object sender, RoutedEventArgs e)
         {
-
         }
+
         // -------------------------------------------------------------------------
         // Dans VS: ils sont dans Project-Properties-Paramètres
         // -------------------------------------------------------------------------
@@ -503,30 +519,6 @@ namespace RegFineViewer
         {
             // Ouvre/Ferme le popup "Recent trees"
             Pu_Recent.IsOpen = !Pu_Recent.IsOpen;
-            // On renseigne les Chips de ce Popup
-            int ChipIndex = 3;                      // les elements 0-1-2 du StackPanel sont pour la déco. 3 et svt sont des chips.
-
-            // On cree les Chips à partir des elements de la liste
-            for (int index = 0; index < this.RecentsRegs.Count(); index++)
-            {
-                if (RecentsRegs[index] != string.Empty)
-                {
-                    UIElement CurrentChip = Sp_RecentStack.Children[ChipIndex++];         
-                    CurrentChip.SetValue(ContentProperty, RecentsRegs[index]);
-                    CurrentChip.SetValue(VisibilityProperty, Visibility.Visible);
-
-                    MaterialDesignThemes.Wpf.Chip X = CurrentChip as MaterialDesignThemes.Wpf.Chip;
-                    object Z = X.Icon;
-                    object Y = X.GetValue(IconProperty);
-
-                    X.Icon = MaterialDesignThemes.Wpf.PackIconKind.Accelerometer;
-
-                    X.SetValue(ContentProperty, MaterialDesignThemes.Wpf.PackIconKind.Babel);
-
-                    Ch_Icon_1.Kind = MaterialDesignThemes.Wpf.PackIconKind.About;
-                }
-            }
-
         }
 
         // -------------------------------------------------------------------------
@@ -534,8 +526,8 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_CloseRecentChip_Click(object sender, RoutedEventArgs e)
         {
-            var chip = sender;
-            this.RecentsRegs.Remove(@"D:\source\repos\RegFineViewer\bin\Debug\example3.reg");
+            MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
+            this.RecentsRegs.Remove(SenderChip.Content.ToString() );
         }
 
         // -------------------------------------------------------------------------
