@@ -85,11 +85,11 @@
                         <materialDesign:PackIcon Kind="ChartBarStacked" />
                     </Button>
                     <!--Open History Button -->
-                    <Button Name="Bt_OpenRecent" ToolTip="Open Recent" Click="Bt_OpenRecent_Click">
+                    <Button ToolTip="Open Recent" Click="Bt_OpenRecent_Click">
                         <materialDesign:PackIcon Kind="Recent" />
                     </Button>
                     <!--Open Hive Button -->
-                    <Button ToolTip="Open Registry" Click="Bt_OpenHive_Click" IsEnabled="False">
+                    <Button ToolTip="Open Registry" Click="Bt_OpenHive_Click" >
                         <materialDesign:PackIcon Kind="OpenInApp" />
                     </Button>
                     <!--Buttton de Stats sur la longueur des textes -->
@@ -445,18 +445,19 @@
                     <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
                     <!--Recent trees. Index: 3 et svts -->
                     <StackPanel Name="Sp_Recents" Orientation="Vertical" >
+                        
+                        <!--Le StackPanel contient des Chips-->
                         <StackPanel.Resources>
                             <DataTemplate x:Key="RecentRegDataTemplate">
-                                <StackPanel>
                                     <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_CloseRecentChip_Click" Click="Bt_RecentChip_Click" >
                                         <materialDesign:Chip.Icon>
                                             <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
                                         </materialDesign:Chip.Icon>
                                     </materialDesign:Chip>
-                                </StackPanel>
                             </DataTemplate>
                         </StackPanel.Resources>
 
+                        <!--Le StackPanel "RecentRegData" est bindé à la liste "RecentsRegs" dans le Code-behind--> 
                         <ItemsControl x:Name="RecentRegData" ItemTemplate="{StaticResource RecentRegDataTemplate}" >
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -465,38 +466,7 @@
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
 
-
                     </StackPanel>
-                    <!--<materialDesign:Chip Name="Ch_Recent1" Content="recent 1" DeleteClick="Bt_CloseRecentChip_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Name="Ch_Icon_1" Kind="File"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent2" Content="recent 2" DeleteClick="Bt_CloseRecentChip_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Kind="File"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent3" Content="recent 3" DeleteClick="Bt_CloseRecentChip_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Kind="File"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent4" Content="recent 4" DeleteClick="Bt_CloseRecentChip_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Kind="Cube"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent5" Content="recent 5" DeleteClick="Bt_CloseRecentChip_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Kind="Cube"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>
-                    <materialDesign:Chip Name="Ch_Recent6" Content="recent 6" DeleteClick="Bt_CloseRecentChip_Click">
-                        <materialDesign:Chip.Icon>
-                            <materialDesign:PackIcon Kind="Cube"/>
-                        </materialDesign:Chip.Icon>
-                    </materialDesign:Chip>-->
                     <!--separator line-->
                     <!--<Separator Style="{StaticResource MaterialDesignLightSeparator}" />-->
                     <!--Close Button-->
@@ -507,12 +477,52 @@
             </materialDesign:Card>
         </Popup>
 
+        <!--==========================================================-->
+        <!--     POPUP DE SELECTION DU SUBTREE EN BASE DE REGISTRES   -->
+        <!--==========================================================-->
+        <Popup Name="Pu_SelectHive" Margin="10,10,0,13" IsOpen="False" Placement="Mouse" AllowsTransparency="True" >
+            <Grid>
+                <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                    <!--Padding="0" Width="200"-->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="3" Mode="PrimaryDark" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="OpenInApp" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </materialDesign:ColorZone>
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Select subtree" />
+                        <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
+                        <Button    Grid.Row="9" Grid.Column="2" HorizontalAlignment="Right" Width="30"
+                                    Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                    Click="Bt_LengthStats_Close"
+                                    materialDesign:RippleAssist.IsCentered="True">
+                            <materialDesign:PackIcon  Kind="CloseCircleOutline" />
+                        </Button>
+                    </Grid>
+                </materialDesign:Card>
+            </Grid>
+        </Popup>
+
 
         <!--==========================================================-->
         <!--           ESSAIS DIVERS                                  -->
         <!--==========================================================-->
         <!--
-        IsOpen="False"
         PlacementTarget="{Binding ElementName=bTray2Button1}"   Placement="Bottom" 
         IsOpen="{Binding ElementName=bTray2Button1,Path=IsMouseOver}" 
         -->

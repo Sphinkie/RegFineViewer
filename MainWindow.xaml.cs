@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Collections.ObjectModel;       // ObservableCollections
 using System.Windows.Threading;
 using System.Configuration;
+using Microsoft.Win32;
 
 namespace RegFineViewer
 {
@@ -132,6 +133,8 @@ namespace RegFineViewer
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
             Lb_SearchedWordCount.Text = "";
+            // on ferme le popup
+            Pu_Recent.IsOpen = false;
         }
 
         // -------------------------------------------------------------------------
@@ -504,6 +507,10 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_OpenHive_Click(object sender, RoutedEventArgs e)
         {
+            // Ouvre le popup de sélection du subtree de la base de registres
+            RegistryKey rk = Registry.LocalMachine;
+            String[] Names = rk.GetSubKeyNames();
+
         }
 
         // -------------------------------------------------------------------------
