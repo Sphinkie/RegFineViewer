@@ -23,58 +23,75 @@ namespace RegFineViewer.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\source\\repos\\RegFineViewer\\bin\\Debug\\example3.reg")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Recent_1 {
             get {
                 return ((string)(this["Recent_1"]));
             }
+            set {
+                this["Recent_1"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("E:\\source\\repos\\RegFineViewer\\_example2.reg")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Recent_2 {
             get {
                 return ((string)(this["Recent_2"]));
             }
+            set {
+                this["Recent_2"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Recent_3 {
             get {
                 return ((string)(this["Recent_3"]));
             }
+            set {
+                this["Recent_3"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SQL Server\\MSRS12.MSSQLSERVER\\MS" +
-            "SQLServer]")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Recent_4 {
             get {
                 return ((string)(this["Recent_4"]));
             }
+            set {
+                this["Recent_4"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Recent_5 {
             get {
                 return ((string)(this["Recent_5"]));
             }
+            set {
+                this["Recent_5"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Recent_6 {
             get {
                 return ((string)(this["Recent_6"]));
+            }
+            set {
+                this["Recent_6"] = value;
             }
         }
     }

@@ -59,6 +59,16 @@ namespace RegFineViewer
             return false;
         }
 
+        // -------------------------------------------------------------------------
+        // 
+        // -------------------------------------------------------------------------
+        public string GetNameAt(int index)
+        {
+            if (index < this.Count)
+                return this[index].Name;
+            else
+                return string.Empty;
+        }
 
     }
 }

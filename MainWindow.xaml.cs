@@ -15,7 +15,7 @@ namespace RegFineViewer
 {
 
     // -------------------------------------------------------------------------
-    // Programme principal
+    // Fenêtre principale
     // -------------------------------------------------------------------------
     public partial class MainWindow : Window
     {
@@ -40,6 +40,7 @@ namespace RegFineViewer
 
 
         // -------------------------------------------------------------------------
+        // Programme principal
         // -------------------------------------------------------------------------
         public MainWindow()
         {
@@ -67,14 +68,6 @@ namespace RegFineViewer
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
             // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
             Lb_SearchedWordCount.Text = "";
-        }
-
-        // -------------------------------------------------------------------------
-        // -------------------------------------------------------------------------
-        private void AddToRecentRegList(string name)
-        {
-            if (name != string.Empty)
-                this.RecentsRegs.Add(new RecentRegistry(name));
         }
 
         // -------------------------------------------------------------------------
@@ -131,6 +124,7 @@ namespace RegFineViewer
                 Parser1.BuildList();
                 // Ajout à la liste des Recent Regs
                 RecentsRegs.Add(fileName);
+                this.SaveRecentRegs();
             }
             DropZone1.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
@@ -513,7 +507,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Dans VS: ils sont dans Project-Properties-Paramètres
+        // Dans VS: Les "items recents" sont dans Project-Properties-Paramètres
         // -------------------------------------------------------------------------
         private void Bt_OpenRecent_Click(object sender, RoutedEventArgs e)
         {
@@ -528,6 +522,7 @@ namespace RegFineViewer
         {
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
             this.RecentsRegs.Remove(SenderChip.Content.ToString() );
+            this.SaveRecentRegs();
         }
 
         // -------------------------------------------------------------------------
@@ -538,6 +533,19 @@ namespace RegFineViewer
             Pu_Recent.IsOpen = false;
         }
 
+        // -------------------------------------------------------------------------
+        // Sauve dans les UserSettings le contenu de la liste RecentRegs
+        // -------------------------------------------------------------------------
+        private void SaveRecentRegs()
+        {
+                Properties.Settings.Default.Recent_1 = RecentsRegs.GetNameAt(0);
+                Properties.Settings.Default.Recent_2 = RecentsRegs.GetNameAt(1);
+                Properties.Settings.Default.Recent_3 = RecentsRegs.GetNameAt(2);
+                Properties.Settings.Default.Recent_4 = RecentsRegs.GetNameAt(3);
+                Properties.Settings.Default.Recent_5 = RecentsRegs.GetNameAt(4);
+                Properties.Settings.Default.Recent_6 = RecentsRegs.GetNameAt(5);
+                Properties.Settings.Default.Save();
+        }
 
     }
 }
