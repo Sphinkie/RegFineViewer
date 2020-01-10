@@ -422,8 +422,7 @@
         <!--  NOTES:
             PlacementTarget="{Binding ElementName=bTray2Button1}"   
             Placement="Bottom" Placement="Mouse" 
-            
-            -->
+         -->
         <Popup Name="Pu_Recent" Margin="10,10,0,13" Placement="Mouse" AllowsTransparency="True" >
             <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                 <!--Padding="0" Width="200"-->
@@ -449,7 +448,7 @@
                         <StackPanel.Resources>
                             <DataTemplate x:Key="RecentRegDataTemplate">
                                 <StackPanel>
-                                    <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_CloseRecentChip_Click" >
+                                    <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_CloseRecentChip_Click" Click="Bt_RecentChip_Click" >
                                         <materialDesign:Chip.Icon>
                                             <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
                                         </materialDesign:Chip.Icon>

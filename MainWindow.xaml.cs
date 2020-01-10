@@ -547,5 +547,25 @@ namespace RegFineViewer
                 Properties.Settings.Default.Save();
         }
 
+        // -------------------------------------------------------------------------
+        // On clique sur une RecentChip: on charge le fichier
+        // -------------------------------------------------------------------------
+        private void Bt_RecentChip_Click(object sender, RoutedEventArgs e)
+        {
+            MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
+            string Filename = SenderChip.Content.ToString();
+            Tree1_InfoChip.Content = Filename;
+            // On remplit le RegistryTree à partir du fichier REG
+            Parser1.ParseFile(Filename);
+            Parser1.BuildList();
+            DropZone1.Visibility = Visibility.Hidden;
+            TreeView1.Visibility = Visibility.Visible;
+            // Initialisation de la recherche
+            SearchedWordResultsIndex = 0;
+            SearchedWordIsDirty = false;
+            Lb_SearchedWordCount.Text = "";
+            // On ferme le popup
+            Pu_Recent.IsOpen = false;
+        }
     }
 }
