@@ -484,36 +484,33 @@
             <Grid>
                 <materialDesign:Card Margin="12" materialDesign:ShadowAssist.ShadowDepth="Depth3" UniformCornerRadius="8" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                     <!--Padding="0" Width="200"-->
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="3" Mode="PrimaryDark" VerticalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical">
+                        <materialDesign:ColorZone Mode="PrimaryDark" VerticalAlignment="Stretch">
                             <materialDesign:PackIcon Kind="OpenInApp" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </materialDesign:ColorZone>
-                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Select subtree" />
-                        <Separator Grid.Row="2" Style="{StaticResource MaterialDesignLightSeparator}" />
-                        <Button    Grid.Row="9" Grid.Column="2" HorizontalAlignment="Right" Width="30"
-                                    Style="{StaticResource MaterialDesignToolForegroundButton}"
-                                    Click="Bt_LengthStats_Close"
-                                    materialDesign:RippleAssist.IsCentered="True">
+                        <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Select registry subtree" />
+                        <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
+                        
+                        <StackPanel Orientation="Horizontal" Margin="12,2,0,0">
+                            <TextBlock Name="tb_HivePath"  Text="{Binding Path=HivePath}"/>
+                            <ComboBox Name="cb_SelectHive" Margin="12,0,0,0" MinWidth="60" >
+                                <!--<ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>-->
+                            </ComboBox>
+                            <Button HorizontalAlignment="Right" Width="30" 
+                                    Style="{StaticResource MaterialDesignToolForegroundButton}"  materialDesign:RippleAssist.IsCentered="True" 
+                                    Click="Button_Click" >
+                                <materialDesign:PackIcon  Kind="ArrowBackCircle" />
+                            </Button>
+                        </StackPanel>
+                        <Button Content="Load"/>
+                        <Button HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" materialDesign:RippleAssist.IsCentered="True" Click="Pu_selectHive_Close" >
                             <materialDesign:PackIcon  Kind="CloseCircleOutline" />
                         </Button>
-                    </Grid>
+                    </StackPanel>
                 </materialDesign:Card>
             </Grid>
         </Popup>

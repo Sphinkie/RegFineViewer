@@ -39,6 +39,10 @@ namespace RegFineViewer
         // private ObservableCollection<RecentRegistry> RecentsRegs = new ObservableCollection<RecentRegistry>();
         private RecentRegistryList RecentsRegs = new RecentRegistryList();
 
+        // Variables bindées avec l'IHM
+//        private string HivePath;
+//        public ObservableCollection<string> HiveNodeList = new ObservableCollection<string>();
+        //public string[] HiveNodeArray;
 
         // -------------------------------------------------------------------------
         // Programme principal
@@ -56,13 +60,15 @@ namespace RegFineViewer
             InitializeComponent();
             // Cette instruction permet de rendre les classes visibles depuis le XAML
             DataContext = this;
-            // On binde la stackPanel qui contient la liste des Recent Registry
-            RecentRegData.ItemsSource = this.RecentsRegs;
-
             // On charge le dictionnaire des unités préférées
             UnitDictionnary = new KeyUnitDictionnary("Config.xml");
             // On initialise le parseur
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
+
+            // On binde la stackPanel qui contient la liste des Recent Registry
+            RecentRegData.ItemsSource = this.RecentsRegs;
+            // On binde la ComboBox qui contient la liste des premiers nodes de la BDR HKLM
+//            cb_SelectHive.ItemsSource = this.HiveNodeArray;
             // On binde les RegistryTree avec les TreeView de l'affichage
             TreeView1.ItemsSource = RegistryTree1;
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
@@ -507,10 +513,32 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_OpenHive_Click(object sender, RoutedEventArgs e)
         {
-            // Ouvre le popup de sélection du subtree de la base de registres
-            RegistryKey rk = Registry.LocalMachine;
-            String[] Names = rk.GetSubKeyNames();
-
+            if (Pu_SelectHive.IsOpen)
+                // Si le popup est ouvert: on le ferme.
+                Pu_SelectHive.IsOpen = false;
+            else
+            {
+                // Si le popup est fermé:
+                // on initialise le chemin en registry
+                tb_HivePath.Text = "HKLM";
+                // on remplit la listbox, avec les subKey du node HKLM
+                FillHiveComboBox(Registry.LocalMachine);
+                // on ouvre le popup de sélection du subtree de la base de registres
+                Pu_SelectHive.IsOpen = true;
+            }
+        }
+        // -------------------------------------------------------------------------
+        // Remplit la combobox avec les subkey du node passé en paramètre
+        // -------------------------------------------------------------------------
+        private void FillHiveComboBox(RegistryKey rk)
+        {
+            string[] HiveNodeArray = rk.GetSubKeyNames();
+            cb_SelectHive.Items.Clear();
+            foreach (string item in HiveNodeArray)
+            {
+                cb_SelectHive.Items.Add(item);
+            }
+            // cb_SelectHive.SelectedIndex = 0;
         }
 
         // -------------------------------------------------------------------------
@@ -573,6 +601,19 @@ namespace RegFineViewer
             Lb_SearchedWordCount.Text = "";
             // On ferme le popup
             Pu_Recent.IsOpen = false;
+        }
+
+        // -------------------------------------------------------------------------
+        // Ferme le popup
+        // -------------------------------------------------------------------------
+        private void Pu_selectHive_Close(object sender, RoutedEventArgs e)
+        {
+            Pu_SelectHive.IsOpen = false;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
