@@ -492,8 +492,9 @@
                         <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
                         
                         <StackPanel Orientation="Horizontal" Margin="12,2,0,0">
+                            <TextBlock Text="HKLM\"/>
                             <TextBlock Name="tb_HivePath"  Text="{Binding Path=HivePath}"/>
-                            <ComboBox Name="cb_SelectHive" Margin="12,0,0,0" MinWidth="60" >
+                            <ComboBox Name="cb_SelectHive" Margin="12,0,0,0" MinWidth="60" SelectionChanged="Cb_SelectHive_SelectionChanged">
                                 <!--<ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}" />
@@ -502,7 +503,7 @@
                             </ComboBox>
                             <Button HorizontalAlignment="Right" Width="30" 
                                     Style="{StaticResource MaterialDesignToolForegroundButton}"  materialDesign:RippleAssist.IsCentered="True" 
-                                    Click="Button_Click" >
+                                    Click="Bt_SelectHiveBack_Click" >
                                 <materialDesign:PackIcon  Kind="ArrowBackCircle" />
                             </Button>
                         </StackPanel>

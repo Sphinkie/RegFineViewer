@@ -520,9 +520,9 @@ namespace RegFineViewer
             {
                 // Si le popup est fermé:
                 // on initialise le chemin en registry
-                tb_HivePath.Text = "HKLM";
+                tb_HivePath.Text = "";
                 // on remplit la listbox, avec les subKey du node HKLM
-                FillHiveComboBox(Registry.LocalMachine);
+                this.FillHiveComboBox(Registry.LocalMachine);
                 // on ouvre le popup de sélection du subtree de la base de registres
                 Pu_SelectHive.IsOpen = true;
             }
@@ -539,6 +539,17 @@ namespace RegFineViewer
                 cb_SelectHive.Items.Add(item);
             }
             // cb_SelectHive.SelectedIndex = 0;
+        }
+        private void Cb_SelectHive_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cb_SelectHive.SelectedItem != null)
+            {
+                string SelectedNodeName = cb_SelectHive.SelectedItem.ToString();
+                if (tb_HivePath.Text.Length > 0) tb_HivePath.Text += @"\";
+                tb_HivePath.Text += SelectedNodeName;
+                RegistryKey rk = Registry.LocalMachine.OpenSubKey(tb_HivePath.Text);
+                this.FillHiveComboBox(rk);
+            }
         }
 
         // -------------------------------------------------------------------------
@@ -611,9 +622,10 @@ namespace RegFineViewer
             Pu_SelectHive.IsOpen = false;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Bt_SelectHiveBack_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
     }
 }
