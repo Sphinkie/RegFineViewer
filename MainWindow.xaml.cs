@@ -540,6 +540,9 @@ namespace RegFineViewer
             }
             // cb_SelectHive.SelectedIndex = 0;
         }
+        // -------------------------------------------------------------------------
+        // L'utilisateur a choisit un SubKey dans la ComboBox
+        // -------------------------------------------------------------------------
         private void Cb_SelectHive_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cb_SelectHive.SelectedItem != null)
@@ -622,9 +625,21 @@ namespace RegFineViewer
             Pu_SelectHive.IsOpen = false;
         }
 
+        // -------------------------------------------------------------------------
+        // On remonte d'un cran dans la Registry
+        // -------------------------------------------------------------------------
         private void Bt_SelectHiveBack_Click(object sender, RoutedEventArgs e)
         {
-
+            int Pos = tb_HivePath.Text.LastIndexOf('\\');
+            if (Pos > 0)
+            {
+                // on enlève un cran au TextBox
+                string NewHivepath = tb_HivePath.Text.Substring(0, Pos);
+                tb_HivePath.Text = NewHivepath;
+                // on refresh la ComboBox
+                RegistryKey rk = Registry.LocalMachine.OpenSubKey(NewHivepath);
+                this.FillHiveComboBox(rk);
+            }
         }
 
     }
