@@ -83,8 +83,6 @@ namespace RegFineViewer
                 string greatParentPath = GetParentPath(parentpath);
                 this.AttachToParentNode(parentNode, greatParentPath);
             }
-            // On l'ouvre
-            //            parentNode.ExpandAll(parentNode, true);
         }
 
         // ------------------------------------------------------------------

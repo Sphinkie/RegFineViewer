@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 
 namespace RegFineViewer
@@ -6,7 +7,7 @@ namespace RegFineViewer
     class RegHiveParser : BaseParser
     {
         // ------------------------------------------------------------------
-        // Constructeur
+        // Constructeur (on repasse les paramètres à la classe de base)
         // ------------------------------------------------------------------
         public RegHiveParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
             : base(registrytree, dictionnary)
@@ -18,135 +19,38 @@ namespace RegFineViewer
         // Enregistre l'arborescence dans un RegistryTree
         // Enregistre la liste des Nodes dans un Dictionnaire
         // ------------------------------------------------------------------
-        public void ParseHive(string subtree)
+        public void ParseHive(string rootsubtree)
         {
             // On commence par vider la collection et le dictionnaire
             InitParser();
 
-            // Vérification
-            if (subtree.Equals(@"HKLM\"))
-            {
-                RegistryItem WrongNode = new RegistryItem("HKLM is not allowed. Try a smaller subtree", "node");
-                RegistryTree.Add(WrongNode);
-                return;
-            }
+            // On cree le node Racine
+            this.CreateRootNode(rootsubtree);
 
-
-            string[] lignes = { };
-
-            // Vérification
-            if (lignes.Length > 50000)
-            {
-                RegistryItem WrongNode = new RegistryItem("The file contains too many lines (max 10.000).", "node");
-                RegistryTree.Add(WrongNode);
-                return;
-            }
-
-            // On crée un Node Racine
-            RegistryItem currentNode = new RegistryItem("root", "node");
-            RegistryTree.Add(currentNode);
-            bool firstNode = true;
-            NbNodes = 1;
-
-            // On parcourt le tableau des lignes du fichier
-            for (int i = 0; i < lignes.Length; i++)
-            {
-                string ligne = lignes[i];
-                // On ignore la ligne d'entete
-                if (ligne.StartsWith("Windows Registry Editor"))
-                { }
-                // On ignore les lignes vides
-                else if (ligne.Equals(""))
-                { }
-                // Lignes de type [path\to\node]
-                else if (ligne.StartsWith("[") && ligne.EndsWith("]"))
-                {
-                    string nodePath = ligne.Trim('[', ']');
-                    string parentPath = GetParentPath(nodePath);
-                    // ----------------------------------------------------------------------
-                    // S'il s'agit du premier node
-                    // ----------------------------------------------------------------------
-                    // Le node racine du treeView est le parent du premier node du fichier REG
-                    if (firstNode)
-                    {
-                        if (parentPath != "")
-                            // Pour ce node racine, son nom est le chemin complet du parent
-                            currentNode.Name = parentPath;
-                        else
-                            // sauf si le nom du parent est vide...
-                            currentNode.Name = nodePath;
-                        // On met le node Racine dans le dictionnaire
-                        AddToNodeTable(currentNode, currentNode.Name);
-                        // On memorise le Level de ce Node
-                        RacineNodeLevel = nodePath.Split('\\').Length;
-                        firstNode = false;
-                    }
-                    // on cree un nouveau node
-                    currentNode = CreateRegistryNode(nodePath);
-                    // On le rattache à son parent
-                    AttachToParentNode(currentNode, parentPath);
-                }
-                // Lignes du type: "ErrorLogSizeInKb" = dword:000186A0
-                // Lignes du type: "Application" = ""
-                else if (ligne.StartsWith("\""))
-                {
-                    // Si on n'a pas de node courant, on passe. Ca ne devrait pas arriver.
-                    if (currentNode != null)
-                    {
-                        // On cree une Key
-                        RegistryItem newKey = CreateRegistryKey(ligne);
-                        // On la rattache au Node courant
-                        currentNode.AddSubItem(newKey);
-                    }
-                }
-                // Autres cas
-                else
-                { }
-            }
+            // On parcourt le subtree de la base de registres
+            this.CreateChildNodes(rootsubtree);
         }
 
         // ------------------------------------------------------------------
-        // Cree un Item dans le RegistryTree pour les lignes du type:
-        // Lignes du type: "ErrorLogSizeInKb" = dword:000186A0
-        // Lignes du type: "Application" = ""
+        // Cree un Item dans le RegistryTree pour cette Value
         // ------------------------------------------------------------------
-        private RegistryItem CreateRegistryKey(string keyNameTypeValue)
+        private RegistryItem CreateRegistryKey(string keyName, string keyKind, string keyValue)
         {
-            string[] separator = { "\"" }; // tableau des séparateur. on n'a besoin que d'un seul.
-            string[] splittedString = keyNameTypeValue.Split(separator, 2, StringSplitOptions.RemoveEmptyEntries);
-            string keyName = splittedString[0];
-            string keyDType = string.Empty;
-            string keyValue = string.Empty;
-            // le reste est alors soit ="string", soit  =type:valeur
-            string reste = splittedString[1].Trim('=');
-            if (reste.StartsWith("\"") && reste.EndsWith("\""))
-            {
-                // Type String. Ex: "valeur"
+            string keyDType = "";
+
+            if (keyKind.Equals("String", StringComparison.CurrentCultureIgnoreCase))
                 keyDType = "SZ";
-                keyValue = reste.Trim('"'); ;
-            }
+            else if (keyKind.Equals("MultiString", StringComparison.CurrentCultureIgnoreCase))
+                keyDType = "MULTI_SZ";
+            else if (keyKind.Equals("DWord", StringComparison.CurrentCultureIgnoreCase))
+                keyDType = "DWORD";
+            else if (keyKind.Equals("Binary", StringComparison.CurrentCultureIgnoreCase))
+                keyValue = "HEX VALUE";
             else
             {
-                int typeSeparatorPos = reste.IndexOf(':');
-                if (typeSeparatorPos > 0)
-                {
-                    keyDType = reste.Substring(0, typeSeparatorPos);
-                    string keyRawValue = reste.Substring(typeSeparatorPos + 1);
-                    if (keyDType.Equals("dword"))
-                    {
-                        // Ex: dword:000186A0
-                        string hexValue = "0x" + keyRawValue;             // hexa 
-                        UInt32 intValue = Convert.ToUInt32(hexValue, 16); // on convertit en decimal
-                        keyValue = Convert.ToString(intValue);            // on convertit en string
-                    }
-                    else if (keyDType.StartsWith("hex"))
-                        // Ex: hex:0f,be,5a,8d,69,cc,21,0b,67,38,d5,88,27,61,47,9a,24,bc,72,e9,75
-                        keyValue = "HEX VALUE";
-                    else
-                        keyValue = "unrecognized type";
-                }
+                keyDType = keyKind;
+                keyValue = "unrecognized type";
             }
-
             keyDType = "REG_" + keyDType.ToUpper();
             // On cree la Key
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
@@ -158,6 +62,80 @@ namespace RegFineViewer
             NbKeys++;
             return newKey;
         }
+
+        // ------------------------------------------------------------------
+        // Cree le node racine dans le RegistryTree
+        // ------------------------------------------------------------------
+        private void CreateRootNode(string rootpath)
+        {
+            // Vérifications
+            if (rootpath == string.Empty)
+            {
+                RegistryItem WrongNode = new RegistryItem("HKLM is not allowed. Try a smaller subtree.", "node");
+                RegistryTree.Add(WrongNode);
+                return;
+            }
+            if (rootpath.Equals("SECURITY"))
+            {
+                RegistryItem WrongNode = new RegistryItem("SECURITY subtree is not accessible (reserved access).", "node");
+                RegistryTree.Add(WrongNode);
+                return;
+            }
+
+            // On crée le Node Racine
+            RegistryItem RacineNode = new RegistryItem(rootpath, "node");
+            RegistryTree.Add(RacineNode);
+            this.AddToNodeTable(RacineNode, RacineNode.Name);
+            // On memorise le Level de ce Node
+            RacineNodeLevel = rootpath.Split('\\').Length;
+            NbNodes = 1;
+        }
+
+        // ------------------------------------------------------------------
+        // Cree les Nodes SubKeys et les Values du None donné
+        // ------------------------------------------------------------------
+        private void CreateChildNodes(string ParentPath)
+        {
+            RegistryKey rk;
+            try
+            {
+                rk = Registry.LocalMachine.OpenSubKey(ParentPath);
+            }
+            catch (Exception ex)
+            {
+                RegistryItem WrongNode = new RegistryItem("This registry cannot be read (" + ex.Message + ").", "node");
+                RegistryTree.Add(WrongNode);
+                return;
+            }
+
+            string[] SubKeysArray = rk.GetSubKeyNames();
+            string[] ValuesArray = rk.GetValueNames();
+
+            // Traitement des Subkeys: on les ajoute dans l'arborescence
+            foreach (string SubKeyName in SubKeysArray)
+            {
+                // on cree un nouveau node pour chaque SubKey
+                string nodePath = ParentPath + @"\" + SubKeyName;
+                RegistryItem NewNode = CreateRegistryNode(nodePath);
+                // On met le node dans le dictionnaire
+                this.AddToNodeTable(NewNode, SubKeyName);
+                // On le rattache à son parent
+                AttachToParentNode(NewNode, ParentPath);
+            }
+
+            // Traitement des Values: on les ajoute dans l'arborescence
+            foreach (string ValueName in ValuesArray)
+            {
+                // On recupère toutes les infos sur cette value
+                string ValueKind = rk.GetValueKind(ValueName).ToString();
+                string Value = rk.GetValue(ValueName).ToString();
+                // On cree une Key
+                RegistryItem newKey = CreateRegistryKey(ValueName, ValueKind, Value);
+                // On la rattache à son parent
+                AttachToParentNode(newKey, ParentPath);
+            }
+        }
+
 
     }
 }
