@@ -7,27 +7,21 @@ namespace RegFineViewer
     class RegFileParser : BaseParser
     {
 
-        // ------------------------------------------------------------------
-        // Propriétés Publiques
-        // ------------------------------------------------------------------
-        private int AverageLabelLength { get; set; }
-        public int ModalLabelLength { get; private set; }
 
         // --------------------------------------------
         // Objets privés
         // --------------------------------------------
-        private int[] TableStats = new int[100];                  // Tableau de statistiques
+        private int[] TableStats = new int[100];   // Tableau de statistiques
+        private int AverageLabelLength;
+        private int ModalLabelLength;
 
 
         // ------------------------------------------------------------------
-        // Constructeur
+        // Constructeur (on repasse les paramètre à la classe de base)
         // ------------------------------------------------------------------
         public RegFileParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
+            : base(registrytree, dictionnary)
         {
-            // On mémorise le registrytree et le dictionnaire
-            RegistryTree = registrytree;
-            PreferedUnits = dictionnary;
-
             // On initialise les variables des statistiques du fichier
             Array.Clear(TableStats, 0, TableStats.Length);
             AverageLabelLength = 0;
@@ -138,7 +132,7 @@ namespace RegFineViewer
             }
         }
 
-        
+
         // ------------------------------------------------------------------
         // Cree un Item dans le RegistryTree pour les lignes de fichier du type:
         // Lignes du type: "ErrorLogSizeInKb" = dword:000186A0
@@ -224,6 +218,10 @@ namespace RegFineViewer
             }
             if (nombre != 0) AverageLabelLength = (cumul / nombre);
             return AverageLabelLength;
+        }
+        public Int32 GetModalLabelLength()
+        {
+            return ModalLabelLength;
         }
 
         // ------------------------------------------------------------------

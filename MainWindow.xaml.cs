@@ -185,7 +185,7 @@ namespace RegFineViewer
         private void RefreshLengthStats(RegFileParser parser)
         {
             Int32 Moyenne     = parser.GetAverageLength();  // A calculer en premier
-            Int32 ModalLength = parser.ModalLabelLength;
+            Int32 ModalLength = parser.GetModalLabelLength();
             Int32 EcartType   = parser.GetStandardDeviation();
             Int32 Nombre      = parser.NbNodes + parser.NbKeys;
             // Les stats disent que 84% de la population se trouve entre 0 et Moy + EcType

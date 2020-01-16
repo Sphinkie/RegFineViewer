@@ -9,10 +9,8 @@ namespace RegFineViewer
         // Constructeur
         // ------------------------------------------------------------------
         public RegHiveParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
+            : base(registrytree, dictionnary)
         {
-            // On mémorise le registrytree et le dictionnaire
-            RegistryTree = registrytree;
-            PreferedUnits = dictionnary;
         }
 
         // ------------------------------------------------------------------

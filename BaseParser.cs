@@ -26,13 +26,19 @@ namespace RegFineViewer
 
         protected int RacineNodeLevel;
         private int HighestNodeLevel;
-        
+
 
         // ------------------------------------------------------------------
         // CONSTRUCTEUR
+        // Le constructeur de la sous-classe appelle toujours celui de la classe de base, implicitement ou explicitement.
+        // Si rien n'est spécifié, le compilateur génère un appel implicite au constructeur de la classe de base ne comportant aucun paramètre. 
         // ------------------------------------------------------------------
-        public BaseParser()
+        public BaseParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
         {
+            // On mémorise le registrytree et le dictionnaire
+            RegistryTree = registrytree;
+            PreferedUnits = dictionnary;
+
             // On crée un objet NodeList
             NodeList = new List<RegistryItem>();
             this.InitParser();
