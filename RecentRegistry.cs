@@ -17,7 +17,7 @@ namespace RegFineViewer
                 Icon = MaterialDesignThemes.Wpf.PackIconKind.QuestionMarkCircle;
         }
 
-        public void setIcon(string icon)
+        public void SetIcon(string icon)
         {
             if (icon == "File")
                 Icon = MaterialDesignThemes.Wpf.PackIconKind.File;

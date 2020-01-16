@@ -1,11 +1,10 @@
-﻿using System.IO;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System;
 
 namespace RegFineViewer
 {
-    class RegFileParser
+    class RegHiveParser
     {
         // --------------------------------------------
         // Objets privés
@@ -16,13 +15,11 @@ namespace RegFineViewer
         private Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();
         // Dictionnaire des Prefered units
         private KeyUnitDictionnary PreferedUnits;
-        // Tableau de statistiques
-        private int[] TableStats = new int[100];
 
         // ------------------------------------------------------------------
         // Constructeur
         // ------------------------------------------------------------------
-        public RegFileParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
+        public RegHiveParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
         {
             // On crée un objet NodeList
             NodeList = new List<RegistryItem>();
@@ -30,46 +27,35 @@ namespace RegFineViewer
             RegistryTree = registrytree;
             PreferedUnits = dictionnary;
             // On initialise les variables
-            Array.Clear(TableStats, 0, TableStats.Length);
-            AverageLabelLengh = 0;
-            ModalLabelLength = 0;
             NbNodes = 0;
             NbKeys = 0;
         }
 
         // ------------------------------------------------------------------
-        // Parse le fichier REG
+        // Parcourt de toute la base de registres
         // Enregistre l'arborescence dans un RegistryTree
         // Enregistre la liste des Nodes dans un Dictionnaire
         // ------------------------------------------------------------------
-        public void ParseFile(string fileName)
+        public void ParseHive(string subtree)
         {
             // On commence par vider la collection et le dictionnaire
             RegistryTree.Clear();
             NodepathTable.Clear();
-            AverageLabelLengh = 0;
-            ModalLabelLength = 0;
             HighestNodeLevel = 0;
             RacineNodeLevel = 0;
             NbNodes = 0;
             NbKeys = 0;
-            Array.Clear(TableStats, 0, TableStats.Length);
 
             // Vérification
-            if (!fileName.EndsWith(".reg"))
+            if (subtree.Equals(@"HKLM\"))
             {
-                RegistryItem WrongNode = new RegistryItem("Not a REG file", "node");
+                RegistryItem WrongNode = new RegistryItem("HKLM is not allowed. Try a smaller subtree", "node");
                 RegistryTree.Add(WrongNode);
                 return;
             }
-            // On lit le fichier et on met tout dans une très longue string.
-            // fileName = "E:\\source\\repos\\RegFineViewer\\_example1.reg";
-            StreamReader streamFile = new StreamReader(File.Open(fileName, FileMode.OpenOrCreate));
-            string fichier = streamFile.ReadToEnd();
-            streamFile.Close();
 
-            // On decoupe le fichier en un tableau de lignes
-            string[] lignes = fichier.Split('\r', '\n');
+
+            string[] lignes = { };
 
             // Vérification
             if (lignes.Length > 50000)
@@ -168,7 +154,7 @@ namespace RegFineViewer
                 AttachToParentNode(parentNode, greatParentPath);
             }
             // On l'ouvre
-//            parentNode.ExpandAll(parentNode, true);
+            //            parentNode.ExpandAll(parentNode, true);
         }
 
         // ------------------------------------------------------------------
@@ -224,7 +210,6 @@ namespace RegFineViewer
             RegistryItem NewNode = new RegistryItem(nodeName, "node");
             AddToNodeTable(NewNode, nodepath);
             NbNodes++;
-            TableStats[nodeName.Length] += 1;
             // On determine le Level de ce Node
             int NodeLevel = nodepath.Split('\\').Length;
             if (NodeLevel > this.HighestNodeLevel) this.HighestNodeLevel = NodeLevel;
@@ -282,7 +267,6 @@ namespace RegFineViewer
             newKey.UpdateUserFriendyValue();
             // On incrémente nos compteurs internes
             NbKeys++;
-            TableStats[keyName.Length] += 1;
             return newKey;
         }
 
@@ -316,103 +300,11 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
-        // STATISTIQUES
-        // ------------------------------------------------------------------
-        // Calcule la moyenne de toutes les longueurs enregistrées dans la tableau
-        // ------------------------------------------------------------------
-        public Int32 GetAverageLength()
-        {
-            int mode = 0;
-            int cumul = 0;    // cumul de toutes les longueurs
-            int nombre = 0;
-            AverageLabelLengh = 0;
-            ModalLabelLength = 0;
-
-            for (int lg = 0; lg < TableStats.Length; lg++)
-            {
-                int nbLg = TableStats[lg];
-                // Cumul des tailles (pour calcul de moyenne)
-                cumul += lg * nbLg;
-                // Décompte des éléments
-                nombre += nbLg;
-                // Détermination du max (=mode)
-                if ((nbLg > mode) && (lg > 1))
-                {
-                    // On a trouvé un nouveau Mode
-                    mode = nbLg;
-                    ModalLabelLength = lg;
-                }
-            }
-            if (nombre != 0) AverageLabelLengh = (cumul / nombre);
-            return AverageLabelLengh;
-        }
-
-        // ------------------------------------------------------------------
-        // STATISTIQUES
-        // ------------------------------------------------------------------
-        // Calcule l'ecart type: sqr(variance)
-        // variance = 1/n * (somme (x²) - moy²)
-        // ------------------------------------------------------------------
-        public Int32 GetStandardDeviation()
-        {
-            double Variance = 0;
-            double EcartType = 0;
-            int nombre = 0;
-            // somme des carrés 
-            double SommeDesCarres = 0;
-            for (int lg = 0; lg < TableStats.Length; lg++)
-            {
-                SommeDesCarres += Math.Pow(lg, 2) * TableStats[lg];
-                nombre += TableStats[lg];
-            }
-            if (nombre != 0)
-            {
-                Variance = SommeDesCarres - Math.Pow(AverageLabelLengh, 2);
-                Variance = Variance / nombre;
-                EcartType = Math.Sqrt(Variance);
-            }
-            return Convert.ToInt32(EcartType);
-        }
-
-        // ------------------------------------------------------------------
-        // STATISTIQUES
-        // ------------------------------------------------------------------
-        // Retourne le nombre de keys dont le label a cette longueur
-        // ------------------------------------------------------------------
-        public Int32 GetNbOfItemsLengthEqualsTo(int length)
-        {
-            if (length < TableStats.Length)
-                return TableStats[length];
-            else
-                return 0;
-        }
-
-        // ------------------------------------------------------------------
-        // STATISTIQUES
-        // ------------------------------------------------------------------
-        // Retourne le nombre de keys dont le label a une longueur plus petite
-        // ------------------------------------------------------------------
-        public Int32 GetNbOfItemsLengthLowerThan(int length)
-        {
-            Int32 Nombre = 0;
-            if (length < TableStats.Length)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    Nombre += TableStats[i];
-                }
-            }
-            return Nombre;
-        }
-
-        // ------------------------------------------------------------------
         // Propriétés
         // ------------------------------------------------------------------
-        public int AverageLabelLengh { get; private set; }
-        public int ModalLabelLength { get; private set; }
         public int NbKeys { get; private set; }
         public int NbNodes { get; private set; }
-        public int NbLevels { get { return HighestNodeLevel - RacineNodeLevel +1; } }
+        public int NbLevels { get { return HighestNodeLevel - RacineNodeLevel + 1; } }
         // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
         public List<RegistryItem> NodeList { get; private set; }
         private int RacineNodeLevel;

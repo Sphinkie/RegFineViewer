@@ -89,7 +89,7 @@
                         <materialDesign:PackIcon Kind="Recent" />
                     </Button>
                     <!--Open Hive Button -->
-                    <Button ToolTip="Open Registry" Click="Bt_OpenHive_Click" >
+                    <Button ToolTip="Import Registry" Click="Bt_SelectHive_Click" >
                         <materialDesign:PackIcon Kind="OpenInApp" />
                     </Button>
                     <!--Buttton de Stats sur la longueur des textes -->
@@ -119,7 +119,7 @@
             <!-- ==========================-->
             <!-- DROP ZONE                 -->
             <!-- ==========================-->
-            <TextBlock x:Name="DropZone1" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop" FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" >
+            <TextBlock x:Name="DropZone" Grid.Column="0" Grid.Row="2" AllowDrop="True" Drop="Tree1_drop" FontSize="48" Foreground="LightGray" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="40,0,40,0" Focusable="False" >
                 drop your<LineBreak/>registry file<LineBreak/>here
             </TextBlock>
 
@@ -449,7 +449,7 @@
                         <!--Le StackPanel contient des Chips-->
                         <StackPanel.Resources>
                             <DataTemplate x:Key="RecentRegDataTemplate">
-                                    <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_CloseRecentChip_Click" Click="Bt_RecentChip_Click" >
+                                    <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_RecentChip_Close" Click="Bt_RecentChip_Click" >
                                         <materialDesign:Chip.Icon>
                                             <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
                                         </materialDesign:Chip.Icon>
@@ -470,7 +470,7 @@
                     <!--separator line-->
                     <!--<Separator Style="{StaticResource MaterialDesignLightSeparator}" />-->
                     <!--Close Button-->
-                    <Button HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="Pu_Recent_Close" materialDesign:RippleAssist.IsCentered="True">
+                    <Button HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="Pu_OpenRecent_Close" materialDesign:RippleAssist.IsCentered="True">
                         <materialDesign:PackIcon  Kind="CloseCircleOutline" />
                     </Button>
                 </StackPanel>
@@ -490,27 +490,27 @@
                         </materialDesign:ColorZone>
                         <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Select registry subtree" />
                         <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
-                        
+
                         <StackPanel Orientation="Horizontal" Margin="12,2,0,0" >
                             <TextBlock Text="HKLM\" VerticalAlignment="Center"/>
-                            <TextBlock Name="tb_HivePath"  Text="{Binding Path=HivePath}" VerticalAlignment="Center"/>
-                            <ComboBox Name="cb_SelectHive" Margin="12,0,0,0" MinWidth="48" SelectionChanged="Cb_SelectHive_SelectionChanged"  VerticalAlignment="Top">
+                            <TextBlock Name="Tb_HivePath"  Text="{Binding Path=HivePath}" VerticalAlignment="Center"/>
+                            <ComboBox Name="Cb_SelectHive" Margin="12,0,0,0" MinWidth="48" SelectionChanged="Cb_SelectHive_SelectionChanged"  VerticalAlignment="Top">
                                 <!--<ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>-->
                             </ComboBox>
-                            <Button HorizontalAlignment="Right" Width="30" 
+                            <Button HorizontalAlignment="Right" Width="30" Name="Bt_SelectHiveBack"
                                     Style="{StaticResource MaterialDesignToolForegroundButton}"  materialDesign:RippleAssist.IsCentered="True" 
-                                    Click="Bt_SelectHiveBack_Click" >
+                                    Click="Bt_SelectHive_Back" Visibility="Hidden">
                                 <materialDesign:PackIcon  Kind="ArrowBackCircle" />
                             </Button>
                         </StackPanel>
-                        <Button Content="Load"/>
-                        <Button HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" materialDesign:RippleAssist.IsCentered="True" Click="Pu_selectHive_Close" >
-                            <materialDesign:PackIcon  Kind="CloseCircleOutline" />
-                        </Button>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8">
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}" Width="80" Content="Import" Margin="4,0,0,0" Click="Bt_SelectHive_Import"/>
+                        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="80" Content="Cancel" Margin="4,0,0,0" Click="Bt_SelectHive_Close"/>
+                    </StackPanel>
                     </StackPanel>
                 </materialDesign:Card>
             </Grid>

@@ -90,13 +90,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BringSelectedItemIntoViewBehavior.cs" />
+    <Compile Include="RegHiveParser.cs" />
     <Compile Include="RecentRegistryList.cs" />
     <Compile Include="RecentRegistry.cs" />
     <Compile Include="KeyUnitDictionnary.cs" />
     <Compile Include="RegistryItem.cs" />
     <Compile Include="TreeViewItemBase.cs" />
-    <Compile Include="RegFileparser.cs" />
+    <Compile Include="RegFileParser.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

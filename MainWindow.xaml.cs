@@ -104,7 +104,7 @@ namespace RegFineViewer
             N4.AddSubItem(K5);
             N4.AddSubItem(K6);
             N2.AddSubItem(N4);
-            DropZone1.Visibility = Visibility.Hidden;
+            DropZone.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
         }
 
@@ -133,7 +133,7 @@ namespace RegFineViewer
                 RecentsRegs.Add(fileName);
                 this.SaveRecentRegs();
             }
-            DropZone1.Visibility = Visibility.Hidden;
+            DropZone.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
@@ -150,7 +150,7 @@ namespace RegFineViewer
         {
             Tree1_InfoChip.Content = "no file loaded";
             RegistryTree1.Clear();
-            DropZone1.Visibility = Visibility.Visible;
+            DropZone.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
             Bt_Search.Content = "Find";
             Tb_SearchedWord.Text = "";
@@ -511,7 +511,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // MENU: Ouverture de la base de registre du poste
         // -------------------------------------------------------------------------
-        private void Bt_OpenHive_Click(object sender, RoutedEventArgs e)
+        private void Bt_SelectHive_Click(object sender, RoutedEventArgs e)
         {
             if (Pu_SelectHive.IsOpen)
                 // Si le popup est ouvert: on le ferme.
@@ -520,7 +520,7 @@ namespace RegFineViewer
             {
                 // Si le popup est fermé:
                 // on initialise le chemin en registry
-                tb_HivePath.Text = "";
+                Tb_HivePath.Text = "";
                 // on remplit la listbox, avec les subKey du node HKLM
                 this.FillHiveComboBox(Registry.LocalMachine);
                 // on ouvre le popup de sélection du subtree de la base de registres
@@ -533,30 +533,30 @@ namespace RegFineViewer
         private void FillHiveComboBox(RegistryKey rk)
         {
             string[] HiveNodeArray = rk.GetSubKeyNames();
-            cb_SelectHive.Items.Clear();
+            Cb_SelectHive.Items.Clear();
             foreach (string item in HiveNodeArray)
             {
-                cb_SelectHive.Items.Add(item);
+                Cb_SelectHive.Items.Add(item);
             }
-            // cb_SelectHive.SelectedIndex = 0;
         }
         // -------------------------------------------------------------------------
         // L'utilisateur a choisit un SubKey dans la ComboBox
         // -------------------------------------------------------------------------
         private void Cb_SelectHive_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cb_SelectHive.SelectedItem != null)
+            if (Cb_SelectHive.SelectedItem != null)
             {
-                string SelectedNodeName = cb_SelectHive.SelectedItem.ToString();
-                if (tb_HivePath.Text.Length > 0) tb_HivePath.Text += @"\";
-                tb_HivePath.Text += SelectedNodeName;
-                RegistryKey rk = Registry.LocalMachine.OpenSubKey(tb_HivePath.Text);
+                string SelectedNodeName = Cb_SelectHive.SelectedItem.ToString();
+                if (Tb_HivePath.Text.Length > 0) Tb_HivePath.Text += @"\";
+                Tb_HivePath.Text += SelectedNodeName;
+                RegistryKey rk = Registry.LocalMachine.OpenSubKey(Tb_HivePath.Text);
                 this.FillHiveComboBox(rk);
+                Bt_SelectHiveBack.Visibility = Visibility.Visible;
             }
         }
 
         // -------------------------------------------------------------------------
-        // Dans VS: Les "items recents" sont dans Project-Properties-Paramètres
+        // Ouverture/Fermeture du popup "Recent Registries"
         // -------------------------------------------------------------------------
         private void Bt_OpenRecent_Click(object sender, RoutedEventArgs e)
         {
@@ -567,7 +567,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Enleve un Recent Reg de la liste
         // -------------------------------------------------------------------------
-        private void Bt_CloseRecentChip_Click(object sender, RoutedEventArgs e)
+        private void Bt_RecentChip_Close(object sender, RoutedEventArgs e)
         {
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
             this.RecentsRegs.Remove(SenderChip.Content.ToString() );
@@ -577,7 +577,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Fermeture du popup "Recent Registries"
         // -------------------------------------------------------------------------
-        private void Pu_Recent_Close(object sender, RoutedEventArgs e)
+        private void Pu_OpenRecent_Close(object sender, RoutedEventArgs e)
         {
             Pu_Recent.IsOpen = false;
         }
@@ -607,7 +607,7 @@ namespace RegFineViewer
             // On remplit le RegistryTree à partir du fichier REG
             Parser1.ParseFile(Filename);
             Parser1.BuildList();
-            DropZone1.Visibility = Visibility.Hidden;
+            DropZone.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
@@ -620,7 +620,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Ferme le popup
         // -------------------------------------------------------------------------
-        private void Pu_selectHive_Close(object sender, RoutedEventArgs e)
+        private void Bt_SelectHive_Close(object sender, RoutedEventArgs e)
         {
             Pu_SelectHive.IsOpen = false;
         }
@@ -628,19 +628,46 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // On remonte d'un cran dans la Registry
         // -------------------------------------------------------------------------
-        private void Bt_SelectHiveBack_Click(object sender, RoutedEventArgs e)
+        private void Bt_SelectHive_Back(object sender, RoutedEventArgs e)
         {
-            int Pos = tb_HivePath.Text.LastIndexOf('\\');
+            int Pos = Tb_HivePath.Text.LastIndexOf('\\');
             if (Pos > 0)
             {
+                Bt_SelectHiveBack.Visibility = Visibility.Visible;
                 // on enlève un cran au TextBox
-                string NewHivepath = tb_HivePath.Text.Substring(0, Pos);
-                tb_HivePath.Text = NewHivepath;
+                string NewHivepath = Tb_HivePath.Text.Substring(0, Pos);
+                Tb_HivePath.Text = NewHivepath;
                 // on refresh la ComboBox
                 RegistryKey rk = Registry.LocalMachine.OpenSubKey(NewHivepath);
                 this.FillHiveComboBox(rk);
             }
+            else
+            {
+                Bt_SelectHiveBack.Visibility = Visibility.Hidden;
+                // on vide la TextBox
+                Tb_HivePath.Text = "";
+                // on refresh la ComboBox
+                this.FillHiveComboBox(Registry.LocalMachine);
+            }
         }
 
+        // -------------------------------------------------------------------------
+        // On importe le subtree sélectionné
+        // -------------------------------------------------------------------------
+        private void Bt_SelectHive_Import(object sender, RoutedEventArgs e)
+        {
+            // Ferme le popup
+            Pu_SelectHive.IsOpen = false;
+            // Ajout à la liste des Recent Regs
+            RecentsRegs.Add(@"HKLM\"+Tb_HivePath.Text);
+            this.SaveRecentRegs();
+            // affichage
+            DropZone.Visibility = Visibility.Hidden;
+            TreeView1.Visibility = Visibility.Visible;
+            // Initialisation de la recherche
+            SearchedWordResultsIndex = 0;
+            SearchedWordIsDirty = false;
+            Lb_SearchedWordCount.Text = "";
+        }
     }
 }
