@@ -90,6 +90,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseParser.cs" />
     <Compile Include="RegHiveParser.cs" />
     <Compile Include="RecentRegistryList.cs" />
     <Compile Include="RecentRegistry.cs" />

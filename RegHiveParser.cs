@@ -1,34 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace RegFineViewer
 {
-    class RegHiveParser
+    class RegHiveParser : BaseParser
     {
-        // --------------------------------------------
-        // Objets privés
-        // --------------------------------------------
-        // Chaque RegistryTree est une collection de RegistryItems
-        private ObservableCollection<RegistryItem> RegistryTree;
-        // Dictionaire des nodes
-        private Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();
-        // Dictionnaire des Prefered units
-        private KeyUnitDictionnary PreferedUnits;
-
         // ------------------------------------------------------------------
         // Constructeur
         // ------------------------------------------------------------------
         public RegHiveParser(ObservableCollection<RegistryItem> registrytree, KeyUnitDictionnary dictionnary)
         {
-            // On crée un objet NodeList
-            NodeList = new List<RegistryItem>();
             // On mémorise le registrytree et le dictionnaire
             RegistryTree = registrytree;
             PreferedUnits = dictionnary;
-            // On initialise les variables
-            NbNodes = 0;
-            NbKeys = 0;
         }
 
         // ------------------------------------------------------------------
@@ -39,12 +23,7 @@ namespace RegFineViewer
         public void ParseHive(string subtree)
         {
             // On commence par vider la collection et le dictionnaire
-            RegistryTree.Clear();
-            NodepathTable.Clear();
-            HighestNodeLevel = 0;
-            RacineNodeLevel = 0;
-            NbNodes = 0;
-            NbKeys = 0;
+            InitParser();
 
             // Vérification
             if (subtree.Equals(@"HKLM\"))
@@ -129,94 +108,6 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
-        // Attache le node fourni à son parent. On retrouve le parent grace au dictionnaire.
-        // ------------------------------------------------------------------
-        private void AttachToParentNode(RegistryItem node, string parentpath)
-        {
-            if (parentpath == string.Empty) return;
-            // On cherche le Node Parent dans la table
-            RegistryItem parentNode = GetFromNodeTable(parentpath);
-            // Si on le trouve: on lui attache le node
-            if (parentNode != null)
-            {
-                parentNode.AddSubItem(node);
-            }
-            // Si on ne le trouve pas: on le crée et on le rattache à son propre parent
-            else
-            {
-                // On crée un nouveau Node pour le Parent
-                string parentName = GetNodeNameFromPath(parentpath);
-                parentNode = new RegistryItem(parentName, "node");
-                // On le met dans le dictionnaire
-                AddToNodeTable(parentNode, parentpath);
-                // On le rattache à son propre parent (le parent du parent)
-                string greatParentPath = GetParentPath(parentpath);
-                AttachToParentNode(parentNode, greatParentPath);
-            }
-            // On l'ouvre
-            //            parentNode.ExpandAll(parentNode, true);
-        }
-
-        // ------------------------------------------------------------------
-        // Ajoute le node au dictionnaire
-        // ------------------------------------------------------------------
-        private void AddToNodeTable(RegistryItem node, string nodepath)
-        {
-            nodepath = nodepath.ToUpper();
-            if (!NodepathTable.ContainsKey(nodepath))
-                NodepathTable[nodepath] = node;
-        }
-
-        // ------------------------------------------------------------------
-        // Cherche un node dans le dictionnaire
-        // ------------------------------------------------------------------
-        private RegistryItem GetFromNodeTable(string nodepath)
-        {
-            nodepath = nodepath.ToUpper();
-            if (NodepathTable.ContainsKey(nodepath))
-                return NodepathTable[nodepath];
-            else
-                return null;
-        }
-
-        // ------------------------------------------------------------------
-        // Renvoie le nom du node
-        // ------------------------------------------------------------------
-        private string GetNodeNameFromPath(string nodepath)
-        {
-            int lastSep = nodepath.LastIndexOf("\\");
-            string nodeName = nodepath.Substring(lastSep + 1, nodepath.Length - lastSep - 1);
-            return nodeName;
-        }
-
-        // ------------------------------------------------------------------
-        // Renvoie le chemin du parent
-        // ------------------------------------------------------------------
-        private string GetParentPath(string nodepath)
-        {
-            string parentPath = string.Empty;
-            int lastSep = nodepath.LastIndexOf("\\");
-            if (lastSep != -1)
-                parentPath = nodepath.Substring(0, lastSep);
-            return parentPath;
-        }
-
-        // ------------------------------------------------------------------
-        // Cree un nouveau node et l'ajoute au dictionnaire.
-        // ------------------------------------------------------------------
-        private RegistryItem CreateRegistryNode(string nodepath)
-        {
-            string nodeName = GetNodeNameFromPath(nodepath);
-            RegistryItem NewNode = new RegistryItem(nodeName, "node");
-            AddToNodeTable(NewNode, nodepath);
-            NbNodes++;
-            // On determine le Level de ce Node
-            int NodeLevel = nodepath.Split('\\').Length;
-            if (NodeLevel > this.HighestNodeLevel) this.HighestNodeLevel = NodeLevel;
-            return NewNode;
-        }
-
-        // ------------------------------------------------------------------
         // Cree un Item dans le RegistryTree pour les lignes du type:
         // Lignes du type: "ErrorLogSizeInKb" = dword:000186A0
         // Lignes du type: "Application" = ""
@@ -270,44 +161,5 @@ namespace RegFineViewer
             return newKey;
         }
 
-        // ------------------------------------------------------------------
-        // Contruit la liste (à plat) de tous les nodes du registryTree
-        // C'est pratique pour y faire des recherches
-        // ------------------------------------------------------------------
-        public void BuildList()
-        {
-            NodeList.Clear();
-            if (RegistryTree.Count > 0)
-                NodeList = BuildNodeList(RegistryTree[0]);
-        }
-
-        // ------------------------------------------------------------------
-        // Fonction recursive: on lui donne un Node, elle retourne la liste de ses nodes Children
-        // ------------------------------------------------------------------
-        private List<RegistryItem> BuildNodeList(RegistryItem item)
-        {
-            List<RegistryItem> liste = new List<RegistryItem>();
-            foreach (RegistryItem child in item.SubItem)
-            {
-                // ajoute les enfants du node courant à liste
-                liste.AddRange(child.SubItem);
-                // Ajoute à la liste les enfants de chaque Child
-                liste.AddRange(this.BuildNodeList(child));
-            }
-            return liste;
-            // La liste est détruite chaque fois que l'on sort de la méthode,
-            // mais après qu'elle ait été retournée à la methode appelante (ré-entrance)
-        }
-
-        // ------------------------------------------------------------------
-        // Propriétés
-        // ------------------------------------------------------------------
-        public int NbKeys { get; private set; }
-        public int NbNodes { get; private set; }
-        public int NbLevels { get { return HighestNodeLevel - RacineNodeLevel + 1; } }
-        // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
-        public List<RegistryItem> NodeList { get; private set; }
-        private int RacineNodeLevel;
-        private int HighestNodeLevel;
     }
 }
