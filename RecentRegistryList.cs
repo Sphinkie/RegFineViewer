@@ -4,11 +4,13 @@ namespace RegFineViewer
 {
     public class RecentRegistryList : ObservableCollection<RecentRegistry>
     {
-        public RecentRegistryList()
-        {
-        }
+        // -------------------------------------------------------------------------
+        // Constructeur
+        // -------------------------------------------------------------------------
+        public RecentRegistryList() {}
 
         // -------------------------------------------------------------------------
+        // Ajoute un item dans la liste (sauf s'il est vide ou s'il existe déjà)
         // -------------------------------------------------------------------------
         public void Add(string name)
         {
@@ -18,6 +20,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
+        // Enlève un item de la liste (s'il existe)
         // -------------------------------------------------------------------------
         public void Remove(string name)
         {
@@ -27,7 +30,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Surcharge
+        // Surcharge. Renvoie l'index du premier item trouvé, ayant ce nom.
         // -------------------------------------------------------------------------
         public int IndexOf(string name)
         {
@@ -45,7 +48,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Surcharge
+        // Surcharge. Renvoir TRUE si cet item est présent dans la liste.
         // -------------------------------------------------------------------------
         public bool Contains(string name)
         {
@@ -60,7 +63,7 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // 
+        // Retourne le nom de l'item ayant cet index.
         // -------------------------------------------------------------------------
         public string GetNameAt(int index)
         {

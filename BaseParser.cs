@@ -57,7 +57,6 @@ namespace RegFineViewer
             NbKeys = 0;
         }
 
-
         // ------------------------------------------------------------------
         // Attache le node fourni à son parent. On retrouve le parent grace au dictionnaire.
         // ------------------------------------------------------------------
@@ -93,7 +92,6 @@ namespace RegFineViewer
             if (parentnode is RegistryItem)
                 parentnode.AddSubItem(node);
         }
-
 
         // ------------------------------------------------------------------
         // Cherche un node dans le dictionnaire

@@ -6,15 +6,12 @@ namespace RegFineViewer
 {
     class RegFileParser : BaseParser
     {
-
-
         // --------------------------------------------
         // Objets privés
         // --------------------------------------------
         private int[] TableStats = new int[100];   // Tableau de statistiques
         private int AverageLabelLength;
         private int ModalLabelLength;
-
 
         // ------------------------------------------------------------------
         // Constructeur (on repasse les paramètre à la classe de base)

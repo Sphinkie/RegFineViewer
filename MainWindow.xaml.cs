@@ -27,6 +27,7 @@ namespace RegFineViewer
         // Parseur de fichier REG qui remplit un RegistryTree
         private RegFileParser Parser1;
         private RegHiveParser Parser2;
+        private RecentRegistry CurrentRegistry;
 
         // Pour la fonction de recherche
         private string SearchedWord;
@@ -36,14 +37,7 @@ namespace RegFineViewer
         private List<RegistryItem> SearchedWordResults;
 
         // Gestion des Registry ouvertes récemment.
-        // private List<string> RecentsRegs = new List<string> {};
-        // private ObservableCollection<RecentRegistry> RecentsRegs = new ObservableCollection<RecentRegistry>();
         private RecentRegistryList RecentsRegs = new RecentRegistryList();
-
-        // Variables bindées avec l'IHM
-//        private string HivePath;
-//        public ObservableCollection<string> HiveNodeList = new ObservableCollection<string>();
-        //public string[] HiveNodeArray;
 
         // -------------------------------------------------------------------------
         // Programme principal
@@ -66,6 +60,7 @@ namespace RegFineViewer
             // On initialise le parseur
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
             Parser2 = new RegHiveParser(RegistryTree1, UnitDictionnary);
+            CurrentRegistry = new RecentRegistry("empty");
 
             // On binde la stackPanel qui contient la liste des Recent Registry
             RecentRegData.ItemsSource = this.RecentsRegs;
@@ -127,7 +122,9 @@ namespace RegFineViewer
             if (droppedFiles.Length > 0)
             {
                 string fileName = droppedFiles[0];
+                CurrentRegistry.SetGenre(RecentRegistry.Genre.file);
                 Tree_InfoChip.Content = fileName;
+
                 // On remplit le RegistryTree à partir du fichier REG
                 Parser1.ParseFile(fileName);
                 Parser1.BuildList();
