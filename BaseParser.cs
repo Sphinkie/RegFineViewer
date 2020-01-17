@@ -18,11 +18,11 @@ namespace RegFineViewer
 
         // --------------------------------------------
         // Protected Objects 
-        // L’accès est limité à la classe conteneur ou aux types dérivés de la classe conteneur.
+        // L’accès est limité à la classe conteneur ou aux dérivées de la classe conteneur.
         // --------------------------------------------
         protected ObservableCollection<RegistryItem> RegistryTree;  // Chaque RegistryTree est une collection de RegistryItems
-        protected Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();         // Dictionaire des nodes
         protected KeyUnitDictionnary PreferedUnits;                 // Dictionnaire des Prefered units
+        protected Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();         // Dictionaire des nodes
 
         protected int RacineNodeLevel;
         private int HighestNodeLevel;
@@ -71,7 +71,7 @@ namespace RegFineViewer
             {
                 parentNode.AddSubItem(node);
             }
-            // Si on ne le trouve pas: on le crée et on le rattache à son propre parent
+            // Si on ne trouve pas le Parent: on en crée un, et on le rattache à son propre parent (grand-parent)
             else
             {
                 // On crée un nouveau Node pour le Parent
@@ -84,6 +84,16 @@ namespace RegFineViewer
                 this.AttachToParentNode(parentNode, greatParentPath);
             }
         }
+
+        // ------------------------------------------------------------------
+        // Attache le node fourni à son parent. Fonction rapide, si on connait deja le Parent.
+        // ------------------------------------------------------------------
+        protected void AttachToParentNode(RegistryItem node, RegistryItem parentnode)
+        {
+            if (parentnode is RegistryItem)
+                parentnode.AddSubItem(node);
+        }
+
 
         // ------------------------------------------------------------------
         // Cherche un node dans le dictionnaire

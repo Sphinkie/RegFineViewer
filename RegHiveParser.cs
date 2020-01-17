@@ -19,16 +19,16 @@ namespace RegFineViewer
         // Enregistre l'arborescence dans un RegistryTree
         // Enregistre la liste des Nodes dans un Dictionnaire
         // ------------------------------------------------------------------
-        public void ParseHive(string rootsubtree)
+        public void ParseHive(string rootPath)
         {
             // On commence par vider la collection et le dictionnaire
             InitParser();
 
             // On cree le node Racine
-            this.CreateRootNode(rootsubtree);
+            RegistryItem RootNode = this.CreateRootNode(rootPath);
 
-            // On parcourt le subtree de la base de registres
-            this.CreateChildNodes(rootsubtree);
+            // On parcourt le subtree de la base de registres, en commençant par le Node Racine
+            this.CreateChildNodes(RootNode, rootPath);
         }
 
         // ------------------------------------------------------------------
@@ -64,37 +64,43 @@ namespace RegFineViewer
         }
 
         // ------------------------------------------------------------------
-        // Cree le node racine dans le RegistryTree
+        // Cree le node racine dans le RegistryTree.
+        // Retourne Null si la racine est un WrongNode (sans enfants)
         // ------------------------------------------------------------------
-        private void CreateRootNode(string rootpath)
+        private RegistryItem CreateRootNode(string rootpath)
         {
-            // Vérifications
             if (rootpath == string.Empty)
             {
+                // Vérification : HKLM
                 RegistryItem WrongNode = new RegistryItem("HKLM is not allowed. Try a smaller subtree.", "node");
                 RegistryTree.Add(WrongNode);
-                return;
+                return null;
             }
-            if (rootpath.Equals("SECURITY"))
+            else if (rootpath.Equals("SECURITY"))
             {
+                // Vérification : HKLM\SECURITY
                 RegistryItem WrongNode = new RegistryItem("SECURITY subtree is not accessible (reserved access).", "node");
                 RegistryTree.Add(WrongNode);
-                return;
+                return null;
             }
-
-            // On crée le Node Racine
-            RegistryItem RacineNode = new RegistryItem(rootpath, "node");
-            RegistryTree.Add(RacineNode);
-            this.AddToNodeTable(RacineNode, RacineNode.Name);
-            // On memorise le Level de ce Node
-            RacineNodeLevel = rootpath.Split('\\').Length;
-            NbNodes = 1;
+            else
+            {
+                // Les vérifications sont OK: On crée le node Racine
+                RegistryItem RacineNode = new RegistryItem(rootpath, "node");
+                RegistryTree.Add(RacineNode);
+                this.AddToNodeTable(RacineNode, RacineNode.Name);
+                // On memorise le Level de ce Node
+                RacineNodeLevel = rootpath.Split('\\').Length;
+                NbNodes = 1;
+                return RacineNode;
+            }
         }
 
         // ------------------------------------------------------------------
-        // Cree les Nodes SubKeys et les Values du None donné
+        // Cree les Nodes SubKeys et les Values du Node donné
+        // C'est un peut redondant de donner le node et le path, mais ça évite de le recalculer à chaque fois.
         // ------------------------------------------------------------------
-        private void CreateChildNodes(string ParentPath)
+        private void CreateChildNodes(RegistryItem ParentNode, string ParentPath)
         {
             RegistryKey rk;
             try
@@ -116,11 +122,13 @@ namespace RegFineViewer
             {
                 // on cree un nouveau node pour chaque SubKey
                 string nodePath = ParentPath + @"\" + SubKeyName;
-                RegistryItem NewNode = CreateRegistryNode(nodePath);
+                RegistryItem NewNode = base.CreateRegistryNode(nodePath);
                 // On met le node dans le dictionnaire
-                this.AddToNodeTable(NewNode, SubKeyName);
+                base.AddToNodeTable(NewNode, SubKeyName);
                 // On le rattache à son parent
-                AttachToParentNode(NewNode, ParentPath);
+                base.AttachToParentNode(NewNode, ParentNode);
+                // On traite ses enfants (recursivité)
+                this.CreateChildNodes(NewNode, nodePath);
             }
 
             // Traitement des Values: on les ajoute dans l'arborescence
@@ -130,9 +138,9 @@ namespace RegFineViewer
                 string ValueKind = rk.GetValueKind(ValueName).ToString();
                 string Value = rk.GetValue(ValueName).ToString();
                 // On cree une Key
-                RegistryItem newKey = CreateRegistryKey(ValueName, ValueKind, Value);
+                RegistryItem newKey = this.CreateRegistryKey(ValueName, ValueKind, Value);
                 // On la rattache à son parent
-                AttachToParentNode(newKey, ParentPath);
+                base.AttachToParentNode(newKey, ParentNode);
             }
         }
 

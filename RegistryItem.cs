@@ -21,6 +21,7 @@ namespace RegFineViewer
             UserFriendlyValue = string.Empty;
             SubItem = new ObservableCollection<RegistryItem>();
         }
+
         // --------------------------------------------
         // Recalcul de la UF Value en fonction de l'unité préférée active
         // --------------------------------------------
@@ -66,6 +67,7 @@ namespace RegFineViewer
         {
             UserFriendlyValue = string.Empty;
         }
+
         // --------------------------------------------
         // Recalcule la valeur de UserFriendyValue
         // --------------------------------------------
@@ -94,6 +96,7 @@ namespace RegFineViewer
                     break;
             }
         }
+
         // --------------------------------------------
         // Passe à l'unité suivante dans la liste
         // --------------------------------------------
@@ -106,6 +109,7 @@ namespace RegFineViewer
             // On ajoute la nouvelle correspondance dans le dictionnaire
             unitDictionnary.SetValue(Name, this.UserFriendlyUnit);
         }
+
         // --------------------------------------------
         // Ajout d'un sous-item (key ou Node)
         // --------------------------------------------
@@ -115,24 +119,6 @@ namespace RegFineViewer
             SubItem.Add(subnode);
             // On s'enregistre comme parent du subnode
             subnode.Parent = this;
-        }
-
-
-        // --------------------------------------------
-        // --------------------------------------------
-        public void ExpandAll(ItemsControl items, bool expand)
-        {
-            foreach (object obj in items.Items)
-            {
-                ItemsControl childControl = items.ItemContainerGenerator.ContainerFromItem(obj) as ItemsControl;
-                if (childControl != null)
-                {
-                    ExpandAll(childControl, expand);
-                }
-                TreeViewItem item = childControl as TreeViewItem;
-                if (item != null)
-                    item.IsExpanded = true;
-            }
         }
 
         // --------------------------------------------
