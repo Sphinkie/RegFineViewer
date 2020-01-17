@@ -93,7 +93,7 @@
                         <materialDesign:PackIcon Kind="OpenInApp" />
                     </Button>
                     <!--Buttton de Stats sur la longueur des textes -->
-                    <Button ToolTip="Length stats" Name="Bt_LengthStats" Click="Bt_LengthStats_Click">
+                    <Button ToolTip="Length stats" Name="Bt_LengthStats" Click="Bt_LengthStats_Click" Visibility="Hidden">
                         <materialDesign:PackIcon Kind="ChartGantt" />
                     </Button>
                     <!--Debug Button-->

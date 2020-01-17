@@ -135,12 +135,8 @@ namespace RegFineViewer
                 RecentsRegs.Add(fileName);
                 this.SaveRecentRegs();
             }
-            DropZone.Visibility = Visibility.Hidden;
-            TreeView1.Visibility = Visibility.Visible;
-            // Initialisation de la recherche
-            SearchedWordResultsIndex = 0;
-            SearchedWordIsDirty = false;
-            Lb_SearchedWordCount.Text = "";
+            // Gestion de l'IHM
+            this.ReInitDisplay(showLengthstats : true);
             // on ferme le popup
             Pu_Recent.IsOpen = false;
         }
@@ -494,7 +490,6 @@ namespace RegFineViewer
             Bt_Search.Content = "Find";
             Lb_SearchedWordCount.Text = "";
         }
-
         // -------------------------------------------------------------------------
         // Boutons de changement de la direction de la recherche
         // -------------------------------------------------------------------------
@@ -618,13 +613,8 @@ namespace RegFineViewer
             // Ajout à la liste des Recent Regs
             RecentsRegs.Add(HivePath);
             this.SaveRecentRegs();
-            // affichage
-            DropZone.Visibility = Visibility.Hidden;
-            TreeView1.Visibility = Visibility.Visible;
-            // Initialisation de la recherche
-            SearchedWordResultsIndex = 0;
-            SearchedWordIsDirty = false;
-            Lb_SearchedWordCount.Text = "";
+            // Gestion de l'affichage IHM
+            this.ReInitDisplay();
         }
 
 
@@ -670,25 +660,52 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // On clique sur une RecentChip: on charge le fichier
+        // On clique sur une RecentChip: on charge le fichier ou la ruche (Hive)
         // -------------------------------------------------------------------------
         private void Bt_RecentChip_Click(object sender, RoutedEventArgs e)
         {
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
-            string Filename = SenderChip.Content.ToString();
-            Tree_InfoChip.Content = Filename;
-            // On remplit le RegistryTree à partir du fichier REG
-            Parser1.ParseFile(Filename);
-            Parser1.BuildList();
+            string RecentRegToLoad = SenderChip.Content.ToString();
+            // On l'affiche dans le Chip
+            Tree_InfoChip.Content = RecentRegToLoad;
+
+            if (1==1)
+            // Si le RecentReg est un fichier
+            {
+                // On remplit le RegistryTree à partir du fichier REG
+                Parser1.ParseFile(RecentRegToLoad);
+                Parser1.BuildList();
+                // Gestion de l'affichage
+                this.ReInitDisplay();
+            }
+            else
+            {
+                // On remplit le RegistryTree à partir du subtrree de Registre
+                Parser2.ParseHive(RecentRegToLoad);
+                Parser2.BuildList();
+                // Gestion de l'affichage
+                this.ReInitDisplay();
+            }
+
+            // On ferme le popup
+            Pu_Recent.IsOpen = false;
+        }
+
+        // -------------------------------------------------------------------------
+        // Masque le message "Drop your file here" et 
+        // Initialisation de la recherche
+        // -------------------------------------------------------------------------
+        private void ReInitDisplay(bool showLengthstats = false)
+        {
             DropZone.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
+            Bt_LengthStats.Visibility = showLengthstats ? Visibility.Visible : Visibility.Hidden;
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
             Lb_SearchedWordCount.Text = "";
-            // On ferme le popup
-            Pu_Recent.IsOpen = false;
         }
+
 
     }
 }
