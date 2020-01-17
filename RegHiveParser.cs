@@ -45,7 +45,10 @@ namespace RegFineViewer
             else if (keyKind.Equals("DWord", StringComparison.CurrentCultureIgnoreCase))
                 keyDType = "DWORD";
             else if (keyKind.Equals("Binary", StringComparison.CurrentCultureIgnoreCase))
+            {
+                keyDType = "HEX";
                 keyValue = "HEX VALUE";
+            }
             else
             {
                 keyDType = keyKind;
@@ -54,6 +57,7 @@ namespace RegFineViewer
             keyDType = "REG_" + keyDType.ToUpper();
             // On cree la Key
             RegistryItem newKey = new RegistryItem(keyName, keyDType);
+            if (keyValue.Length > 50) keyValue = keyValue.Substring(0, 50);   // On tronque à 50 chars
             newKey.Value = keyValue;
             // Si cette Key possède une unité préférée, on la prend en compte
             newKey.UserFriendlyUnit = PreferedUnits.GetValue(keyName);
