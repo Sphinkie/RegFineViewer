@@ -19,7 +19,7 @@ namespace RegFineViewer
         public RecentRegistry(string name)
         {
             this.Name = name;
-            if (Name.StartsWith("[") && Name.EndsWith("]"))
+            if (Name.StartsWith(@"HKLM\"))
             {
                 this.RegGenre = Genre.hive;
                 this.Icon = MaterialDesignThemes.Wpf.PackIconKind.Cube;

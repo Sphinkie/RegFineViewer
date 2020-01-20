@@ -112,7 +112,7 @@
             <!-- ==========================-->
             <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree_InfoChip" Content="no file loaded" DeleteClick="Bt_CloseFile_Click"  DeleteToolTip="Close the file">
                 <materialDesign:Chip.Icon>
-                    <materialDesign:PackIcon Name="Tree_InfoChipIcon" Kind="{Binding Path=Icon}"/>
+                    <materialDesign:PackIcon Name="Tree_InfoChipIcon" Kind="QuestionMarkCircle"/>
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
 

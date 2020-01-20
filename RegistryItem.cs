@@ -12,8 +12,11 @@ namespace RegFineViewer
         // --------------------------------------------
         public RegistryItem(string name, string type)
         {
-            // InitialisationsB
-            Name = name;
+            // Initialisations
+            if (name.Equals(string.Empty))
+                Name = "(default)";
+            else
+                Name = name;
             DType = type;
             Parent = null;
             Value = string.Empty;

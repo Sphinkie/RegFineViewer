@@ -548,7 +548,7 @@ namespace RegFineViewer
                     this.FillHiveComboBox(rk);
                     Bt_SelectHiveBack.Visibility = Visibility.Visible;
                 }
-                catch (System.Security.SecurityException Ex)
+                catch (System.Security.SecurityException)
                 {
                     // On vide la comboBox
                     Cb_SelectHive.Items.Clear();
@@ -598,7 +598,7 @@ namespace RegFineViewer
             Pu_SelectHive.IsOpen = false;
 
             // On remplit le Chip donnant le titre du TreeView
-            string HivePath = @"[HKLM\" + Tb_HivePath.Text + "]";
+            string HivePath = @"HKLM\" + Tb_HivePath.Text;
 
             CurrentRegistry = new RecentRegistry(HivePath);
 

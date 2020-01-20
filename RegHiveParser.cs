@@ -24,6 +24,9 @@ namespace RegFineViewer
             // On commence par vider la collection et le dictionnaire
             InitParser();
 
+            // Si le chemein commence par HKLM, on l'enlève (pour les appels aux fonctions Microsoft)
+            if (rootPath.StartsWith(@"HKLM\")) rootPath = rootPath.Substring(5, rootPath.Length - 5);
+
             // On cree le node Racine
             RegistryItem RootNode = this.CreateRootNode(rootPath);
 
@@ -107,6 +110,8 @@ namespace RegFineViewer
         private void CreateChildNodes(RegistryItem ParentNode, string ParentPath)
         {
             RegistryKey rk;
+
+            if (ParentNode == null) return;
             try
             {
                 rk = Registry.LocalMachine.OpenSubKey(ParentPath);
@@ -114,6 +119,14 @@ namespace RegFineViewer
             catch (Exception ex)
             {
                 RegistryItem WrongNode = new RegistryItem("This registry cannot be read (" + ex.Message + ").", "node");
+                RegistryTree.Add(WrongNode);
+                return;
+            }
+
+            if (rk == null)
+            {
+
+                RegistryItem WrongNode = new RegistryItem("This registry was found null (" + ParentPath + ").", "node");
                 RegistryTree.Add(WrongNode);
                 return;
             }
@@ -139,15 +152,29 @@ namespace RegFineViewer
             foreach (string ValueName in ValuesArray)
             {
                 // On recupère toutes les infos sur cette value
-                string ValueKind = rk.GetValueKind(ValueName).ToString();
-                string Value = rk.GetValue(ValueName).ToString();
+                string ValueKind = string.Empty;
+                string Value = string.Empty;
+                try
+                {
+                    ValueKind = rk.GetValueKind(ValueName).ToString();
+                }
+                catch (NullReferenceException)
+                {
+                    ValueKind = string.Empty;
+                }
+                try
+                {
+                    Value = rk.GetValue(ValueName).ToString();
+                }
+                catch (NullReferenceException)
+                {
+                    Value = string.Empty;
+                }
                 // On cree une Key
                 RegistryItem newKey = this.CreateRegistryKey(ValueName, ValueKind, Value);
                 // On la rattache à son parent
                 base.AttachToParentNode(newKey, ParentNode);
             }
         }
-
-
     }
 }
