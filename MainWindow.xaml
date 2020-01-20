@@ -112,7 +112,7 @@
             <!-- ==========================-->
             <materialDesign:Chip Grid.Column="0" Grid.Row="1" x:Name="Tree_InfoChip" Content="no file loaded" DeleteClick="Bt_CloseFile_Click"  DeleteToolTip="Close the file">
                 <materialDesign:Chip.Icon>
-                    <materialDesign:PackIcon Kind="File"/>
+                    <materialDesign:PackIcon Name="Tree_InfoChipIcon" Kind="{Binding Path=Icon}"/>
                 </materialDesign:Chip.Icon>
             </materialDesign:Chip>
 
@@ -444,12 +444,16 @@
                     <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="recent registries" />
                     <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
                     <!--Recent trees. Index: 3 et svts -->
+                    <!--Le StackPanel contient des Chips-->
                     <StackPanel Name="Sp_Recents" Orientation="Vertical" >
-                        
-                        <!--Le StackPanel contient des Chips-->
+                                                
                         <StackPanel.Resources>
+                            <!-- Dans le template, on binde le Content et le PackIcon du Chip dans "RecentRegDataTemplate"  -->
+                                <!-- "RecentRegDataTemplate" est le template du Controle "RecentRegData"                        -->
+                                <!-- Le controle "RecentRegData" a pour ItemsSource la liste "RecentRegs"                       -->
+                                <!-- Chaque element "RecentReg" de la liste "RecentRegs" a une propriété "Name" et "Icon"       -->
                             <DataTemplate x:Key="RecentRegDataTemplate">
-                                    <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_RecentChip_Close" Click="Bt_RecentChip_Click" >
+                                <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_RecentChip_Close" Click="Bt_RecentChip_Click" >
                                         <materialDesign:Chip.Icon>
                                             <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
                                         </materialDesign:Chip.Icon>
@@ -467,8 +471,10 @@
                         </ItemsControl>
 
                     </StackPanel>
+                    
                     <!--separator line-->
                     <!--<Separator Style="{StaticResource MaterialDesignLightSeparator}" />-->
+
                     <!--Close Button-->
                     <Button HorizontalAlignment="Right" Width="30" Style="{StaticResource MaterialDesignToolForegroundButton}" Click="Pu_OpenRecent_Close" materialDesign:RippleAssist.IsCentered="True">
                         <materialDesign:PackIcon  Kind="CloseCircleOutline" />

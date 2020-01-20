@@ -1,12 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 using System.Collections.ObjectModel;       // ObservableCollections
 using System.Windows.Threading;
 using System.Configuration;
@@ -60,12 +56,11 @@ namespace RegFineViewer
             // On initialise le parseur
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
             Parser2 = new RegHiveParser(RegistryTree1, UnitDictionnary);
-            CurrentRegistry = new RecentRegistry("empty");
 
             // On binde la stackPanel qui contient la liste des Recent Registry
             RecentRegData.ItemsSource = this.RecentsRegs;
             // On binde la ComboBox qui contient la liste des premiers nodes de la BDR HKLM
-//            cb_SelectHive.ItemsSource = this.HiveNodeArray;
+            //            cb_SelectHive.ItemsSource = this.HiveNodeArray;
             // On binde les RegistryTree avec les TreeView de l'affichage
             TreeView1.ItemsSource = RegistryTree1;
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
@@ -122,18 +117,21 @@ namespace RegFineViewer
             if (droppedFiles.Length > 0)
             {
                 string fileName = droppedFiles[0];
-                CurrentRegistry.SetGenre(RecentRegistry.Genre.file);
-                Tree_InfoChip.Content = fileName;
+                CurrentRegistry = new RecentRegistry(fileName);
+
+                // On renseigne l'InfoChip
+                Tree_InfoChip.Content = CurrentRegistry.Name;
+                Tree_InfoChipIcon.Kind = CurrentRegistry.Icon;
 
                 // On remplit le RegistryTree à partir du fichier REG
-                Parser1.ParseFile(fileName);
+                Parser1.ParseFile(CurrentRegistry.Name);
                 Parser1.BuildList();
                 // Ajout à la liste des Recent Regs
-                RecentsRegs.Add(fileName);
+                RecentsRegs.Add(CurrentRegistry.Name);
                 this.SaveRecentRegs();
             }
             // Gestion de l'IHM
-            this.ReInitDisplay(showLengthstats : true);
+            this.ReInitDisplay(showLengthstats: true);
             // on ferme le popup
             Pu_Recent.IsOpen = false;
         }
@@ -159,8 +157,8 @@ namespace RegFineViewer
         private void Bt_TreeInfos_Click(object sender, RoutedEventArgs e)
         {
             tbStatLevels.Text = Parser1.NbLevels.ToString();
-            tbStatNodes.Text  = Parser1.NbNodes.ToString();
-            tbStatKeys.Text   = Parser1.NbKeys.ToString();
+            tbStatNodes.Text = Parser1.NbNodes.ToString();
+            tbStatKeys.Text = Parser1.NbKeys.ToString();
             Pu_TreeInfos.IsOpen = !Pu_TreeInfos.IsOpen;
         }
         private void Bt_TreeInfos_Close(object sender, RoutedEventArgs e)
@@ -179,10 +177,10 @@ namespace RegFineViewer
         }
         private void RefreshLengthStats(RegFileParser parser)
         {
-            Int32 Moyenne     = parser.GetAverageLength();  // A calculer en premier
+            Int32 Moyenne = parser.GetAverageLength();  // A calculer en premier
             Int32 ModalLength = parser.GetModalLabelLength();
-            Int32 EcartType   = parser.GetStandardDeviation();
-            Int32 Nombre      = parser.NbNodes + parser.NbKeys;
+            Int32 EcartType = parser.GetStandardDeviation();
+            Int32 Nombre = parser.NbNodes + parser.NbKeys;
             // Les stats disent que 84% de la population se trouve entre 0 et Moy + EcType
             Int32 SD84 = Moyenne + EcartType;
             // Les stats disent que 98% de la population se trouve entre 0 et Moy + 2 x EcType
@@ -600,8 +598,13 @@ namespace RegFineViewer
             Pu_SelectHive.IsOpen = false;
 
             // On remplit le Chip donnant le titre du TreeView
-            string HivePath = @"HKLM\" + Tb_HivePath.Text;
-            Tree_InfoChip.Content = HivePath;
+            string HivePath = @"[HKLM\" + Tb_HivePath.Text + "]";
+
+            CurrentRegistry = new RecentRegistry(HivePath);
+
+            // On renseigne l'InfoChip
+            Tree_InfoChip.Content  = CurrentRegistry.Name;
+            Tree_InfoChipIcon.Kind = CurrentRegistry.Icon;
 
             // On remplit le RegistryTree à partir du subtree de la Registry (=Hive)
             Parser2.ParseHive(Tb_HivePath.Text);
@@ -630,7 +633,7 @@ namespace RegFineViewer
         private void Bt_RecentChip_Close(object sender, RoutedEventArgs e)
         {
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
-            this.RecentsRegs.Remove(SenderChip.Content.ToString() );
+            this.RecentsRegs.Remove(SenderChip.Content.ToString());
             this.SaveRecentRegs();
         }
 
@@ -647,13 +650,13 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void SaveRecentRegs()
         {
-                Properties.Settings.Default.Recent_1 = RecentsRegs.GetNameAt(0);
-                Properties.Settings.Default.Recent_2 = RecentsRegs.GetNameAt(1);
-                Properties.Settings.Default.Recent_3 = RecentsRegs.GetNameAt(2);
-                Properties.Settings.Default.Recent_4 = RecentsRegs.GetNameAt(3);
-                Properties.Settings.Default.Recent_5 = RecentsRegs.GetNameAt(4);
-                Properties.Settings.Default.Recent_6 = RecentsRegs.GetNameAt(5);
-                Properties.Settings.Default.Save();
+            Properties.Settings.Default.Recent_1 = RecentsRegs.GetNameAt(0);
+            Properties.Settings.Default.Recent_2 = RecentsRegs.GetNameAt(1);
+            Properties.Settings.Default.Recent_3 = RecentsRegs.GetNameAt(2);
+            Properties.Settings.Default.Recent_4 = RecentsRegs.GetNameAt(3);
+            Properties.Settings.Default.Recent_5 = RecentsRegs.GetNameAt(4);
+            Properties.Settings.Default.Recent_6 = RecentsRegs.GetNameAt(5);
+            Properties.Settings.Default.Save();
         }
 
         // -------------------------------------------------------------------------
@@ -661,25 +664,37 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_RecentChip_Click(object sender, RoutedEventArgs e)
         {
+            // On recupère la Chip qui a été cliquée
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
-            string RecentRegToLoad = SenderChip.Content.ToString();
-            // On l'affiche dans le Chip
-            Tree_InfoChip.Content = RecentRegToLoad;
+            // On energistre son nom
+            string RecentRegToLoadName = SenderChip.Content.ToString();
+            CurrentRegistry = new RecentRegistry(RecentRegToLoadName);
 
-            if (1==1)
+            // On renseigne l'InfoChip
+            Tree_InfoChip.Content = CurrentRegistry.Name;
+            Tree_InfoChipIcon.Kind = CurrentRegistry.Icon;
+
             // Si le RecentReg est un fichier
+            if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.file)
             {
                 // On remplit le RegistryTree à partir du fichier REG
-                Parser1.ParseFile(RecentRegToLoad);
+                Parser1.ParseFile(CurrentRegistry.Name);
                 Parser1.BuildList();
                 // Gestion de l'affichage
                 this.ReInitDisplay();
             }
+            // Si le RecentReg est un subtree de la Registry
+            else if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.hive)
+            {
+                // On remplit le RegistryTree à partir du subtree de Registre
+                Parser2.ParseHive(CurrentRegistry.Name);
+                Parser2.BuildList();
+                // Gestion de l'affichage
+                this.ReInitDisplay();
+            }
+            // Autres cas...
             else
             {
-                // On remplit le RegistryTree à partir du subtrree de Registre
-                Parser2.ParseHive(RecentRegToLoad);
-                Parser2.BuildList();
                 // Gestion de l'affichage
                 this.ReInitDisplay();
             }
@@ -690,7 +705,7 @@ namespace RegFineViewer
 
         // -------------------------------------------------------------------------
         // Masque le message "Drop your file here" et 
-        // Initialisation de la recherche
+        // Réinitialisation de la Recherche
         // -------------------------------------------------------------------------
         private void ReInitDisplay(bool showLengthstats = false)
         {

@@ -9,7 +9,7 @@ namespace RegFineViewer
         public enum Genre { file, hive, other };
         // --------------------------------------------------------------------------
         public string Name { private set; get; }
-        public object Icon { private set; get; }
+        public MaterialDesignThemes.Wpf.PackIconKind Icon { private set; get; }
         // --------------------------------------------------------------------------
         private Genre RegGenre;
 
@@ -56,4 +56,4 @@ namespace RegFineViewer
         }
     }
 
-    }
+}
