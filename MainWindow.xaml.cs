@@ -157,6 +157,7 @@ namespace RegFineViewer
         private void Bt_TreeInfos_Click(object sender, RoutedEventArgs e)
         {
             BaseParser Parser;
+            if (CurrentRegistry == null) return;
             if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.file)
                 Parser = Parser1;    // Parseur de fichier
             else
