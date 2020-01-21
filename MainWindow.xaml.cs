@@ -156,9 +156,14 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_TreeInfos_Click(object sender, RoutedEventArgs e)
         {
-            tbStatLevels.Text = Parser1.NbLevels.ToString();
-            tbStatNodes.Text = Parser1.NbNodes.ToString();
-            tbStatKeys.Text = Parser1.NbKeys.ToString();
+            BaseParser Parser;
+            if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.file)
+                Parser = Parser1;    // Parseur de fichier
+            else
+                Parser = Parser2;    // Parseur de registry
+            tbStatLevels.Text = Parser.NbLevels.ToString();
+            tbStatNodes.Text = Parser.NbNodes.ToString();
+            tbStatKeys.Text = Parser.NbKeys.ToString();
             Pu_TreeInfos.IsOpen = !Pu_TreeInfos.IsOpen;
         }
         private void Bt_TreeInfos_Close(object sender, RoutedEventArgs e)

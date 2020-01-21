@@ -37,36 +37,29 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         // Cree un Item dans le RegistryTree pour cette Value
         // ------------------------------------------------------------------
-        private RegistryItem CreateRegistryKey(string keyName, string keyKind, string keyValue)
+        private RegistryItem CreateRegistryKeyFromHive(string keyName, string keyKind, string keyValue)
         {
-            string keyDType = "";
+            string KeyDType;
 
             if (keyKind.Equals("String", StringComparison.CurrentCultureIgnoreCase))
-                keyDType = "SZ";
+                KeyDType = "SZ";
             else if (keyKind.Equals("MultiString", StringComparison.CurrentCultureIgnoreCase))
-                keyDType = "MULTI_SZ";
+                KeyDType = "MULTI_SZ";
             else if (keyKind.Equals("DWord", StringComparison.CurrentCultureIgnoreCase))
-                keyDType = "DWORD";
+                KeyDType = "DWORD";
             else if (keyKind.Equals("Binary", StringComparison.CurrentCultureIgnoreCase))
             {
-                keyDType = "HEX";
+                KeyDType = "HEX";
                 keyValue = "HEX VALUE";
             }
             else
             {
-                keyDType = keyKind;
+                KeyDType = keyKind;
                 keyValue = "unrecognized type";
             }
-            keyDType = "REG_" + keyDType.ToUpper();
+            KeyDType = "REG_" + KeyDType;
             // On cree la Key
-            RegistryItem newKey = new RegistryItem(keyName, keyDType);
-            if (keyValue.Length > 50) keyValue = keyValue.Substring(0, 50);   // On tronque à 50 chars
-            newKey.Value = keyValue;
-            // Si cette Key possède une unité préférée, on la prend en compte
-            newKey.UserFriendlyUnit = PreferedUnits.GetValue(keyName);
-            newKey.UpdateUserFriendyValue();
-            // On incrémente nos compteurs internes
-            NbKeys++;
+            RegistryItem newKey = base.CreateRegistryKey(keyName, KeyDType, keyValue);
             return newKey;
         }
 
@@ -98,7 +91,6 @@ namespace RegFineViewer
                 this.AddToNodeTable(RacineNode, RacineNode.Name);
                 // On memorise le Level de ce Node
                 RacineNodeLevel = rootpath.Split('\\').Length;
-                NbNodes = 1;
                 return RacineNode;
             }
         }
@@ -171,7 +163,7 @@ namespace RegFineViewer
                     Value = string.Empty;
                 }
                 // On cree une Key
-                RegistryItem newKey = this.CreateRegistryKey(ValueName, ValueKind, Value);
+                RegistryItem newKey = this.CreateRegistryKeyFromHive(ValueName, ValueKind, Value);
                 // On la rattache à son parent
                 base.AttachToParentNode(newKey, ParentNode);
             }

@@ -67,7 +67,6 @@ namespace RegFineViewer
             RegistryItem currentNode = new RegistryItem("root", "node");
             RegistryTree.Add(currentNode);
             bool firstNode = true;
-            NbNodes = 1;
 
             // On parcourt le tableau des lignes du fichier
             for (int i = 0; i < lignes.Length; i++)
@@ -99,7 +98,7 @@ namespace RegFineViewer
                         // On met le node Racine dans le dictionnaire
                         AddToNodeTable(currentNode, currentNode.Name);
                         // On memorise le Level de ce Node
-                        RacineNodeLevel = nodePath.Split('\\').Length;
+                        RacineNodeLevel = nodePath.Split('\\').Length-1;
                         firstNode = false;
                     }
                     // on cree un nouveau node
@@ -171,16 +170,10 @@ namespace RegFineViewer
                         keyValue = "unrecognized type";
                 }
             }
-
-            keyDType = "REG_" + keyDType.ToUpper();
+            keyDType = "REG_" + keyDType;
             // On cree la Key
-            RegistryItem newKey = new RegistryItem(keyName, keyDType);
-            newKey.Value = keyValue;
-            // Si cette Key possède une unité préférée, on la prend en compte
-            newKey.UserFriendlyUnit = PreferedUnits.GetValue(keyName);
-            newKey.UpdateUserFriendyValue();
+            RegistryItem newKey = base.CreateRegistryKey(keyName, keyDType, keyValue);
             // On incrémente nos compteurs internes
-            NbKeys++;
             TableStats[keyName.Length] += 1;
             return newKey;
         }
