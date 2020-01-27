@@ -90,7 +90,7 @@ namespace RegFineViewer
                 RegistryTree.Add(RacineNode);
                 this.AddToNodeTable(RacineNode, RacineNode.Name);
                 // On memorise le Level de ce Node
-                RacineNodeLevel = rootpath.Split('\\').Length;
+                base.RacineNodeLevel = rootpath.Split('\\').Length;
                 return RacineNode;
             }
         }

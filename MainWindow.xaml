@@ -145,9 +145,9 @@
                                 <!-- Affichage par défaut des données -->
                                 <StackPanel Orientation="Horizontal" MinHeight="0" >
                                     <TextBlock x:Name="lbName"    Text="{Binding Path=Name}"  Width="220" ToolTip="{Binding Path=Name}" ToolTipService.InitialShowDelay="2000" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lbValue"   Text="{Binding Path=Value}" ToolTip="{Binding Path=DType}" Width="80" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                                     <Button    x:Name="btUfUnit"  Content="{Binding Path=UserFriendlyUnit}" ToolTip="Convert value" Click="Bt_ChangeUnit_Click"  Style="{StaticResource OutlinedSmallButton}" Visibility="Hidden" />
-                                    <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lbUfValue" Text="{Binding Path=UserFriendlyValue}" Foreground="Green" Visibility="Hidden" Margin="16,0,0,0" VerticalAlignment="Center" />
                                 </StackPanel>
                             </TreeViewItem.Header>
 
@@ -494,7 +494,7 @@
                         <materialDesign:ColorZone Mode="PrimaryDark" VerticalAlignment="Stretch">
                             <materialDesign:PackIcon Kind="OpenInApp" Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </materialDesign:ColorZone>
-                        <TextBlock Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" Text="Select registry subtree" />
+                        <TextBlock Text="Import registry subtree" Margin="18 6 18 0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="{DynamicResource ResourceKey=PrimaryHueDarkBrush}" />
                         <Separator Style="{StaticResource MaterialDesignLightSeparator}" />
 
                         <StackPanel Orientation="Horizontal" Margin="12,2,0,0" >

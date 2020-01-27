@@ -11,7 +11,7 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         public int NbKeys { get; private set; }
         public int NbNodes { get; private set; }
-        public int NbLevels { get { return HighestNodeLevel - RacineNodeLevel + 1; } }
+        public int NbLevels { get { return _HighestNodeLevel - _RacineNodeLevel + 1; } }
         // Pour les recherches, on construit une liste plate des Nodes, plus facile à parcourir
         public List<RegistryItem> NodeList { get; private set; }
 
@@ -24,8 +24,13 @@ namespace RegFineViewer
         protected KeyUnitDictionnary PreferedUnits;                 // Dictionnaire des Prefered units
         protected Dictionary<string, RegistryItem> NodepathTable = new Dictionary<string, RegistryItem>();         // Dictionaire des nodes
 
-        protected int RacineNodeLevel;
-        private int HighestNodeLevel;
+        protected int RacineNodeLevel 
+        {
+            get { return _RacineNodeLevel;  }
+            set { this._RacineNodeLevel = value; this._HighestNodeLevel = value; }
+        }
+        private int _RacineNodeLevel;
+        private int _HighestNodeLevel;
 
 
         // ------------------------------------------------------------------
@@ -51,7 +56,6 @@ namespace RegFineViewer
         {
             RegistryTree.Clear();
             NodepathTable.Clear();
-            HighestNodeLevel = 0;
             RacineNodeLevel = 0;
             NbNodes = 1;    // On a toujours au moins un node racine
             NbKeys = 0;
@@ -148,7 +152,7 @@ namespace RegFineViewer
             NbNodes++;
             // On determine le Level de ce Node
             int NodeLevel = nodepath.Split('\\').Length;
-            if (NodeLevel > this.HighestNodeLevel) this.HighestNodeLevel = NodeLevel;
+            if (NodeLevel > this._HighestNodeLevel) this._HighestNodeLevel = NodeLevel;
             return NewNode;
         }
 
@@ -158,7 +162,7 @@ namespace RegFineViewer
         protected RegistryItem CreateRegistryKey(string keyName, string keyDType, string keyValue)
         {
             RegistryItem newKey = new RegistryItem(keyName, keyDType.ToUpper());
-            if (keyValue.Length > 50) keyValue = keyValue.Substring(0, 50);   // On tronque à 50 chars
+            if (keyValue.Length > 50) keyValue = keyValue.Substring(0, 50)+"...";   // On tronque à 50 chars
             newKey.Value = keyValue;
             // Si cette Key possède une unité préférée, on la prend en compte
             newKey.UserFriendlyUnit = PreferedUnits.GetValue(keyName);
