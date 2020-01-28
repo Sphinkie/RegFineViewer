@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace RegFineViewer
 {
@@ -103,7 +104,9 @@ namespace RegFineViewer
         {
             RegistryKey rk;
 
+            // Controle
             if (ParentNode == null) return;
+
             try
             {
                 rk = Registry.LocalMachine.OpenSubKey(ParentPath);

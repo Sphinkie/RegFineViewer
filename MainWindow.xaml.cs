@@ -265,7 +265,7 @@ namespace RegFineViewer
         private void Bt_Expand_Click(object sender, RoutedEventArgs e)
         {
             Pu_Working.IsOpen = true;      // Popup Sablier ON
-            TreeView_ExpandLevel();
+            this.TreeView_ExpandLevel();
             Pu_Working.IsOpen = false;      // Popup Sablier OFF
         }
         // -------------------------------------------------------------------------
@@ -279,7 +279,7 @@ namespace RegFineViewer
                 TreeViewItem treeItem = this.TreeView1.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
                 if (treeItem != null)
                 {
-                    ExpandAllChilds(treeItem, true);
+                    this.ExpandAllChilds(treeItem, true);
                     treeItem.IsExpanded = true;
                 }
             }
@@ -296,7 +296,7 @@ namespace RegFineViewer
                 ItemsControl childControl = items.ItemContainerGenerator.ContainerFromItem(obj) as ItemsControl;
                 if (childControl != null)
                 {
-                    ExpandAllChilds(childControl, expand);
+                    this.ExpandAllChilds(childControl, expand);
                     // On diminue la priorité du thread, pour que l'UI se raffraichisse en priorité
                     Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 }
@@ -532,6 +532,7 @@ namespace RegFineViewer
         private void FillHiveComboBox(RegistryKey rk)
         {
             string[] HiveNodeArray = rk.GetSubKeyNames();
+            Array.Sort(HiveNodeArray);
             Cb_SelectHive.Items.Clear();
             foreach (string item in HiveNodeArray)
             {
@@ -613,8 +614,13 @@ namespace RegFineViewer
             Tree_InfoChipIcon.Kind = CurrentRegistry.Icon;
 
             // On remplit le RegistryTree à partir du subtree de la Registry (=Hive)
+            Pu_Working.IsOpen = true;      // Popup Sablier
+            // On diminue la priorité du thread, pour UI refresh (sablier)
+            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+            // On importe la Hive
             Parser2.ParseHive(Tb_HivePath.Text);
             Parser2.BuildList();
+            Pu_Working.IsOpen = false;     // Popup Sablier
 
             // Ajout à la liste des Recent Regs
             RecentsRegs.Add(HivePath);
@@ -622,7 +628,6 @@ namespace RegFineViewer
             // Gestion de l'affichage IHM
             this.ReInitDisplay();
         }
-
 
         // -------------------------------------------------------------------------
         // Ouverture/Fermeture du popup "Recent Registries"
@@ -723,7 +728,6 @@ namespace RegFineViewer
             SearchedWordIsDirty = false;
             Lb_SearchedWordCount.Text = "";
         }
-
 
     }
 }
