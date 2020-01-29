@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace RegFineViewer
@@ -22,12 +23,11 @@ namespace RegFineViewer
         // ------------------------------------------------------------------
         public void ParseHive(string rootPath)
         {
-            // On commence par vider la collection et le dictionnaire
-            InitParser();
-
             // Si le chemein commence par HKLM, on l'enlève (pour les appels aux fonctions Microsoft)
             if (rootPath.StartsWith(@"HKLM\")) rootPath = rootPath.Substring(5, rootPath.Length - 5);
 
+            // On commence par vider la collection et le dictionnaire
+            InitParser();
             // On cree le node Racine
             RegistryItem RootNode = this.CreateRootNode(rootPath);
 
@@ -103,8 +103,6 @@ namespace RegFineViewer
         private void CreateChildNodes(RegistryItem ParentNode, string ParentPath)
         {
             RegistryKey rk;
-
-            // Controle
             if (ParentNode == null) return;
 
             try

@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;       // ObservableCollections
 using System.Windows.Threading;
 using System.Configuration;
 using Microsoft.Win32;
+using System.Threading.Tasks;
 
 namespace RegFineViewer
 {
@@ -601,32 +602,34 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_SelectHive_Import(object sender, RoutedEventArgs e)
         {
-            // Ferme le popup
+            // Ferme le popup "Select Registry"
             Pu_SelectHive.IsOpen = false;
 
-            // On remplit le Chip donnant le titre du TreeView
-            string HivePath = @"HKLM\" + Tb_HivePath.Text;
-
-            CurrentRegistry = new RecentRegistry(HivePath);
+            // On affiche le Popup Sablier
+            Pu_Working.IsOpen = true;
 
             // On renseigne l'InfoChip
+            string HivePath = @"HKLM\" + Tb_HivePath.Text;
+            CurrentRegistry = new RecentRegistry(HivePath);
             Tree_InfoChip.Content  = CurrentRegistry.Name;
             Tree_InfoChipIcon.Kind = CurrentRegistry.Icon;
 
+            // Enleve le message "drop your file"
+            this.ReInitDisplay();
+
             // On remplit le RegistryTree à partir du subtree de la Registry (=Hive)
-            Pu_Working.IsOpen = true;      // Popup Sablier
-            // On diminue la priorité du thread, pour UI refresh (sablier)
-            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-            // On importe la Hive
-            Parser2.ParseHive(Tb_HivePath.Text);
-            Parser2.BuildList();
-            Pu_Working.IsOpen = false;     // Popup Sablier
+            AsynchronousHiveLoading();
+
+            //// On importe la Hive
+            //Parser2.ParseHive(Tb_HivePath.Text);   // peut être long (25 secs)
+            //Parser2.BuildList();
+
+            // On enlève le Popup Sablier
+            Pu_Working.IsOpen = false;
 
             // Ajout à la liste des Recent Regs
             RecentsRegs.Add(HivePath);
             this.SaveRecentRegs();
-            // Gestion de l'affichage IHM
-            this.ReInitDisplay();
         }
 
         // -------------------------------------------------------------------------
@@ -677,9 +680,13 @@ namespace RegFineViewer
         {
             // On recupère la Chip qui a été cliquée
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
-            // On energistre son nom
+            // On enregistre son nom
             string RecentRegToLoadName = SenderChip.Content.ToString();
             CurrentRegistry = new RecentRegistry(RecentRegToLoadName);
+            // On ferme le popup "recent chip"
+            Pu_Recent.IsOpen = false;
+            // On affiche le Popup Sablier
+            Pu_Working.IsOpen = true;
 
             // On renseigne l'InfoChip
             Tree_InfoChip.Content = CurrentRegistry.Name;
@@ -688,30 +695,30 @@ namespace RegFineViewer
             // Si le RecentReg est un fichier
             if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.file)
             {
+                // On enleve le message "drop your file"
+                this.ReInitDisplay();
                 // On remplit le RegistryTree à partir du fichier REG
                 Parser1.ParseFile(CurrentRegistry.Name);
                 Parser1.BuildList();
-                // Gestion de l'affichage
-                this.ReInitDisplay();
             }
             // Si le RecentReg est un subtree de la Registry
             else if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.hive)
             {
-                // On remplit le RegistryTree à partir du subtree de Registre
-                Parser2.ParseHive(CurrentRegistry.Name);
-                Parser2.BuildList();
-                // Gestion de l'affichage
+                // On enleve le message "drop your file"
                 this.ReInitDisplay();
+                // On remplit le RegistryTree à partir du subtree de Registre
+                AsynchronousHiveLoading();
+                //Parser2.ParseHive(CurrentRegistry.Name);
+                // Parser2.BuildList();
             }
             // Autres cas...
             else
             {
+                // On enlève le Popup Sablier
+                Pu_Working.IsOpen = false;
                 // Gestion de l'affichage
                 this.ReInitDisplay();
             }
-
-            // On ferme le popup
-            Pu_Recent.IsOpen = false;
         }
 
         // -------------------------------------------------------------------------
@@ -727,7 +734,40 @@ namespace RegFineViewer
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
             Lb_SearchedWordCount.Text = "";
+            // On diminue la priorité du thread, pour UI refresh 
+            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
         }
 
+        // -------------------------------------------------------------------------
+        // On diminue la priorité du thread, pour UI refresh 
+        // -------------------------------------------------------------------------
+        private void RefreshUI()
+        {
+            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+        }
+
+        // -------------------------------------------------------------------------
+        // On remplit le RegistryTree à partir du subtree de la Registry (=Hive)
+        // N'apporte pas d'amélioration au niveau du sablier...
+        // -------------------------------------------------------------------------
+        private async void AsynchronousHiveLoading()
+        {
+            // starts executing LongRunningOperation
+            Task<int> longRunningTask = LongRunningOperationAsync();
+            // independent work which doesn't need the result of LongRunningOperationAsync can be done here...
+            // ...
+            // On attend la fin de la tache.
+            int result = await longRunningTask;
+            Parser2.BuildList();
+        }
+        // -------------------------------------------------------------------------
+        // On importe la Hive
+        // (assume we return an int from this long running operation) 
+        // -------------------------------------------------------------------------
+        public async Task<int> LongRunningOperationAsync()
+        {
+            Parser2.ParseHive(Tb_HivePath.Text);
+            return 1;
+        }
     }
 }
