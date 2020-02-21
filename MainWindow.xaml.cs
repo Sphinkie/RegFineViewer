@@ -116,6 +116,9 @@ namespace RegFineViewer
 
             if ((droppedFiles == null) || (!droppedFiles.Any())) { return; }
 
+            // Reinitit de l'IHM (on efface le Tree actuel)
+            this.ReInitDisplay(showLengthstats: true);
+
             // S'il y a un (ou plus) fichier(s) droppé(s), on ouvre le premier dans la TreeView 
             if (droppedFiles.Length > 0)
             {
@@ -133,8 +136,6 @@ namespace RegFineViewer
                 RecentsRegs.Add(CurrentRegistry.Name);
                 this.SaveRecentRegs();
             }
-            // Gestion de l'IHM
-            this.ReInitDisplay(showLengthstats: true);
             // on ferme le popup
             Pu_Recent.IsOpen = false;
         }
