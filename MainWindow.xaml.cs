@@ -618,7 +618,7 @@ namespace RegFineViewer
             this.ReInitDisplay();
 
             // On remplit le RegistryTree à partir du subtree de la Registry (=Hive)
-            AsynchronousHiveLoading();
+            AsynchronousHiveLoading(CurrentRegistry.Name);
 
             //// On importe la Hive
             //Parser2.ParseHive(Tb_HivePath.Text);   // peut être long (25 secs)
@@ -644,7 +644,7 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         // Enleve un Recent Reg de la liste
         // -------------------------------------------------------------------------
-        private void Bt_RecentChip_Close(object sender, RoutedEventArgs e)
+        private void Bt_RecentChip_Remove(object sender, RoutedEventArgs e)
         {
             MaterialDesignThemes.Wpf.Chip SenderChip = sender as MaterialDesignThemes.Wpf.Chip;
             this.RecentsRegs.Remove(SenderChip.Content.ToString());
@@ -707,8 +707,8 @@ namespace RegFineViewer
                 // On enleve le message "drop your file"
                 this.ReInitDisplay();
                 // On remplit le RegistryTree à partir du subtree de Registre
-                AsynchronousHiveLoading();
-                //Parser2.ParseHive(CurrentRegistry.Name);
+                AsynchronousHiveLoading(CurrentRegistry.Name);
+                // Parser2.ParseHive(CurrentRegistry.Name);
                 // Parser2.BuildList();
             }
             // Autres cas...
@@ -748,26 +748,46 @@ namespace RegFineViewer
 
         // -------------------------------------------------------------------------
         // On remplit le RegistryTree à partir du subtree de la Registry (=Hive)
-        // N'apporte pas d'amélioration au niveau du sablier...
+        // N'apporte pas d'amélioration au niveau du sablier... mais ça fait un peu de programmation asynchrone
         // -------------------------------------------------------------------------
-        private async void AsynchronousHiveLoading()
+        private async void AsynchronousHiveLoading(string hivepath)
         {
-            // starts executing LongRunningOperation
-            Task<int> longRunningTask = LongRunningOperationAsync();
+            // starts executing LongRunningOperationAsync
+            Task<int> longRunningTask = LongRunningOperationAsync(hivepath);
             // independent work which doesn't need the result of LongRunningOperationAsync can be done here...
             // ...
             // On attend la fin de la tache.
-            int result = await longRunningTask;
+            int result = await longRunningTask.ConfigureAwait(false); 
             Parser2.BuildList();
+            // On enlève le Popup Sablier
+            Pu_Working.IsOpen = false;
+
         }
         // -------------------------------------------------------------------------
         // On importe la Hive
         // (assume we return an int from this long running operation) 
         // -------------------------------------------------------------------------
-        public async Task<int> LongRunningOperationAsync()
+        public async Task<int> LongRunningOperationAsync(string hivepath)
         {
-            Parser2.ParseHive(Tb_HivePath.Text);
+            Parser2.ParseHive(hivepath);
             return 1;
         }
     }
 }
+
+// ---------------------------------------
+// Note sur les appels asynchrones
+// ---------------------------------------
+/* Autre méthode, plus simple, mais il ne doit pas y avoir de collections dans la fonction asynchrone, car elle exécute dans une autre thread qui n'a pas d'UI
+ * https://stackoverflow.com/questions/18013523/when-correctly-use-task-run-and-when-just-async-await
+ * 
+ *         void LongRunningOperationAsync(string hivepath) {...}
+ *         
+ *         private async void AsynchronousHiveLoading(string hivepath)
+ *         {
+ *            ...
+ *            await Task.Run(() => LongRunningOperationAsync(hivepath));
+ *            ...
+ *         }
+ *
+ */

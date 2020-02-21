@@ -454,7 +454,7 @@
                                 <!-- Le controle "RecentRegData" a pour ItemsSource la liste "RecentRegs"                       -->
                                 <!-- Chaque element "RecentReg" de la liste "RecentRegs" a une propriété "Name" et "Icon"       -->
                             <DataTemplate x:Key="RecentRegDataTemplate">
-                                <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_RecentChip_Close" Click="Bt_RecentChip_Click" >
+                                <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_RecentChip_Remove" Click="Bt_RecentChip_Click" >
                                         <materialDesign:Chip.Icon>
                                             <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
                                         </materialDesign:Chip.Icon>
