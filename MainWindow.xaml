@@ -411,10 +411,10 @@
         <!--           SABLIER                                        -->
         <!--==========================================================-->
         <Popup Name="Pu_Working" IsOpen="False" Placement="Center" AllowsTransparency="True" >
-            <materialDesign:Card UniformCornerRadius="25" Width="50" Height="50" Margin="10">
-                <materialDesign:PackIcon Kind="TimerSand" Height="40" Width="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <!--<ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="40" IsIndeterminate="True" />-->
-            </materialDesign:Card>
+                <materialDesign:Card UniformCornerRadius="25" Width="50" Height="50" Margin="10">
+                    <materialDesign:PackIcon Kind="TimerSand" Height="40" Width="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <!--<ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="40" IsIndeterminate="True" />-->
+                </materialDesign:Card>
         </Popup>
 
         <!--==========================================================-->
@@ -447,22 +447,22 @@
                     <!--Recent trees. Index: 3 et svts -->
                     <!--Le StackPanel contient des Chips-->
                     <StackPanel Name="Sp_Recents" Orientation="Vertical" >
-                                                
+
                         <StackPanel.Resources>
                             <!-- Dans le template, on binde le Content et le PackIcon du Chip dans "RecentRegDataTemplate"  -->
-                                <!-- "RecentRegDataTemplate" est le template du Controle "RecentRegData"                        -->
-                                <!-- Le controle "RecentRegData" a pour ItemsSource la liste "RecentRegs"                       -->
-                                <!-- Chaque element "RecentReg" de la liste "RecentRegs" a une propriété "Name" et "Icon"       -->
+                            <!-- "RecentRegDataTemplate" est le template du Controle "RecentRegData"                        -->
+                            <!-- Le controle "RecentRegData" a pour ItemsSource la liste "RecentRegs"                       -->
+                            <!-- Chaque element "RecentReg" de la liste "RecentRegs" a une propriété "Name" et "Icon"       -->
                             <DataTemplate x:Key="RecentRegDataTemplate">
                                 <materialDesign:Chip Content="{Binding Path=Name}" DeleteClick="Bt_RecentChip_Remove" Click="Bt_RecentChip_Click" >
-                                        <materialDesign:Chip.Icon>
-                                            <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
-                                        </materialDesign:Chip.Icon>
-                                    </materialDesign:Chip>
+                                    <materialDesign:Chip.Icon>
+                                        <materialDesign:PackIcon Kind="{Binding Path=Icon}"/>
+                                    </materialDesign:Chip.Icon>
+                                </materialDesign:Chip>
                             </DataTemplate>
                         </StackPanel.Resources>
 
-                        <!--Le StackPanel "RecentRegData" est bindé à la liste "RecentsRegs" dans le Code-behind--> 
+                        <!--Le StackPanel "RecentRegData" est bindé à la liste "RecentsRegs" dans le Code-behind-->
                         <ItemsControl x:Name="RecentRegData" ItemTemplate="{StaticResource RecentRegDataTemplate}" >
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -472,7 +472,7 @@
                         </ItemsControl>
 
                     </StackPanel>
-                    
+
                     <!--separator line-->
                     <!--<Separator Style="{StaticResource MaterialDesignLightSeparator}" />-->
 
@@ -515,9 +515,9 @@
                             </Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8">
-                        <Button Style="{StaticResource MaterialDesignRaisedButton}" Width="80" Content="Import" Margin="4,0,0,0" Click="Bt_SelectHive_Import"/>
-                        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="80" Content="Cancel" Margin="4,0,0,0" Click="Bt_SelectHive_Close"/>
-                    </StackPanel>
+                            <Button Style="{StaticResource MaterialDesignRaisedButton}" Width="80" Content="Import" Margin="4,0,0,0" Click="Bt_SelectHive_Import"/>
+                            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="80" Content="Cancel" Margin="4,0,0,0" Click="Bt_SelectHive_Close"/>
+                        </StackPanel>
                     </StackPanel>
                 </materialDesign:Card>
             </Grid>

@@ -58,15 +58,17 @@ namespace RegFineViewer
             Parser1 = new RegFileParser(RegistryTree1, UnitDictionnary);
             Parser2 = new RegHiveParser(RegistryTree1, UnitDictionnary);
 
-            // On binde la stackPanel qui contient la liste des Recent Registry
-            RecentRegData.ItemsSource = this.RecentsRegs;
-            // On binde la ComboBox qui contient la liste des premiers nodes de la BDR HKLM
-            //            cb_SelectHive.ItemsSource = this.HiveNodeArray;
-            // On binde les RegistryTree avec les TreeView de l'affichage
-            TreeView1.ItemsSource = RegistryTree1;
+            // -----------------------------
+            // On definit les bindings:
             // Normalement on devrait pouvoir mettre ceci dans le XAML du TreeView, mais ça marche pas:
             // ... ItemsSource="{Binding Source=RegistryTree1}" ...
             // ... ItemsSource="{Binding Source=StaticResource RegistryTree1}" ...
+            // -----------------------------
+            // Bind du StackPanel qui contient la liste des Recent Registry
+            RecentRegData.ItemsSource = this.RecentsRegs;
+            // Bind du RegistryTree avec le TreeView de l'affichage
+            TreeView1.ItemsSource = RegistryTree1;
+
             Lb_SearchedWordCount.Text = "";
         }
 
@@ -142,10 +144,10 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void Bt_CloseFile_Click(object sender, RoutedEventArgs e)
         {
-            Tree_InfoChip.Content = "no file loaded";
             RegistryTree1.Clear();
             DropZone.Visibility = Visibility.Visible;
             TreeView1.Visibility = Visibility.Hidden;
+            Tree_InfoChip.Content = "no file loaded";
             Bt_Search.Content = "Find";
             Tb_SearchedWord.Text = "";
             this.SearchedWordIsDirty = true;
@@ -722,14 +724,19 @@ namespace RegFineViewer
         }
 
         // -------------------------------------------------------------------------
-        // Masque le message "Drop your file here" et 
+        // Masque le message "Drop your file here" 
         // Réinitialisation de la Recherche
+        // Vide un éventuel Tree existant
         // -------------------------------------------------------------------------
         private void ReInitDisplay(bool showLengthstats = false)
         {
             DropZone.Visibility = Visibility.Hidden;
             TreeView1.Visibility = Visibility.Visible;
             Bt_LengthStats.Visibility = showLengthstats ? Visibility.Visible : Visibility.Hidden;
+
+            // Vide un éventuel Tree existant
+            RegistryTree1.Clear();
+
             // Initialisation de la recherche
             SearchedWordResultsIndex = 0;
             SearchedWordIsDirty = false;
@@ -778,7 +785,7 @@ namespace RegFineViewer
 // ---------------------------------------
 // Note sur les appels asynchrones
 // ---------------------------------------
-/* Autre méthode, plus simple, mais il ne doit pas y avoir de collections dans la fonction asynchrone, car elle exécute dans une autre thread qui n'a pas d'UI
+/* Autre méthode, plus simple, mais il ne doit pas y avoir de collections dans la fonction asynchrone, car elle exécute dans un autre thread qui n'a pas d'UI.
  * https://stackoverflow.com/questions/18013523/when-correctly-use-task-run-and-when-just-async-await
  * 
  *         void LongRunningOperationAsync(string hivepath) {...}
