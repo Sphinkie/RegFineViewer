@@ -64,9 +64,13 @@ namespace RegFineViewer
 
         // -------------------------------------------------------------------------
         // Retourne le nom de l'item ayant cet index.
+        // Si la valeur est négative, on part de la fin: -1 étant le dernier.
         // -------------------------------------------------------------------------
         public string GetNameAt(int index)
         {
+            if (index <0)
+                index = this.Count + index;
+
             if (index < this.Count)
                 return this[index].Name;
             else

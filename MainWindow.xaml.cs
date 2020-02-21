@@ -664,12 +664,12 @@ namespace RegFineViewer
         // -------------------------------------------------------------------------
         private void SaveRecentRegs()
         {
-            Properties.Settings.Default.Recent_1 = RecentsRegs.GetNameAt(0);
-            Properties.Settings.Default.Recent_2 = RecentsRegs.GetNameAt(1);
-            Properties.Settings.Default.Recent_3 = RecentsRegs.GetNameAt(2);
-            Properties.Settings.Default.Recent_4 = RecentsRegs.GetNameAt(3);
-            Properties.Settings.Default.Recent_5 = RecentsRegs.GetNameAt(4);
-            Properties.Settings.Default.Recent_6 = RecentsRegs.GetNameAt(5);
+            Properties.Settings.Default.Recent_1 = RecentsRegs.GetNameAt(-6);
+            Properties.Settings.Default.Recent_2 = RecentsRegs.GetNameAt(-5);
+            Properties.Settings.Default.Recent_3 = RecentsRegs.GetNameAt(-4);
+            Properties.Settings.Default.Recent_4 = RecentsRegs.GetNameAt(-3);
+            Properties.Settings.Default.Recent_5 = RecentsRegs.GetNameAt(-2);
+            Properties.Settings.Default.Recent_6 = RecentsRegs.GetNameAt(-1);
             Properties.Settings.Default.Save();
         }
 
