@@ -643,7 +643,6 @@ namespace RegFineViewer
             // Ouvre/Ferme le popup "Recent trees"
             Pu_Recent.IsOpen = !Pu_Recent.IsOpen;
         }
-
         // -------------------------------------------------------------------------
         // Enleve un Recent Reg de la liste
         // -------------------------------------------------------------------------
@@ -653,7 +652,6 @@ namespace RegFineViewer
             this.RecentsRegs.Remove(SenderChip.Content.ToString());
             this.SaveRecentRegs();
         }
-
         // -------------------------------------------------------------------------
         // Fermeture du popup "Recent Registries"
         // -------------------------------------------------------------------------
@@ -661,7 +659,6 @@ namespace RegFineViewer
         {
             Pu_Recent.IsOpen = false;
         }
-
         // -------------------------------------------------------------------------
         // Sauve dans les UserSettings le contenu de la liste RecentRegs
         // -------------------------------------------------------------------------
@@ -675,7 +672,6 @@ namespace RegFineViewer
             Properties.Settings.Default.Recent_6 = RecentsRegs.GetNameAt(-1);
             Properties.Settings.Default.Save();
         }
-
         // -------------------------------------------------------------------------
         // On clique sur une RecentChip: on charge le fichier ou la ruche (Hive)
         // -------------------------------------------------------------------------
@@ -703,6 +699,8 @@ namespace RegFineViewer
                 // On remplit le RegistryTree à partir du fichier REG
                 Parser1.ParseFile(CurrentRegistry.Name);
                 Parser1.BuildList();
+                // On enlève le Popup Sablier
+                Pu_Working.IsOpen = false;
             }
             // Si le RecentReg est un subtree de la Registry
             else if (CurrentRegistry.GetGenre() == RecentRegistry.Genre.hive)
