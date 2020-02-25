@@ -3,12 +3,15 @@ RegFineViewer is an utility to visualize and navigate easily the Windows Registr
 
 ## Installation
 
-Decompress the Zip archive and run *regFineViewer.exe*.
+Decompress the Zip archive and run **RegFineViewer.exe**.
 
 ## Usage
 
-With the utility, you can open a Registry file or Hive, expand or collapse and navigate teh TreeView, search for a specific key or value, 
+With the utility, you can open a Reg file or open the local registry hive, expand, collapse and navigate the TreeView, search for a specific key or value, 
 and associate units to the keys for an immediate conversion.
 
 Example:
-`DurationInSec .... DWORD .... 0x0000012C`  click on [seconds] and its displays `00:05:00`
+
+`DurationInSec .... DWORD .... 0x0000012C` : click on `[seconds]` and its displays `00:05:00`.
+
+![Screenshot](RegFineViewer.png)
