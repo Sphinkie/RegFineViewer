@@ -1,37 +1,27 @@
-## Welcome to GitHub Pages
+# Registry Fine Viewer
 
-You can use the [editor on GitHub](https://github.com/Sphinkie/RegFineViewer/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+**Registry Fine Viewer** is an utility that allows you to navigate and view the content of the Windows Registry.
+The application use _Material Design_ convention and look-and-fell for a responsive and user-friendly ergonomy.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![Screenshot](RegFineViewer.png)
 
-### Markdown
+## Features
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+This application:
+- can open any registry file (`.reg` extension) by drag and drop
+- can open the registry of the computer
+- display the values of the key in various units (raw, hex, seconds, ...)
+- memorize the units you have used, so if you open later another regsitry with similar keys, the units will already be correct.
+- seach any key or value in the registry tree
 
-```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+## Screnshots
 
-1. Numbered
-2. List
+![Screenshot](SocialPreview.PNG)
 
-**Bold** and _Italic_ and `Code` text
+![Screenshot](SocialPreview.1.PNG)
 
-[Link](url) and ![Image](src)
-```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Sphinkie/RegFineViewer/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+[markdown support](https://docs.github.com/categories/github-pages-basics/)
