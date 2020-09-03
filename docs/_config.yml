@@ -1,0 +1,9 @@
+theme: jekyll-theme-slate
+title: Registry Fine Viewer
+description: An utility to visualize and navigate easily the Windows Registry 
+show_downloads: true
+
+github:
+  zip_url: https://github.com/Sphinkie/RegFineViewer/releases/download/v1.4/RegFineViewer.v1.4.Portable.zip
+  owner_name: David de Lorenzo
+  owner_url: https://sphinkie.github.io/
