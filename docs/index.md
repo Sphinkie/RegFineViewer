@@ -1,9 +1,9 @@
-# Registry Fine Viewer
+# Registry Fine Viewer for Windows
 
 **Registry Fine Viewer** is an utility that allows you to navigate and view the content of the Windows Registry.
 The application use _Material Design_ convention and look-and-fell for a responsive and user-friendly ergonomy.
 
-![Screenshot](images/RegFineViewer.png)
+![Screenshot](images/RegFineViewer_1.png)
 
 ## Features
 
@@ -17,9 +17,9 @@ This application:
 
 ## Screnshots
 
-![Screenshot](images/SocialPreview.png)
+![Screenshot](images/RegFineViewer_2.png)
 
-![Screenshot](images/SocialPreview.1.png)
+![Screenshot](images/RegFineViewer_3.png)
 
 
 ## Installation
