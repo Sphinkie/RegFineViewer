@@ -15,7 +15,7 @@ This application:
 - seach any key or value in the registry tree
 
 
-## Screnshots
+## Screenshots
 
 ![Screenshot](images/RegFineViewer_2.png)
 
