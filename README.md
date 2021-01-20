@@ -14,4 +14,4 @@ Example:
 
 `DurationInSec .... DWORD .... 0x0000012C` : click on `[seconds]` and its displays `00:05:00`.
 
-![Screenshot](docs/images/RegFineViewer.png)
+![Screenshot](docs/images/RegFineViewer_2.png)
